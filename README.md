@@ -366,7 +366,7 @@ To create a production build, use yarn build.
 
 以下のような画面が表示されるはずです。
 
-![React starter]()
+![React starter](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-1/assets/react_starter.png)
 
 この画面が表示されている間は、`npm run start`で PC にローカルサーバーが起動されている状態です。
 
@@ -543,7 +543,7 @@ npm run start
 
 `http://localhost:3000/`を見てみると、以下のように文字が変更されています。
 
-![change text]()
+![change text](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-1/assets/change_text.png)
 
 `App.tsx`のファイルを変更したことによって、実際のアプリの表示も変更されたことが確認できました。
 
@@ -605,7 +605,7 @@ reportWebVitals();
 
 > 開発中は、`npm run start`で起動したローカルサーバーを停止する必要はありません。変更したファイルを保存して、ブラウザをリロードすればすぐに変更が反映されます。
 
-![ignore app component]()
+![ignore app component](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-1/assets/ignore_app_component.png)
 
 今度は、真っ白な画面で何も表示されなくなりましたね。
 
