@@ -1,17 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+// BrowserRouterをインポート
+import { BrowserRouter } from "react-router-dom";
+import { RootRouter } from "./Route";
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <App /> */}
+    {/* 
+      この位置に<BrowserRouter>を挿入する
+      これにより、react-router-domが初期化され、アプリケーションでreact-router-domが使用できるようになる
+    */}
+    <BrowserRouter>
+      <RootRouter />
+    </BrowserRouter>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
