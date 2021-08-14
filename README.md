@@ -70,11 +70,11 @@
 
 例として、今回の React Bootcamp で作成する Youtube アプリのデザインを見ていきましょう。
 
-![Youtube Mock]()
+![Youtube Mock](https://github.com/Hiro-mackay/react-bootcamp/blob/155a6ac3238de53e3c3ca1caad89945f3aede1d1/assets/youtube_mock.png?raw=true)
 
 このデザインでは、このような形で大きなコンポーネントグループに分けることができます。
 
-![Youtube Component Group]()
+![Youtube Component Group](https://github.com/Hiro-mackay/react-bootcamp/blob/155a6ac3238de53e3c3ca1caad89945f3aede1d1/assets/youtube_component_mock.png?raw=true)
 
 それぞれ、「Layout」「Header」「Sidebar」「Main」という大きなコンポーネントの塊にグルーピンを行いました。
 
@@ -91,7 +91,7 @@
 
 例えば、下記のようなデザインの場合、
 
-![Youtube Component sidebar]()
+![Youtube Component sidebar](https://github.com/Hiro-mackay/react-bootcamp/blob/155a6ac3238de53e3c3ca1caad89945f3aede1d1/assets/youtube_component_sidebar.png?raw=true)
 
 Sidebar はなくなりましたが、`Header`は全く同じデザインですよね？
 
@@ -380,7 +380,7 @@ export default App;
 
 上記コードに書き直し、`npm start`で react を起動してみましょう。
 
-![React Clock Now]()
+![React Clock Now](https://github.com/Hiro-mackay/react-bootcamp/blob/155a6ac3238de53e3c3ca1caad89945f3aede1d1/assets/react_clock_now.png?raw=true)
 
 画面を表示した時の時間が表示されました。
 
@@ -415,7 +415,7 @@ export default App;
 
 爆速で時計が完成しました。
 
-![React Clock]()
+![React Clock](https://github.com/Hiro-mackay/react-bootcamp/blob/155a6ac3238de53e3c3ca1caad89945f3aede1d1/assets/react_clock.gif?raw=true)
 
 上記コードでは、1 秒ごとに`setState`で`state`の値を現在時刻で更新することで、画面表示が時計のように現在時刻を表示してくれます。
 
@@ -784,17 +784,17 @@ CSS モジュールは、こちらでお見せした通り、CSS ファイルさ
 
 これは、アプリの`Home`となるページのデザインです。
 
-![React Youtube Home]()
+![React Youtube Home](https://github.com/Hiro-mackay/react-bootcamp/blob/155a6ac3238de53e3c3ca1caad89945f3aede1d1/assets/youtube_mock.png?raw=true)
 
 例えばこのデザインでは、わかりやすく同じようなデザインが繰り返し使われていることが見て取れます。
 
 これは、コンポーネントとして共通化して使い回しできるようにコードを書くべきですね。
 
-![React Youtube Home Card]()
+![React Youtube Home Card](https://github.com/Hiro-mackay/react-bootcamp/blob/155a6ac3238de53e3c3ca1caad89945f3aede1d1/assets/youtube_home_card.png?raw=true)
 
 他にも、ページごとのデザインを見てみると、ここにも繰り返しデザインが現れています。
 
-![React Youtube Page]()
+![React Youtube Page](https://github.com/Hiro-mackay/react-bootcamp/blob/155a6ac3238de53e3c3ca1caad89945f3aede1d1/assets/youtube_component_sidebar.png?raw=true)
 
 例えば、ページ上部の`Header`を共通化できそうです。
 
@@ -1060,11 +1060,13 @@ ReactDOM.render(
 
 下記のようになれば成功です。
 
-![React Router Dom]()
+![React Router Dom](https://github.com/Hiro-mackay/react-bootcamp/blob/155a6ac3238de53e3c3ca1caad89945f3aede1d1/assets/react_router_dom.png?raw=true)
 
 上部のアドレスバーの URL を`/watch`や`/login`に変更して見てください。
 
 画面の表示も変わっているのがわかると思います。
+
+ここまでの[Githubソースコード](https://github.com/Hiro-mackay/react-bootcamp/tree/155a6ac3238de53e3c3ca1caad89945f3aede1d1)
 
 ## Header のデザインを作成
 
