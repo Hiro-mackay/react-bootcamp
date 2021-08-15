@@ -1230,7 +1230,7 @@ Logo には、Youtube のロゴを表示させたいので、`<img>`要素を置
 
 Youtube では、公式でロゴ画像を配布しているので、それを使わせてもらいましょう。
 
-[Youtubeのロゴをダウンロード](https://www.youtube.com/howyoutubeworks/resources/brand-resources/#logos-icons-and-colors)
+[Youtube のロゴをダウンロード](https://www.youtube.com/howyoutubeworks/resources/brand-resources/#logos-icons-and-colors)
 
 `Full-Color Light Logo`をクリックすると、ロゴファイルの zip がダウンロードできます。
 
@@ -1618,7 +1618,7 @@ export default makeStyles({
   flex: {
     display: "flex",
   },
-  
+
   logo: {
     width: 100,
     display: "flex",
@@ -1691,9 +1691,453 @@ export const DashboardHeader = () => {
 
 ![Header Completed](https://github.com/Hiro-mackay/react-bootcamp/blob/898fda0d5e492dcca294acefbd54b01c4bc694a2/assets/header_completed.png?raw=true)
 
-
+[ここまでのソースコードはこちらから](https://github.com/Hiro-mackay/react-bootcamp/tree/15b65bca5956cae6193b9e07ebc5f29771b31ba1)
 
 ## Sidebar のデザイン作成
+
+続いて、`Sidebar`のデザインです。
+
+`Sidebar`のデザインはとても簡単に作成することができます。
+
+まずは、`Sidebar`の一番元となるコンポーネントを作成していきます。
+
+```TSX
+// src/templates/Sidebar/index.tsxを作成
+// Sidebarもロジックを含んだコンポーネントなため、`templates`以下にコンポーネントを作成します。
+
+export const Sidebar = () => {
+  return <div>Sidebar</div>;
+};
+```
+
+`<div>`のみを返すコンポーネントを作成しました。
+
+`Material-UI`では、今回のようなサイドバーのコンポーネントを簡単に実装できそうなコンポーネントが用意されています。
+
+[Meterial-UI のサイドバーコンポーネント](https://material-ui.com/components/lists/#lists)
+
+上記の`Lists`コンポーネントを使用して、`Sidebar`のデザインをさらっと作ってしまいましょう。
+
+まずは、`Sidebar`コンポーネントを画面に表示するところから初めましょう。
+
+```TSX
+// src/layouts/Home/index.tsx
+
+import { Outlet } from "react-router-dom";
+import { DashboardHeader } from "../../templates/DashboardHeader";
+
+// Sidebarコンポーネントをimport
+import { Sidebar } from "../../templates/Sidebar";
+
+export const HomeLayout = () => {
+  return (
+    <div>
+      <DashboardHeader />
+
+      {/*
+        Sidebarコンポーネントを表示する
+      */}
+      <Sidebar />
+
+      <Outlet />
+    </div>
+  );
+};
+```
+
+これで、画面に「Sidebar」という文字列が表示されれば成功ですが...画面を見てみると何も表示されていませんね。
+
+![not view siderbar]()
+
+これはなぜかという、`Header`コンポーネントのせいで、`Sidebar`コンポーネントが隠されてしまっているせいです。
+
+![Sidebar hidden in header]()
+
+これを解決するために、`Layout`のスタリングを調整します。
+
+```TS
+// src/layouts/Home/style.ts
+import { makeStyles } from "@material-ui/core";
+
+// 使いまわせるように、`Header`コンポーネントの'height'を定数化
+const APP_BAR = 64;
+
+export default makeStyles({
+  // サイドバーの上部にAPP_BAR分のpaddingを表示
+  sidebar: {
+    paddingTop: APP_BAR,
+  },
+  // メインコンポーネントの上部にAPP_BAR分のpaddingを表示
+  main: {
+    paddingTop: APP_BAR + 30,
+  },
+});
+```
+
+`HomeLayout`に反映させましょう。
+
+```TSX
+// src/layouts/Home/index.tsx
+
+import { Outlet } from "react-router-dom";
+import { DashboardHeader } from "../../templates/DashboardHeader";
+import { Sidebar } from "../../templates/Sidebar";
+import useStyles from "./style";
+
+export const HomeLayout = () => {
+  const styles = useStyles();
+  return (
+    <div>
+
+      <DashboardHeader />
+
+      {/*
+        Sidebarコンポーネントにスタイルを反映させる
+      */}
+      <div className={styles.sidebar}>
+        <Sidebar />
+      </div>
+
+      {/*
+        メインコンポーネントにスタイルを反映させる
+      */}
+      <div className={styles.main}>
+        <Outlet />
+      </div>
+    </div>
+  );
+};
+```
+
+隠れていた要素が画面表示されました。
+
+![padding top component]()
+
+しかし、今のままでは、`Sidebar`とメインコンポーネントが横並びになったデザインになっていません。
+
+横並びにしていきましょう。
+
+```TS
+// src/layouts/Home/style.ts
+
+import { makeStyles } from "@material-ui/core";
+
+// Sidebarの幅を固定
+const SIDEBAR_WIDTH = 240;
+
+const APP_BAR = 64;
+
+export default makeStyles({
+  // 横並び
+  flex: {
+    display: "flex",
+  },
+
+  sidebar: {
+    paddingTop: APP_BAR,
+
+    // 幅を指定
+    width: SIDEBAR_WIDTH,
+  },
+  main: {
+    paddingTop: APP_BAR + 30,
+
+    // 横並び時に最大まで幅を大きさせる
+    flexGrow: 1,
+  },
+});
+```
+
+横並びにさせるスタリングを反映させます。
+
+```TSX
+// src/layouts/Home/index.tsx
+
+import { Outlet } from "react-router-dom";
+import { DashboardHeader } from "../../templates/DashboardHeader";
+import { Sidebar } from "../../templates/Sidebar";
+import useStyles from "./style";
+
+export const HomeLayout = () => {
+  const styles = useStyles();
+  return (
+    <div>
+
+      <DashboardHeader />
+
+      {/*
+        Sidebarとメインコンポーネントを囲む<div>を作成し、Sidebarとメインコンポーネントを横並びにする
+      */}
+      <div className={styles.flex}>
+
+        <div className={styles.sidebar}>
+          <Sidebar />
+        </div>
+
+        <div className={styles.main}>
+          <Outlet />
+        </div>
+
+      </div>
+    </div>
+  );
+};
+```
+
+横並びになりましたね。
+
+![Flex main style]()
+
+それでは、レイアウトが調整できたことなので、`Sidebar`コンポーネントのデザインをしていきましょう。
+
+```TSX
+// src/templates/Sidebar/index.tsx
+
+import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import HomeIcon from "@material-ui/icons/Home";
+
+export const Sidebar = () => {
+  return (
+    <List component="nav">
+      <ListItem button>
+        <ListItemIcon>
+          <HomeIcon />
+        </ListItemIcon>
+        <ListItemText primary="ホーム" />
+      </ListItem>
+    </List>
+  );
+};
+```
+
+今回は、`Materil-UIのドキュメント`に記載されているサンプルをただそのままコピペし、必要な情報を変更しただけです。
+
+これだけですでに、もうデザインが完成されそうですね！
+
+もう少しだけ、デザインを洗練させましょう。
+
+サイドバーの背景に「ホワイト」を指定しましょう。
+
+```TS
+// src/templates/Sidebar/style.ts
+
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  root: {
+    backgroundColor: "#ffffff",
+  },
+});
+```
+
+```TSX
+// src/templates/Sidebar/index.tsx
+
+import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import HomeIcon from "@material-ui/icons/Home";
+import WhatshotIcon from "@material-ui/icons/Whatshot";
+import SubscriptionsIcon from "@material-ui/icons/Subscriptions";
+import useStyles from "./style";
+
+export const Sidebar = () => {
+  const styles = useStyles();
+
+  return (
+    // スタイルを指定
+    <List className={styles.root} component="nav">
+      <ListItem button>
+        <ListItemIcon>
+          <HomeIcon />
+        </ListItemIcon>
+        <ListItemText primary="ホーム" />
+      </ListItem>
+
+      {/*
+        残りのSidebarのコンテンツを追加
+      */}
+      <ListItem button>
+        <ListItemIcon>
+          <WhatshotIcon />
+        </ListItemIcon>
+        <ListItemText primary="トレンド" />
+      </ListItem>
+      <ListItem button>
+        <ListItemIcon>
+          <SubscriptionsIcon />
+        </ListItemIcon>
+        <ListItemText primary="登録チャンネル" />
+      </ListItem>
+    </List>
+  );
+};
+
+```
+
+もう一度画面表示をしてみましょう。
+
+![Not enough sidebar]()
+
+サイドバーの高さが足りません。
+
+これは由々しき事態です。
+
+これを解決するためには、まず、このアプリケーション全体の CSS を調整する必要があります。
+
+以下のように特殊なグローバルスタリングとして`GlobalStyle.ts`を作成してください。
+
+```TS
+// src/GlobalStyle.tsを作成
+// GlobalStyle.tsのコード
+import { withStyles } from "@material-ui/styles";
+
+export default withStyles({
+  // アプリケーションの全体の高さを全てに指定
+  "@global": {
+    html: {
+      width: "100%",
+      height: "100%",
+    },
+    body: {
+      width: "100%",
+      height: "100%",
+    },
+    "#root": {
+      width: "100%",
+      height: "100%",
+    },
+
+    // おまけで追加
+    img: { display: "block", maxWidth: "100%" },
+  },
+})(() => null);
+
+```
+
+そして、この GlobaStyle を、`src/index.tsx`に追加します。
+
+```TSX
+// src/index.tsx
+
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
+import { RootRouter } from "./Route";
+import { createTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
+
+// 先程のグローバルスタイルをimport
+import GlobalStyle from "./GlobalStyle";
+
+
+const theme = createTheme();
+
+ReactDOM.render(
+  <React.StrictMode>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <CssBaseline />
+
+        {/*
+          アプリ全体の特殊なグローバルスタリング
+        */}
+        <GlobalStyle />
+
+        <RootRouter />
+      </BrowserRouter>
+    </ThemeProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
+);
+
+```
+
+これで、アプリ全体に`height`が指定され、画面サイズいっぱいの高さの要素を置けるようになりました。
+
+これに合わせて、`HomeLayout`の構造を少しだけ調整します。
+
+```TS
+// src/layouts/Home/style.ts
+
+import { makeStyles } from "@material-ui/core";
+
+const SIDEBAR_WIDTH = 240;
+const APP_BAR = 64;
+
+export default makeStyles({
+  // flexというスタリングを「root」に変更。
+  // flexとminHeight:100%を指定する
+  root: {
+    display: "flex",
+    minHeight: "100%",
+  },
+
+  sidebar: {
+    paddingTop: APP_BAR,
+
+    // 幅を指定
+    width: SIDEBAR_WIDTH,
+  },
+  main: {
+    paddingTop: APP_BAR + 30,
+
+    // 横並び時に最大まで幅を大きさせる
+    flexGrow: 1,
+  },
+});
+```
+
+```TSX
+// src/layouts/Home/index.tsx
+
+import { Outlet } from "react-router-dom";
+import { DashboardHeader } from "../../templates/DashboardHeader";
+import { Sidebar } from "../../templates/Sidebar";
+import useStyles from "./style";
+
+export const HomeLayout = () => {
+  const styles = useStyles();
+  return (
+
+    // 一番上位の<div>に対して"root"スタリングを指定
+    // 今ままで`<div className={styles.flex}>`としていた要素は削除
+    <div className={styles.root}>
+
+      <DashboardHeader />
+
+      {/*
+        `<div className={styles.flex}>`としていた要素は削除
+      */}
+      <div className={styles.sidebar}>
+        <Sidebar />
+      </div>
+
+      <div className={styles.main}>
+        <Outlet />
+      </div>
+    </div>
+  );
+};
+```
+
+そして、最後に、`Sidebar`コンポーネントのスタリングを完成させましょう。
+
+```TSX
+// src/templates/Sidebar/style.ts
+
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  root: {
+    backgroundColor: "#ffffff",
+
+    // minHeight: 100%を指定して、高さを画面いっぱいにする
+    minHeight: "100%",
+  },
+});
+```
+
+これで`Sidebar`のデザインが完成しました。
+
+![Sidebar completed]()
 
 ## ビデオカードのデザイン作成
 

@@ -2,9 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { RootRouter } from "./Route";
-
-// MaterialーUIの設定類をインポート
 import { createTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
+
+import GlobalStyle from "./GlobalStyle";
 
 // Material-UIの「テーマ」を作成する。
 // Material-UIをカスタマイズする際には、createThemeの引数にカスタマイズ項目を渡す。
@@ -21,6 +21,11 @@ ReactDOM.render(
           ブラウザの違いを吸収し、どのデバイスでは同じように表示する用のCSSを使用する
         */}
         <CssBaseline />
+
+        {/* 
+          アプリ全体の特殊なグローバルスタリング
+        */}
+        <GlobalStyle />
 
         {/* 
           ルーティング用のメインコンポーネント
