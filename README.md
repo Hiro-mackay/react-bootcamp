@@ -2267,7 +2267,7 @@ export const RootRouter = () => {
 
 しかし、デザインとはかけ離れていますね。
 
-![Video Card miss]()
+![Video Card miss](https://github.com/Hiro-mackay/react-bootcamp/blob/4fe016b02d130f2772ad631daefc45293628188e/assets/video_caed_miss.png?raw=true)
 
 スタリング で調整してきましょう。
 
@@ -2345,7 +2345,7 @@ export const VideoCard = () => {
 
 ここまでで、カード自体のデザインはいい感じになりました。
 
-![Video card design]()
+![Video card design](https://github.com/Hiro-mackay/react-bootcamp/blob/4fe016b02d130f2772ad631daefc45293628188e/assets/video_caed_design.png?raw=true)
 
 しかし、今のままでは、`VideoCard`が増えた時にときにデザイン通りの表示ができません。
 
@@ -2384,7 +2384,7 @@ export const Home = () => {
     // containerの指定がない場合、他のコードが合っていても横並び表示はされない。
     <Grid container spacing={2}>
 
-      {/* 
+      {/*
         横並びにしたいコンポーネントの一つ一つを<Grid>で囲む
         こちらのGridでは、itemプロパティを指定する。
         全部を囲む<Grid container>の中にそれぞれの横並び要素の<Grid item>があるイメージ
@@ -2413,7 +2413,7 @@ export const Home = () => {
 
 無事、横並び表示ができました。
 
-![Grid card]()
+![Grid card](https://github.com/Hiro-mackay/react-bootcamp/blob/4fe016b02d130f2772ad631daefc45293628188e/assets/grid_card.png?raw=true)
 
 しかし、よく見ると`Sidebar`のデザインが崩れており、横並びのデザインの両端が窮屈です。
 
@@ -2427,7 +2427,7 @@ import { VideoCard } from "../../compoennts/VideoCard";
 
 export const Home = () => {
   return (
-    // 全ての要素をContainerで囲むことで、デザインが「整う」 
+    // 全ての要素をContainerで囲むことで、デザインが「整う」
     <Container>
 
       <Grid container spacing={2}>
@@ -2455,7 +2455,7 @@ export const Home = () => {
 
 ここまでで、本当にそれっぽいデザインに仕上がってきました！！
 
-![VideoCard Completed]()
+![VideoCard Completed](https://github.com/Hiro-mackay/react-bootcamp/blob/4fe016b02d130f2772ad631daefc45293628188e/assets/videocard_completed.png?raw=true)
 
 ## 動画再生画面のデザイン作成
 
