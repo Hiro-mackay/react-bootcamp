@@ -1142,7 +1142,7 @@ ReactDOM.render(
 
 まずは、様々なページで多用されている`Header`コンポーネントをさらに細かくコンポーネントに細分化していきます。
 
-![Header Component]()
+![Header Component](https://github.com/Hiro-mackay/react-bootcamp/blob/898fda0d5e492dcca294acefbd54b01c4bc694a2/assets/header_component.png?raw=true)
 
 `Header`コンポーネントは、複数のページでロジックを内包したコンポーネントです。
 
@@ -1285,7 +1285,7 @@ export const DashboardHeader = () => {
 
 しかし、プロパティを指定しても、デザインをするのには限界があります。
 
-![Header miss design]()
+![Header miss design](https://github.com/Hiro-mackay/react-bootcamp/blob/898fda0d5e492dcca294acefbd54b01c4bc694a2/assets/header_miss_design.png?raw=true)
 
 そこで、`styles.ts`というファイルを作り、ここにカスタム用のスタイリングを書き、既存のスタイリングを上書きします。
 
@@ -1378,14 +1378,14 @@ export const Logo = () => {
 
 Header のロゴ部分ができました。
 
-![Logo Header]()
+![Logo Header](https://github.com/Hiro-mackay/react-bootcamp/blob/898fda0d5e492dcca294acefbd54b01c4bc694a2/assets/logo_header.png?raw=true)
 
 引き続き、検索バーと右側プロフィール欄を作っていきましょう。
 
 検索バーを作成します。
 
 ```TSX
-// src/templates/DashboardHeader/SeacrBar/index.tsxを作成
+// src/templates/DashboardHeader/SearchBar/index.tsxを作成
 // <SearchBar>は現状"Header"でのみ使用しているので、`templates/DashboardHeader`に閉じ込めています。
 // index.tsxのコード
 import { InputBase, Paper } from "@material-ui/core";
@@ -1413,7 +1413,7 @@ export const SearchBar = () => {
 `<SearchBar>`のスタリング行います。
 
 ```TS
-// src/templates/DashboardHeader/SeacrBar/style.tsを生成
+// src/templates/DashboardHeader/SearchBar/style.tsを生成
 // styles.tsのコード
 import { makeStyles } from "@material-ui/core";
 
@@ -1448,7 +1448,7 @@ export default makeStyles({
 ```
 
 ```TSX
-// src/templates/DashboardHeader/SeacrBar/index.tsx
+// src/templates/DashboardHeader/SearchBar/index.tsx
 
 import { InputBase, Paper } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
@@ -1503,7 +1503,7 @@ import { AppBar, Avatar, IconButton, Toolbar } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import VideoCallIcon from "@material-ui/icons/VideoCall";
 import { Logo } from "../../compoennts/Logo";
-import { SearchBar } from "./SeacrBar";
+import { SearchBar } from "./SearchBar";
 import useStyles from "./style";
 
 export const DashboardHeader = () => {
@@ -1594,7 +1594,7 @@ export const SideLessHomeLayout = () => {
 
 これで、`npm start`をして画面を表示してみましょう。
 
-![Header left side]()
+![Header left side](https://github.com/Hiro-mackay/react-bootcamp/blob/898fda0d5e492dcca294acefbd54b01c4bc694a2/assets/header_left_side.png?raw=true)
 
 `HomeLayout`と`SideLessHomeLayout`が指定してある URL では Header が表示されているはずです！
 
@@ -1645,7 +1645,7 @@ import { AppBar, Avatar, Grid, IconButton, Toolbar } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import VideoCallIcon from "@material-ui/icons/VideoCall";
 import { Logo } from "../../compoennts/Logo";
-import { SearchBar } from "./SeacrBar";
+import { SearchBar } from "./SearchBar";
 import useStyles from "./style";
 
 export const DashboardHeader = () => {
@@ -1689,7 +1689,9 @@ export const DashboardHeader = () => {
 };
 ```
 
-![Header Completed]()
+![Header Completed](https://github.com/Hiro-mackay/react-bootcamp/blob/898fda0d5e492dcca294acefbd54b01c4bc694a2/assets/header_completed.png?raw=true)
+
+
 
 ## Sidebar のデザイン作成
 
