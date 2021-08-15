@@ -1473,7 +1473,7 @@ export const SearchBar = () => {
 
 ```
 
-検索バーのスタリング完了しました。
+検索バーのスタリングが完了しました。
 
 次は、`Header`の右側、アバター等が表示されているプロフィール欄を作ります。
 
@@ -1747,11 +1747,11 @@ export const HomeLayout = () => {
 
 これで、画面に「Sidebar」という文字列が表示されれば成功ですが...画面を見てみると何も表示されていませんね。
 
-![not view siderbar]()
+![not view siderbar](https://github.com/Hiro-mackay/react-bootcamp/blob/056d54efd1f5eae35f23b6b8a647e1242b2251a1/assets/not_view_sidebar.png?raw=true)
 
 これはなぜかという、`Header`コンポーネントのせいで、`Sidebar`コンポーネントが隠されてしまっているせいです。
 
-![Sidebar hidden in header]()
+![Sidebar hidden in header](https://github.com/Hiro-mackay/react-bootcamp/blob/056d54efd1f5eae35f23b6b8a647e1242b2251a1/assets/sidebar_hidden_in_header.png?raw=true)
 
 これを解決するために、`Layout`のスタリングを調整します。
 
@@ -1811,7 +1811,7 @@ export const HomeLayout = () => {
 
 隠れていた要素が画面表示されました。
 
-![padding top component]()
+![padding top component](https://github.com/Hiro-mackay/react-bootcamp/blob/056d54efd1f5eae35f23b6b8a647e1242b2251a1/assets/padding_top_component.png?raw=true)
 
 しかし、今のままでは、`Sidebar`とメインコンポーネントが横並びになったデザインになっていません。
 
@@ -1886,7 +1886,7 @@ export const HomeLayout = () => {
 
 横並びになりましたね。
 
-![Flex main style]()
+![Flex main style](https://github.com/Hiro-mackay/react-bootcamp/blob/056d54efd1f5eae35f23b6b8a647e1242b2251a1/assets/flex_main_style.png?raw=true)
 
 それでは、レイアウトが調整できたことなので、`Sidebar`コンポーネントのデザインをしていきましょう。
 
@@ -1975,7 +1975,7 @@ export const Sidebar = () => {
 
 もう一度画面表示をしてみましょう。
 
-![Not enough sidebar]()
+![Not enough sidebar](https://github.com/Hiro-mackay/react-bootcamp/blob/056d54efd1f5eae35f23b6b8a647e1242b2251a1/assets/not_enough_sidebar.png?raw=true)
 
 サイドバーの高さが足りません。
 
@@ -2137,9 +2137,325 @@ export default makeStyles({
 
 これで`Sidebar`のデザインが完成しました。
 
-![Sidebar completed]()
+![Sidebar completed](https://github.com/Hiro-mackay/react-bootcamp/blob/056d54efd1f5eae35f23b6b8a647e1242b2251a1/assets/sidebar_completed.png?raw=true)
 
 ## ビデオカードのデザイン作成
+
+次はビデオカードのデザインをしていきます。
+
+ビデオカードとは何かというと、これです。
+
+![React Youtube Home Card](https://github.com/Hiro-mackay/react-bootcamp/blob/155a6ac3238de53e3c3ca1caad89945f3aede1d1/assets/youtube_home_card.png?raw=true)
+
+動画のサムネイルとタイトルと説明を表示するビューです。
+
+では、早速コンポーネントを作っていきましょう。
+
+今回、ビデオカードはロジックを含まないコンポーネントとして、`components`に格納していきます。
+
+ビデオカードに必要なデータは、親コンポーネントから渡してもらう形にして、ビデオカードは、そのデザインにのみ役割を持つようにします。
+
+また、ビデオカードのデザインに使われているサムネイル付きの Card コンポーネントは`Material-UI`に用意されています。
+
+[Materil-UI カードコンポーネント](https://material-ui.com/components/cards/#card)
+
+これを少し調子するだけですぐにデザインが完成しそうです。
+
+```TSX
+// src/compoennts/VideoCard/index.tsxを作成
+// index.tsxのコード
+
+import { Avatar, Card, CardHeader, CardMedia } from "@material-ui/core";
+import { HeaderTitle } from "./HeaderTitle";
+import { SubHeaderContent } from "./SubHeaderContent";
+
+
+export const VideoCard = () => {
+  return (
+    // elevation={0} : Cardの影を削除する
+    // square : 丸みの除去
+    <Card elevation={0} square>
+
+      {/*
+        サムネイルの表示
+        今回はno-image.jpgという画像を作成し、デフォルトのサムネイルとした。
+        このno-image.jpgを使いたい方は、/public/staticから自由にダウンローそしてください。
+      */}
+      <CardMedia
+        image="/static/no-image.jpg"
+        title="Thumbnail"
+      />
+
+      {/*
+        タイトルやユーザーサムネイルを表示する
+      */}
+      <CardHeader
+        avatar={<Avatar />}
+        title="Organization Admin Settings: Dashboard overview [1/7]"
+        subheader="Figma 16K views  2 months ago"
+      />
+    </Card>
+  );
+};
+```
+
+この`<VideoCard>`を画面表示できるようにしたいのですが、今のままでは画面に表示することはできません。
+
+ページを表示するコンポーネントから`<VideoCard>`を呼び出しましょう。
+
+まずは、`pages`というディレクトリに、`Home`というコンポーネントを作成します。
+
+```TSX
+// src/pages/Home/index.tsxを作成
+
+// VideoCardをimport
+import { VideoCard } from "../../compoennts/VideoCard";
+
+export const Home = () => {
+  // VideoCardコンポーネントを表示する
+  return <VideoCard />;
+};
+```
+
+そしてこのコンポーネントを`/`から呼び出せるようにしましょう。
+
+```TSX
+// src/Route.tsx
+
+import { Navigate, useRoutes } from "react-router-dom";
+import { HomeLayout } from "./layouts/Home";
+import { SideLessHomeLayout } from "./layouts/SideLessHome";
+import { SimpleLayout } from "./layouts/Simple";
+
+// 先程のHomeコンポーネントをimport
+import { Home } from "./pages/Home";
+
+export const RootRouter = () => {
+  return useRoutes([
+    {
+      element: <HomeLayout />,
+
+      // "element"に<Home />を指定して、URL`/`にアクセスした時にどのコンポーネントを呼び出すか指定します。
+      children: [{ path: "/", element: <Home /> }],
+    },
+
+    {
+      element: <SideLessHomeLayout />,
+
+      children: [
+        { path: "watch", element: <Navigate to="/" /> },
+        { path: "watch/:videId", element: <div>watch</div> },
+      ],
+    },
+
+    {
+      element: <SimpleLayout />,
+      children: [
+        { path: "login", element: <div>ログイン</div> },
+        { path: "signup", element: <div>新規作成</div> },
+        { path: "forget", element: <div>パスワードリセット</div> },
+        { path: "404", element: <div>Not Found</div> },
+        { path: "*", element: <Navigate to="/404" /> },
+      ],
+    },
+    { path: "*", element: <Navigate to="/404" /> },
+  ]);
+};
+```
+
+画面表示をしてみると、一応、画面表示されました。
+
+しかし、デザインとはかけ離れていますね。
+
+![Video Card miss]()
+
+スタリング で調整してきましょう。
+
+```TS
+// src/compoennts/VideoCard/style.tsを作成
+// style.tsのコード
+
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  // カードの最大サイズを指定。
+  // 背景色を除去
+  root: {
+    maxWidth: 360,
+    backgroundColor: "transparent",
+  },
+
+  // 16:9の解像度のサムネイル画像を表示させる。
+  media: {
+    height: 0,
+    paddingTop: "56.25%", // 16:9
+  },
+
+  // 背景色と両サイドのpadding を削除。
+  // また、ユーザーのサムネイルの位置を上端に合わせる。
+  header: {
+    alignItems: "start",
+    backgroundColor: "transoparent",
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
+});
+```
+
+スタリングを反映させていきます。
+
+```TSX
+// src/compoennts/VideoCard/index.tsx
+
+import { Avatar, Card, CardHeader, CardMedia } from "@material-ui/core";
+import { HeaderTitle } from "./HeaderTitle";
+import { SubHeaderContent } from "./SubHeaderContent";
+import useStyles from "./style";
+
+export const VideoCard = () => {
+  // スタイルの作成
+  const styles = useStyles();
+
+  return (
+    // styles.rootを指定
+    <Card className={styles.root} elevation={0} square>
+
+      {/*
+        styles.mediaを指定
+      */}
+      <CardMedia
+        className={styles.media}
+        image="/static/no-image.jpg"
+        title="Thumbnail"
+      />
+
+      {/*
+        styles.headerを指定
+      */}
+      <CardHeader
+        className={styles.header}
+        avatar={<Avatar />}
+        title="Organization Admin Settings: Dashboard overview [1/7]"
+        subheader="Figma 16K views  2 months ago"
+      />
+    </Card>
+  );
+};
+```
+
+ここまでで、カード自体のデザインはいい感じになりました。
+
+![Video card design]()
+
+しかし、今のままでは、`VideoCard`が増えた時にときにデザイン通りの表示ができません。
+
+```TSX
+import { VideoCard } from "../../compoennts/VideoCard";
+
+export const Home = () => {
+  return (
+    <div>
+      <VideoCard />
+      <VideoCard />
+      <VideoCard />
+      <VideoCard />
+      <VideoCard />
+    </div>
+  );
+};
+```
+
+このカードを横並びに表示できるようにしましょう。
+
+`Material-UI`の使うコンポーネントは、`Grid`というコンポーネントを使用します。
+
+[Materil-UI Grid コンポーネント](https://material-ui.com/components/grid/)
+
+```TSX
+// src/pages/Home/index.tsx
+
+import { Grid } from "@material-ui/core";
+import { VideoCard } from "../../compoennts/VideoCard";
+
+export const Home = () => {
+  return (
+    // 横並びにしたいコンポーネントを全てを囲むように<Grid>を配置
+    // このGridには"container"というプロパティを指定する
+    // containerの指定がない場合、他のコードが合っていても横並び表示はされない。
+    <Grid container spacing={2}>
+
+      {/* 
+        横並びにしたいコンポーネントの一つ一つを<Grid>で囲む
+        こちらのGridでは、itemプロパティを指定する。
+        全部を囲む<Grid container>の中にそれぞれの横並び要素の<Grid item>があるイメージ
+      */}
+      <Grid item xs={3}>
+        <VideoCard />
+      </Grid>
+
+      <Grid item xs={3}>
+        <VideoCard />
+      </Grid>
+      <Grid item xs={3}>
+        <VideoCard />
+      </Grid>
+      <Grid item xs={3}>
+        <VideoCard />
+      </Grid>
+      <Grid item xs={3}>
+        <VideoCard />
+      </Grid>
+    </Grid>
+  );
+};
+
+```
+
+無事、横並び表示ができました。
+
+![Grid card]()
+
+しかし、よく見ると`Sidebar`のデザインが崩れており、横並びのデザインの両端が窮屈です。
+
+このような時は、`Container`コンポーネントを使って最後の仕上げをしていきます。
+
+```TSX
+// src/pages/Home/index.tsx
+
+import { Container, Grid } from "@material-ui/core";
+import { VideoCard } from "../../compoennts/VideoCard";
+
+export const Home = () => {
+  return (
+    // 全ての要素をContainerで囲むことで、デザインが「整う」 
+    <Container>
+
+      <Grid container spacing={2}>
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+      </Grid>
+    </Container>
+  );
+};
+```
+
+ここまでで、本当にそれっぽいデザインに仕上がってきました！！
+
+![VideoCard Completed]()
 
 ## 動画再生画面のデザイン作成
 

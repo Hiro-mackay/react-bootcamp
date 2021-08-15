@@ -2,12 +2,13 @@ import { Navigate, useRoutes } from "react-router-dom";
 import { HomeLayout } from "./layouts/Home";
 import { SideLessHomeLayout } from "./layouts/SideLessHome";
 import { SimpleLayout } from "./layouts/Simple";
+import { Home } from "./pages/Home";
 
 export const RootRouter = () => {
   return useRoutes([
     {
       element: <HomeLayout />,
-      children: [{ path: "/", element: <div>Home</div> }],
+      children: [{ path: "/", element: <Home /> }],
     },
 
     {
