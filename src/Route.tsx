@@ -5,8 +5,6 @@ import { SimpleLayout } from "./layouts/Simple";
 
 export const RootRouter = () => {
   return useRoutes([
-
-    
     {
       element: <HomeLayout />,
       children: [{ path: "/", element: <div>Home</div> }],
@@ -14,7 +12,11 @@ export const RootRouter = () => {
 
     {
       element: <SideLessHomeLayout />,
-      children: [{ path: "watch/:videId", element: <div>watch</div> }],
+
+      children: [
+        { path: "watch", element: <Navigate to="/" /> },
+        { path: "watch/:videId", element: <div>watch</div> },
+      ],
     },
 
     {

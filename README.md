@@ -728,31 +728,29 @@ CSS でデザインされたコンポーネントに対して、簡単に引数�
 
 このような形で、自身の置かれている状況や環境に合わせて柔軟にどのデザインシステムを採用するかを決めていく必要があります。
 
-- ### 今回の ReactBootcamp では「CSS モジュール」を使用
+- ### 今回の ReactBootcamp では「UI フレームワーク」を使用
 
-今回の ReactBootcamp では、`CSSモジュール`を使ったデザインシステムを構築していきたいと思います。
+今回の ReactBootcamp では、Ui フレームワークの`Material-UI`を使ったデザインシステムを構築していきたいと思います。
 
-CSS モジュールを採用する理由は以下の通りです。
+`Material-UI`を採用する理由は以下の通りです。
 
-- デザインを構築するのに CSS 以上の知識が必要ない
+- とにかく、開発スピードが爆速
 
-CSS モジュールを使用する以上、CSS 以外の知識は必要あありません。
+`Material-UI`に用意されているデザイン済みをコンポーネントを使用すれば、一切のデザインを考慮することなくアプリを開発することができます。
 
-つまり、それだけシンプルにデザインを構築することが可能になります。
+- 手段にこだわらず、「動くもの」を作ることを目指す。
 
-- なるべく「生」のデザインにふれる
+開発の目的は、ソースコードを生み出すことではなく、「動くもの」を作ること。
 
-本来であれば、短期間で使えるアプリケーションを構築するには「UI フレームワーク」を採用するのが定石です。
+最速で動くものを作るためにはやはり、デザインフレームワークを使う以外の選択肢はありません。
 
-しかし、今回はあえて一からデザインを作成することで、より深いレベルでのデザインの仕組みについて理解することを木 t 形としています。
+- 既に十分な実績とコミュニティがある
 
-- ライブラリ特有のエラーや環境構築を必要としない
+`Material-UI`は、枯れた技術までいきませんが、ここ数年で着実にそのエコシステムを成熟させてきました。
 
-CSS モジュールは、こちらでお見せした通り、CSS ファイルさえあればすぐに始めることができます。
+今回のような小規模アプリ開発では困ることは、ほとんど出てこないでしょう。（少なくとも、エラーは書いた人のせいです。）
 
-他のデイザンシステムのようにライブラリを入れると言ったことも無いので、エラーや構文などに悩まされることがありません。
-
-なので、今回は CSS モジュールを使用したデザインシステムを採用します。
+なので、今回は `Material-UI`を使用したデザインシステムを採用します。
 
 ## Youtube アプリの構築に必要なコンポーネントの設計
 
@@ -825,21 +823,17 @@ src
 ├── compoennts
 │   └── [Component Name]
 │       └── index.tsx
-│       └── style.module.css
 ├── layouts
 │   └── [Layout Name]
 │       └── index.tsx
-│       └── style.module.css
 ├── pages
 │   └── [Page Name]
 │       └── index.tsx
 │       └── [Component Name]
 │           └── index.tsx
-│           └── style.module.css
 └── templates
     └── [Template Name]
         └── index.tsx
-        └── style.module.css
 ```
 
 ### Route.tsx
@@ -910,12 +904,16 @@ src
 - まとめてインストール用
 
 ```
-npm install react-router-dom@next @types/react-router-dom history
+npm install react-router-dom@next @types/react-router-dom history @material-ui/core @material-ui/icons
+
+or
+
+yarn add react-router-dom@next @types/react-router-dom history @material-ui/core @material-ui/icons
 ```
 
 - 個別インストール用
 
-ルーティング用ライブラリ
+> ルーティング用ライブラリ
 
 `@next`をつけることで、最新ベータ版をインストールできます。
 
@@ -923,6 +921,28 @@ npm install react-router-dom@next @types/react-router-dom history
 
 ```
 npm install react-router-dom@next @types/react-router-dom@next history
+
+or
+
+yarn add  react-router-dom@next @types/react-router-dom@next history
+```
+
+> Material-UI
+
+React の UI フレームワークです。
+
+使えるデザインコンポーネントは下記にまとまっています。このドキュメントと睨めっこしながら開発していきます。  
+[https://material-ui.com/components/box/](https://material-ui.com/components/box/)
+
+また、デザインフレームワークに合わせて、アイコンのライブラリも一緒にインストールしています。  
+[https://material-ui.com/components/material-icons/](https://material-ui.com/components/material-icons/)
+
+```
+npm install @material-ui/core @material-ui/icons
+
+or
+
+yarn add @material-ui/core @material-ui/icons
 ```
 
 ## デザインの前に、ルーティングを作成
@@ -959,7 +979,10 @@ export const RootRouter = () => {
     // Headerのみのデザインのページ
     {
       element: <SideLessHomeLayout />,
-      children: [{ path: "watch/:videId", element: <div>watch</div> }],
+      children: [
+         { path: "watch", element: <Navigate to="/" /> },
+        { path: "watch/:videId", element: <div>watch</div> }
+      ],
     },
 
     // HeaderもSidebarもないページのデザイン
@@ -1066,9 +1089,607 @@ ReactDOM.render(
 
 画面の表示も変わっているのがわかると思います。
 
-ここまでの[Githubソースコード](https://github.com/Hiro-mackay/react-bootcamp/tree/155a6ac3238de53e3c3ca1caad89945f3aede1d1)
+ここまでの[Github ソースコード](https://github.com/Hiro-mackay/react-bootcamp/tree/155a6ac3238de53e3c3ca1caad89945f3aede1d1)
+
+## Material-UI の設定
+
+Material-UI を使用するにあたって、少し設定が必要です。
+
+と言っても、作業は簡単です。
+
+`src/index.tsx`を下記のようにコードを変更します。
+
+```TSX
+// src/index.tsx
+
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
+import { RootRouter } from "./Route";
+
+// MaterialーUIの設定類をインポート
+import { createTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
+
+// Material-UIの「テーマ」を作成する。
+// Material-UIのテーマ（色など）をカスタマイズする際には、createThemeの引数にカスタマイズ項目を渡す。
+// 今回は何もカスタマイズしないので、何も指定していない。
+const theme = createTheme();
+
+ReactDOM.render(
+  <React.StrictMode>
+    {/*
+      Material-UI用を初期化し、アプリケーション全体でMaterial-UIを使用できるようにする
+    */}
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        {/*
+          ブラウザの違いを吸収し、どのデバイスでは同じように表示する用のCSSを使用する
+        */}
+        <CssBaseline />
+        <RootRouter />
+      </BrowserRouter>
+    </ThemeProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
+);
+```
+
+これで、`Material-UI`が有効化され、どこでも使用できるようになります。
 
 ## Header のデザインを作成
+
+それでは、本格的にデザインの作成に入っていこうと思います。
+
+まずは、様々なページで多用されている`Header`コンポーネントをさらに細かくコンポーネントに細分化していきます。
+
+![Header Component]()
+
+`Header`コンポーネントは、複数のページでロジックを内包したコンポーネントです。
+
+なので、`Header`コンポーネントは、`src/templates/header`に構築していきます。
+
+```TSX
+// src/templates/DashboardHeader/index.tsxを作成
+// index.tsxのコード
+export const DashboardHeader = () => {
+  return (
+    <div>
+
+    </div>
+  );
+};
+```
+
+`Material-UI`には、`AppBar`と呼ばれるコンポーネントで、Header のデザインが用意されています。
+
+このコンポーネントを使って Header をデザインしていきましょう。
+
+AppBar:[https://material-ui.com/components/app-bar/](https://material-ui.com/components/app-bar/)
+
+```TSX
+// src/templates/DashboardHeader/index.tsx
+import { AppBar, Toolbar } from "@material-ui/core";
+
+export const DashboardHeader = () => {
+  return (
+    <AppBar>
+      <Toolbar>
+
+      </Toolbar>
+    </AppBar>
+  );
+};
+```
+
+これだけで、ページの上部に`Header`が現れます。
+
+メニュー用のボタンとロゴを追加していきましょう。
+
+```TSX
+// src/templates/DashboardHeader/index.tsx
+import { AppBar, IconButton, Toolbar } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+
+export const DashboardHeader = () => {
+  return (
+    <AppBar>
+      <Toolbar>
+        {/*
+          アイコン用のボタンを配置
+        */}
+        <IconButton>
+          <MenuIcon />
+        </IconButton>
+
+        {/*
+          ロゴを配置
+        */}
+        <div>
+          <Logo />
+        </div>
+      </Toolbar>
+    </AppBar>
+  );
+};
+```
+
+ロゴ表示用のコンポーネントは、`Logo`としてコンポーネント化していきます。
+
+```TSX
+// src/components/Logo/index.tsxを作成
+// index.tsx
+
+export const Logo = () => {
+  return <img src="" alt="Youtube Logo" />;
+};
+```
+
+Logo には、Youtube のロゴを表示させたいので、`<img>`要素を置いています。
+
+<img>で画像を表示させるためには、画像が必要です。
+
+Youtube では、公式でロゴ画像を配布しているので、それを使わせてもらいましょう。
+
+[Youtubeのロゴをダウンロード](https://www.youtube.com/howyoutubeworks/resources/brand-resources/#logos-icons-and-colors)
+
+`Full-Color Light Logo`をクリックすると、ロゴファイルの zip がダウンロードできます。
+
+その中の`yt_logo_rgb_light.png`という画像を、このディレクトリの`/public/static/yt_logo_rgb_light.png`となるように画像を`public/static/`に置きます。
+
+この画像を、React から呼び出してみましょう。
+
+先ほどの、`src/components/Logo/index.tsx`のファイルで画像パスを指定します。
+
+```TSX
+// src/components/Logo/index.tsxを作成
+// index.tsx
+
+export const Logo = () => {
+  // /publicディレクトリに格納されている画像を相対パスで指定できる。
+  return <img src="/static/yt_logo_rgb_light.png" alt="Youtube Logo" />;
+};
+```
+
+これで、<Logo>コンポーネントを呼び出せば自動で Youtube ロゴ画像が表示されるようになります。
+
+`Header`部分のロゴ表示領域のコンポーネント構造が完成しました。
+
+しかし、今のままでは、デザインとはかけ離れた表示になっています。
+
+コンポーネントに引数を指定して、見た目を整えます。
+
+```TSX
+// src/templates/DashboardHeader/index.tsx
+
+import { AppBar, Box, IconButton, Toolbar } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import { Logo } from "../../compoennts/Logo";
+
+export const DashboardHeader = () => {
+  return (
+    // color="inherit" : 背景を白色に
+    // elevation={0} : 影(box-shadow)を無くす
+    <AppBar elevation={0} color="inherit">
+      <Toolbar>
+        <IconButton>
+          <MenuIcon />
+        </IconButton>
+        <div>
+          <Logo />
+        </div>
+      </Toolbar>
+    </AppBar>
+  );
+};
+```
+
+しかし、プロパティを指定しても、デザインをするのには限界があります。
+
+![Header miss design]()
+
+そこで、`styles.ts`というファイルを作り、ここにカスタム用のスタイリングを書き、既存のスタイリングを上書きします。
+
+```TS
+// src/templates/DashboardHeader/style.ts
+import { makeStyles } from "@material-ui/core";
+
+// makeStyles : カスタム用のCSSを生成してくれる、@material-uiの機能
+export default makeStyles({
+  logo: {
+    width: 100,
+  },
+});
+```
+
+`style.ts`内で、`makeStyles`を使うことで、カスタム用の CSS を生成してくれます。
+
+`style.ts`にカスタム用のスタリングを書くことで、`index.tsx`からスタリング用のソースコードがなくなり、見やすいソースコードを書くことができます。
+
+`style.ts`は以下のように呼び出して使用します。
+
+```TSX
+// src/templates/DashboardHeader/index.tsx
+
+import { AppBar, IconButton, Toolbar } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import { Logo } from "../../compoennts/Logo";
+
+// export defaultしているので、import側でuseStylesと命名します。
+// 命名はなんでも構いませんが、一貫して全て同じ名前にすることで、カスタム用のCSSを使用していることを明示します。
+import useStyles from "./style";
+
+export const DashboardHeader = () => {
+  // 一度、useStylesを実行して、CSSを生成します。
+  const styles = useStyles();
+
+  return (
+    <AppBar elevation={0} color="inherit">
+      <Toolbar>
+        <IconButton>
+          <MenuIcon />
+        </IconButton>
+        {/*
+          "useStyles"の値は、CSSモジュールと全く同じような使い方で、使用することができます。
+        */}
+        <div className={styles.logo}>
+          <Logo />
+        </div>
+      </Toolbar>
+    </AppBar>
+  );
+};
+```
+
+`<Logo>`のデザインも整えましょう。
+
+```TS
+// src/compoennts/Logo/style.tsを作成
+// index.tsxのコード
+
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  root: {
+    maxWidth: "100%",
+  },
+});
+```
+
+```TSX
+// src/compoennts/Logo/index.tsx
+
+// ① カスタムスタイルをインポートして
+import useStyles from "./style";
+
+export const Logo = () => {
+  // ② カスタムスタイルを生成し
+  const styles = useStyles();
+
+  return (
+    <img
+      // ③ スタイルを指定する
+      className={styles.root}
+      src="/static/yt_logo_rgb_light.png"
+      alt="Youtube Logo"
+    />
+  );
+};
+```
+
+Header のロゴ部分ができました。
+
+![Logo Header]()
+
+引き続き、検索バーと右側プロフィール欄を作っていきましょう。
+
+検索バーを作成します。
+
+```TSX
+// src/templates/DashboardHeader/SeacrBar/index.tsxを作成
+// <SearchBar>は現状"Header"でのみ使用しているので、`templates/DashboardHeader`に閉じ込めています。
+// index.tsxのコード
+import { InputBase, Paper } from "@material-ui/core";
+import SearchIcon from "@material-ui/icons/Search";
+
+export const SearchBar = () => {
+  return (
+    // elevation={0} : 影を削除
+    // variant="outlined" : 枠線を表示
+    <Paper elevation={0} variant="outlined">
+      {/*
+        最初に表示していく文字。
+        何も入力されていない検索バーに"検索"と表示されます。
+      */}
+      <InputBase placeholder="検索" />
+      {/* 検索窓の横にある、検索アイコンを表示 */}
+      <div>
+        <SearchIcon />
+      </div>
+    </Paper>
+  );
+};
+```
+
+`<SearchBar>`のスタリング行います。
+
+```TS
+// src/templates/DashboardHeader/SeacrBar/style.tsを生成
+// styles.tsのコード
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  root: {
+    paddingLeft: 10,
+    display: "flex",
+    alignItems: "center",
+    maxWidth: 700,
+    flex: 1,
+    overflow: "hidden",
+    marginLeft: 10,
+  },
+  inputContainer: {
+    marginLeft: 40,
+  },
+  input: {
+    width: "100%",
+  },
+  searchIcon: {
+    width: 80,
+    height: 34,
+    backgroundColor: "#F4F4F4",
+    borderLeft: "1px solid #CCCCCC",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    "&:hover": { opacity: 0.72 },
+  },
+});
+```
+
+```TSX
+// src/templates/DashboardHeader/SeacrBar/index.tsx
+
+import { InputBase, Paper } from "@material-ui/core";
+import SearchIcon from "@material-ui/icons/Search";
+
+// カスタムスタイルをimport
+import useStyles from "./style";
+
+export const SearchBar = () => {
+  // カスタムスタイルを生成
+  const styles = useStyles();
+
+  return (
+    // スタイリングを指定
+    <Paper className={styles.root} elevation={0} variant="outlined">
+      <InputBase className={styles.input} placeholder="検索" />
+      <div className={styles.searchIcon}>
+        <SearchIcon />
+      </div>
+    </Paper>
+  );
+};
+
+```
+
+検索バーのスタリング完了しました。
+
+次は、`Header`の右側、アバター等が表示されているプロフィール欄を作ります。
+
+```TSX
+// src/templates/DashboardHeader/style.ts
+
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  logo: {
+    width: 100,
+  },
+
+  // profileIconを追加
+  profileIcon: {
+    padding: 0,
+    width: 44,
+    height: 44,
+  },
+});
+```
+
+```TSX
+// src/templates/DashboardHeader/index.tsx
+
+import { AppBar, Avatar, IconButton, Toolbar } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import VideoCallIcon from "@material-ui/icons/VideoCall";
+import { Logo } from "../../compoennts/Logo";
+import { SearchBar } from "./SeacrBar";
+import useStyles from "./style";
+
+export const DashboardHeader = () => {
+  const styles = useStyles();
+
+  return (
+    <AppBar elevation={0} color="inherit">
+      <Toolbar>
+        <IconButton>
+          <MenuIcon />
+        </IconButton>
+        <div className={styles.logo}>
+          <Logo />
+        </div>
+
+        <SearchBar />
+
+        {/*
+          新規動画作成のアイコンボタンを追加
+        */}
+        <IconButton>
+          <VideoCallIcon />
+        </IconButton>
+
+        {/*
+          プロフィールアイコンを追加
+        */}
+        <IconButton className={styles.profileIcon}>
+          <Avatar />
+        </IconButton>
+      </Toolbar>
+    </AppBar>
+  );
+};
+```
+
+ここまでで、`<DashboardHeader>`のデザインがほぼ完成しました。
+
+それでは、この`<DashboardHeader>`を画面に表示していきましょう。
+
+`<DashboardHeader>`を呼び出すべき場所は、`Header`がデザイン内に含まれる`layout`コンポーネントです。
+
+つまり、`src/layouts/Home/index.tsx`と`src/layouts/SideLessHome/index.tsx`のコンポーネントです。
+
+では早速追加しましょう。
+
+```TSX
+// src/layouts/Home/index.tsx
+
+import { Outlet } from "react-router-dom";
+
+// DashboardHeaderをimport
+import { DashboardHeader } from "../../templates/DashboardHeader";
+
+export const HomeLayout = () => {
+  return (
+    <div>
+      {/*
+        DashboardHeaderコンポーネントを表示する
+      */}
+      <DashboardHeader />
+
+      <Outlet />
+    </div>
+  );
+};
+```
+
+```TSX
+// src/layouts/SideLessHome/index.tsx
+
+import { Outlet } from "react-router-dom";
+import { DashboardHeader } from "../../templates/DashboardHeader";
+
+export const SideLessHomeLayout = () => {
+  return (
+    <div>
+      {/*
+        DashboardHeaderコンポーネントを表示する
+      */}
+      <DashboardHeader />
+
+      <Outlet />
+    </div>
+  );
+};
+```
+
+これで、`npm start`をして画面を表示してみましょう。
+
+![Header left side]()
+
+`HomeLayout`と`SideLessHomeLayout`が指定してある URL では Header が表示されているはずです！
+
+ここで、全体的に左によっていますね。
+
+中央にバランスよく表示されるようにしましょう。
+
+```TS
+// src/templates/DashboardHeader/style.ts
+
+import { makeStyles } from "@material-ui/core";
+
+// カスタム用のCSSを生成してくれる、@material-uiの機能
+export default makeStyles({
+  // 追加
+  between: {
+    justifyContent: "space-between",
+  },
+
+  // 追加
+  flex: {
+    display: "flex",
+  },
+  
+  logo: {
+    width: 100,
+    display: "flex",
+    alignItems: "center",
+
+    // 追加
+    marginLeft: 10,
+  },
+  profileIcon: {
+    padding: 0,
+    width: 44,
+    height: 44,
+
+    // 追加
+    marginLeft: 10,
+  },
+});
+```
+
+```TSX
+// src/templates/DashboardHeader/index.tsx
+
+import { AppBar, Avatar, Grid, IconButton, Toolbar } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import VideoCallIcon from "@material-ui/icons/VideoCall";
+import { Logo } from "../../compoennts/Logo";
+import { SearchBar } from "./SeacrBar";
+import useStyles from "./style";
+
+export const DashboardHeader = () => {
+  const styles = useStyles();
+
+  return (
+    <AppBar elevation={0} color="inherit">
+      {/*
+        <Toolbar>に"between"のCSSを追加
+      */}
+      <Toolbar className={styles.between}>
+        {/*
+          <IconButton>とLogoを<div>で囲み、<div>にflexを付与
+        */}
+        <div className={styles.flex}>
+          <IconButton>
+            <MenuIcon />
+          </IconButton>
+          <div className={styles.logo}>
+            <Logo />
+          </div>
+        </div>
+
+        <SearchBar />
+
+        {/*
+          2つの<IconButton>を<div>で囲み、<div>にflexを付与
+        */}
+        <div className={styles.flex}>
+          <IconButton>
+            <VideoCallIcon />
+          </IconButton>
+
+          <IconButton className={styles.profileIcon}>
+            <Avatar />
+          </IconButton>
+        </div>
+      </Toolbar>
+    </AppBar>
+  );
+};
+```
+
+![Header Completed]()
 
 ## Sidebar のデザイン作成
 
