@@ -852,7 +852,7 @@ React の開発者の間では、どのようなディレクトリ構造にす�
 src
 ├── Route.tsx
 ├── index.tsx
-├── compoennts
+├── components
 │   └── [Component Name]
 │       └── index.tsx
 ├── layouts
@@ -924,7 +924,7 @@ src
 
 ```
 ├── Route.tsx
-├── compoennts/
+├── components/
 ├── layouts/
 ├── index.tsx
 ├── pages/
@@ -1295,7 +1295,7 @@ export const Logo = () => {
 
 import { AppBar, Box, IconButton, Toolbar } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import { Logo } from "../../compoennts/Logo";
+import { Logo } from "../../components/Logo";
 
 export const DashboardHeader = () => {
   return (
@@ -1344,7 +1344,7 @@ export default makeStyles({
 
 import { AppBar, IconButton, Toolbar } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import { Logo } from "../../compoennts/Logo";
+import { Logo } from "../../components/Logo";
 
 // export defaultしているので、import側でuseStylesと命名します。
 // 命名はなんでも構いませんが、一貫して全て同じ名前にすることで、カスタム用のCSSを使用していることを明示します。
@@ -1375,7 +1375,7 @@ export const DashboardHeader = () => {
 `<Logo>`のデザインも整えましょう。
 
 ```TS
-// src/compoennts/Logo/style.tsを作成
+// src/components/Logo/style.tsを作成
 // index.tsxのコード
 
 import { makeStyles } from "@material-ui/core";
@@ -1388,7 +1388,7 @@ export default makeStyles({
 ```
 
 ```TSX
-// src/compoennts/Logo/index.tsx
+// src/components/Logo/index.tsx
 
 // ① カスタムスタイルをインポートして
 import useStyles from "./style";
@@ -1534,7 +1534,7 @@ export default makeStyles({
 import { AppBar, Avatar, IconButton, Toolbar } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import VideoCallIcon from "@material-ui/icons/VideoCall";
-import { Logo } from "../../compoennts/Logo";
+import { Logo } from "../../components/Logo";
 import { SearchBar } from "./SearchBar";
 import useStyles from "./style";
 
@@ -1676,7 +1676,7 @@ export default makeStyles({
 import { AppBar, Avatar, Grid, IconButton, Toolbar } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import VideoCallIcon from "@material-ui/icons/VideoCall";
-import { Logo } from "../../compoennts/Logo";
+import { Logo } from "../../components/Logo";
 import { SearchBar } from "./SearchBar";
 import useStyles from "./style";
 
@@ -2194,7 +2194,7 @@ export default makeStyles({
 これを少し調子するだけですぐにデザインが完成しそうです。
 
 ```TSX
-// src/compoennts/VideoCard/index.tsxを作成
+// src/components/VideoCard/index.tsxを作成
 // index.tsxのコード
 
 import { Avatar, Card, CardHeader, CardMedia } from "@material-ui/core";
@@ -2241,7 +2241,7 @@ export const VideoCard = () => {
 // src/pages/Home/index.tsxを作成
 
 // VideoCardをimport
-import { VideoCard } from "../../compoennts/VideoCard";
+import { VideoCard } from "../../components/VideoCard";
 
 export const Home = () => {
   // VideoCardコンポーネントを表示する
@@ -2304,7 +2304,7 @@ export const RootRouter = () => {
 スタリング で調整してきましょう。
 
 ```TS
-// src/compoennts/VideoCard/style.tsを作成
+// src/components/VideoCard/style.tsを作成
 // style.tsのコード
 
 import { makeStyles } from "@material-ui/core";
@@ -2337,7 +2337,7 @@ export default makeStyles({
 スタリングを反映させていきます。
 
 ```TSX
-// src/compoennts/VideoCard/index.tsx
+// src/components/VideoCard/index.tsx
 
 import { Avatar, Card, CardHeader, CardMedia } from "@material-ui/core";
 import { HeaderTitle } from "./HeaderTitle";
@@ -2382,7 +2382,7 @@ export const VideoCard = () => {
 しかし、今のままでは、`VideoCard`が増えた時にときにデザイン通りの表示ができません。
 
 ```TSX
-import { VideoCard } from "../../compoennts/VideoCard";
+import { VideoCard } from "../../components/VideoCard";
 
 export const Home = () => {
   return (
@@ -2407,7 +2407,7 @@ export const Home = () => {
 // src/pages/Home/index.tsx
 
 import { Grid } from "@material-ui/core";
-import { VideoCard } from "../../compoennts/VideoCard";
+import { VideoCard } from "../../components/VideoCard";
 
 export const Home = () => {
   return (
@@ -2455,7 +2455,7 @@ export const Home = () => {
 // src/pages/Home/index.tsx
 
 import { Container, Grid } from "@material-ui/core";
-import { VideoCard } from "../../compoennts/VideoCard";
+import { VideoCard } from "../../components/VideoCard";
 
 export const Home = () => {
   return (
