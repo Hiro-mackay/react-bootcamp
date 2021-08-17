@@ -2198,9 +2198,6 @@ export default makeStyles({
 // index.tsxのコード
 
 import { Avatar, Card, CardHeader, CardMedia } from "@material-ui/core";
-import { HeaderTitle } from "./HeaderTitle";
-import { SubHeaderContent } from "./SubHeaderContent";
-
 
 export const VideoCard = () => {
   return (
@@ -2340,8 +2337,6 @@ export default makeStyles({
 // src/components/VideoCard/index.tsx
 
 import { Avatar, Card, CardHeader, CardMedia } from "@material-ui/core";
-import { HeaderTitle } from "./HeaderTitle";
-import { SubHeaderContent } from "./SubHeaderContent";
 import useStyles from "./style";
 
 export const VideoCard = () => {
