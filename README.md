@@ -42,26 +42,26 @@
   - [Why コンポーネント？](#why-コンポーネント)
   - [コンポーネントの実態](#コンポーネントの実態)
 - [React の state とライフサイクルについて理解する](#react-の-state-とライフサイクルについて理解する)
-  - [stateとは？](#state-とは)
-  - [stateの実態](#state-の実態)
-  - [Why state? ~ Reactのライフサイクル ~](#why-state--react-のライフサイクル-)
-- [Reactのデザインスシテムについて理解する](#react-のデザインスシテムについて理解する)
-  - [Reactでデザインを行うために必要なもの](#react-でデザインを行うために必要なもの)
-  - [CSSを使った昔ながらの方法](#css-を使った昔ながらの方法)
-  - [CSSモジュールを使った方法](#css-モジュールを使った方法)
-  - [CSSフレームワークを使った方法](#css-フレームワークを使った方法)
-  - [React専用のUIフレームワークを使った方法](#react-専用の-ui-フレームワークを使った方法)
-  - [CSS in JSを使った方法](#css-in-js-を使った方法)
+  - [state とは？](#state-とは)
+  - [state の実態](#state-の実態)
+  - [Why state? ~ React のライフサイクル ~](#why-state--react-のライフサイクル-)
+- [React のデザインスシテムについて理解する](#react-のデザインスシテムについて理解する)
+  - [React でデザインを行うために必要なもの](#react-でデザインを行うために必要なもの)
+  - [CSS を使った昔ながらの方法](#css-を使った昔ながらの方法)
+  - [CSS モジュールを使った方法](#css-モジュールを使った方法)
+  - [CSS フレームワークを使った方法](#css-フレームワークを使った方法)
+  - [React 専用の UI フレームワークを使った方法](#react-専用の-ui-フレームワークを使った方法)
+  - [CSS in JS を使った方法](#css-in-js-を使った方法)
   - [結局どれ使えばいいんですか？？](#結局どれ使えばいいんですか)
-  - [今回のReactBootcampでは「UIフレームワーク」を使用](#今回の-reactbootcamp-ではui-フレームワークを使用)
-- [Youtubeアプリの構築に必要なコンポーネントの設計](#youtube-アプリの構築に必要なコンポーネントの設計)
+  - [今回の ReactBootcamp では「UI フレームワーク」を使用](#今回の-reactbootcamp-ではui-フレームワークを使用)
+- [Youtube アプリの構築に必要なコンポーネントの設計](#youtube-アプリの構築に必要なコンポーネントの設計)
   - [コンポーネントの設計に必要な考え方](#コンポーネントの設計に必要な考え方)
   - [ディレクトリ構造](#ディレクトリ構造)
 - [必要ライブラリーのインストール](#必要ライブラリーのインストール)
 - [デザインの前に、ルーティングを作成](#デザインの前にルーティングを作成)
-- [Material-UIの設定](#material-ui-の設定)
-- [Headerのデザインを作成](#header-のデザインを作成)
-- [Sidebarのデザイン作成](#sidebar-のデザイン作成)
+- [Material-UI の設定](#material-ui-の設定)
+- [Header のデザインを作成](#header-のデザインを作成)
+- [Sidebar のデザイン作成](#sidebar-のデザイン作成)
 - [ビデオカードのデザイン作成](#ビデオカードのデザイン作成)
 - 動画再生画面のデザイン作成(編集中)
 - 動画アップロード画面のデザイン作成(編集中)
@@ -75,7 +75,7 @@
 
 [React Bootcamp Discord](https://discord.gg/rCAVXFvEPJ)
 
-## Reactのコンポーネントの概念を理解する
+## React のコンポーネントの概念を理解する
 
 - ### コンポーネントとは
   > コンポーネントにより UI を独立した再利用できる部品に分割し、部品それぞれを分離して考えることができるようになります。　
@@ -108,7 +108,7 @@
 
 ![Youtube Component Group](https://github.com/Hiro-mackay/react-bootcamp/blob/155a6ac3238de53e3c3ca1caad89945f3aede1d1/assets/youtube_component_mock.png?raw=true)
 
-それぞれ、「Layout」「Header」「Sidebar」「Main」という大きなコンポーネントの塊にグルーピンを行いました。
+それぞれ、「Layout」「Header」「Sidebar」「Main」という大きなコンポーネントの塊にグルーピングを行いました。
 
 このグルーピングで以下の 4 つのコンポーネントが生まれました
 
@@ -337,7 +337,7 @@ const [one, two, three] = num
 // twenty = 20,
 // thirty = 30
 const { ten, twenty, thirty } = {
-  one: 10,
+  ten: 10,
   twenty: 20,
   thirty: 30
 }
@@ -882,7 +882,7 @@ src
 
 汎用的に使用できるコンポーネントです。
 
-ここでは、ロジックを記述指定はいけません。
+ここでは、ロジックを記述してはいけません。
 
 例えば、データベースとの非同期通信や、アプリケーション内のデータの fetch を行なってはいけません。
 
@@ -2191,15 +2191,14 @@ export default makeStyles({
 
 [Materil-UI カードコンポーネント](https://material-ui.com/components/cards/#card)
 
-これを少し調子するだけですぐにデザインが完成しそうです。
+これを少し調整するだけですぐにデザインが完成しそうです。
 
 ```TSX
 // src/compoennts/VideoCard/index.tsxを作成
 // index.tsxのコード
 
 import { Avatar, Card, CardHeader, CardMedia } from "@material-ui/core";
-import { HeaderTitle } from "./HeaderTitle";
-import { SubHeaderContent } from "./SubHeaderContent";
+
 
 
 export const VideoCard = () => {
@@ -2327,7 +2326,7 @@ export default makeStyles({
   // また、ユーザーのサムネイルの位置を上端に合わせる。
   header: {
     alignItems: "start",
-    backgroundColor: "transoparent",
+    backgroundColor: "transparent",
     paddingLeft: 0,
     paddingRight: 0,
   },
@@ -2421,20 +2420,20 @@ export const Home = () => {
         こちらのGridでは、itemプロパティを指定する。
         全部を囲む<Grid container>の中にそれぞれの横並び要素の<Grid item>があるイメージ
       */}
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <VideoCard />
       </Grid>
 
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <VideoCard />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <VideoCard />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <VideoCard />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <VideoCard />
       </Grid>
     </Grid>
@@ -2463,20 +2462,20 @@ export const Home = () => {
     <Container>
 
       <Grid container spacing={2}>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <VideoCard />
         </Grid>
 
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <VideoCard />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <VideoCard />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <VideoCard />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <VideoCard />
         </Grid>
       </Grid>
@@ -2487,9 +2486,891 @@ export const Home = () => {
 
 ここまでで、本当にそれっぽいデザインに仕上がってきました！！
 
+[ここまでのソースコード](https://github.com/Hiro-mackay/react-bootcamp/tree/b078d30c59b2bcadbfbca4b374f70619be9b891d/src)
+
 ![VideoCard Completed](https://github.com/Hiro-mackay/react-bootcamp/blob/4fe016b02d130f2772ad631daefc45293628188e/assets/videocard_completed.png?raw=true)
 
 ## 動画再生画面のデザイン作成
+
+では次は、動画を再生する画面をデザインしていきます。
+
+![Video Player]()
+
+動画再生画面からはデザインが細かくなってきたので、最初にどのようなコンポーネントで区切るかの戦略を考えます。
+
+まずは、デザイン全体のレイアウトとしては、サイドバーが無いデザインです。
+
+なので、`layouts`にサイドバーがないデザインのレイアウトを作成します。
+
+> このドキュメントの[中盤](https://github.com/Hiro-mackay/react-bootcamp/tree/bootcamp-2#header-%E3%81%AE%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%82%92%E4%BD%9C%E6%88%90)で作成しているので、既に`SidebarLessComponent`を作成されているかもしれません。
+
+```TSX
+// src/layouts/SideLessHome/index.tsxを作成
+// 内容は`HomeLayout`からサイドバーコンポーネントを無くした状態です。
+
+import { Outlet } from "react-router-dom";
+import { DashboardHeader } from "../../templates/DashboardHeader";
+
+export const SideLessHomeLayout = () => {
+  return (
+    <div>
+      {/*
+        DashboardHeaderコンポーネントを表示する
+      */}
+      <DashboardHeader />
+      {/*
+        <Outlet />を配置した箇所に、childrenコンポーネントが展開される
+        childrenコンポーネントとは、Route.tsx内でchildren>elementで指定したコンポーネントである
+      */}
+      <Outlet />
+    </div>
+  );
+};
+```
+
+この`SideLessHomeLayout`コインポーネントは、`src/Routes.tsx`で呼び出しています。
+
+```TSX
+import { Navigate, useRoutes } from "react-router-dom";
+import { HomeLayout } from "./layouts/Home";
+import { SideLessHomeLayout } from "./layouts/SideLessHome";
+import { SimpleLayout } from "./layouts/Simple";
+import { Home } from "./pages/Home";
+
+export const RootRouter = () => {
+  return useRoutes([
+    {
+      element: <HomeLayout />,
+      children: [{ path: "/", element: <Home /> }],
+    },
+
+    {
+      // SideLessHomeLayoutを呼び出している。
+      element: <SideLessHomeLayout />,
+      children: [
+
+        // videoIdを指定していない/watchの場合は、`Home`にリダイレクトをさせるようにしている
+        // <Navigate to="/" />で`/`にリダイレクト処理を行なっている
+        // :videoIdとは、動的なURLを指定する変数であり、Reactから"videoId"という変数名で動的なURLのパスを取得できる仕組みである。
+        // 詳しくは、実際にこの変数を使う際に説明します。
+        { path: "watch", element: <Navigate to="/" /> },
+        { path: "watch/:videId", element: <div>watch</div> },
+      ],
+    },
+
+    {
+      element: <SimpleLayout />,
+      children: [
+        { path: "login", element: <div>ログイン</div> },
+        { path: "signup", element: <div>新規作成</div> },
+        { path: "forget", element: <div>パスワードリセット</div> },
+        { path: "404", element: <div>Not Found</div> },
+        { path: "*", element: <Navigate to="/404" /> },
+      ],
+    },
+    { path: "*", element: <Navigate to="/404" /> },
+  ]);
+};
+```
+
+これで、デザインにあるような Header のみが展開されたページデザインが実現します。
+
+実際に React を起動してページを見てみましょう。
+
+今回は、今まで通り URL を表示するだけでは、'/watch'にはアアクセスできません。
+
+なので、先ほど作成した`SideLessHomeLayout`を見る場合は、[http://localhost:3000/watch/videoid](http://localhost:3000/watch/videoid)にアクセスしてください。
+
+サイドバーが表示されていないページが表示されたかと思います。
+
+![Side less page]()
+
+では、次にメインとなる動画プレイヤーと、サイドのビデオカードを作っていきます。
+
+コンポーネントは、まずは、動画プレイヤーとビデオカードリストのレイアウトで分けます。
+
+![Watch main layouts]()
+
+まずはこの 2 カラムのデザインを作っていきます。
+
+`pages`に`watch`コンポーネントを作成します。
+
+```TSX
+// src/pages/Watch/index.tsxを作成
+// index.tsxのコード
+
+import { Container, Grid } from "@material-ui/core";
+
+export const Watch = () => {
+  return (
+    // 全体のデザインを整えるためのコンテナー
+    // 詳細：https://material-ui.com/ja/components/container/
+    <Container>
+
+      {/*
+        カラムデザインを実現させるためのコンポーネント
+        これがないとカラムにならない
+      */}
+      <Grid container spacing={4}>
+        {/*
+          カラムの実態
+          全体が"12"とした場合のカラム配置を設定できる
+          例えば、下記は全体を"12"とした場合の、比率が"9:3"となるようにカラムの幅を指定している。
+        */}
+        <Grid item xs={8}>Video Player Area</Grid>
+        <Grid item xs={4}>Video Card List</Grid>
+      </Grid>
+    </Container>
+  );
+};
+```
+
+この`Watch`コンポーネントを`Routes.tsx`から呼び出すことで、`http://localhost:3000/watch/videoid`にアクセスした時に表示できるようにします。
+
+```TSX
+// src/Route.tsx
+
+import { Navigate, useRoutes } from "react-router-dom";
+import { HomeLayout } from "./layouts/Home";
+import { SideLessHomeLayout } from "./layouts/SideLessHome";
+import { SimpleLayout } from "./layouts/Simple";
+import { Home } from "./pages/Home";
+
+// Watchコンポーネントをimport
+import { Watch } from "./pages/Watch";
+
+export const RootRouter = () => {
+  return useRoutes([
+    {
+      element: <HomeLayout />,
+      children: [{ path: "/", element: <Home /> }],
+    },
+
+    {
+      element: <SideLessHomeLayout />,
+      children: [
+        { path: "watch", element: <Navigate to="/" /> },
+
+        // Watchコンポーネントを`watch/:videId`のURLパスで表示
+        { path: "watch/:videId", element: <Watch /> },
+      ],
+    },
+
+    {
+      element: <SimpleLayout />,
+      children: [
+        { path: "login", element: <div>ログイン</div> },
+        { path: "signup", element: <div>新規作成</div> },
+        { path: "forget", element: <div>パスワードリセット</div> },
+        { path: "404", element: <div>Not Found</div> },
+        { path: "*", element: <Navigate to="/404" /> },
+      ],
+    },
+    { path: "*", element: <Navigate to="/404" /> },
+  ]);
+};
+```
+
+ここまでで、一度画面表示を確認してみましょう。
+
+Watch コンポーネントを確認するためには、`http://localhost:3000/watch/videoid`にアクセスします。
+
+![watch not padding top]()
+
+「Video Player Area」と「Video Card List」が表示されるはずが、表示されていません。
+
+これは`Home`コンポーネントを作成 s 他時にも発生した問題で、`Header`の裏に文字が隠れてしまっています。
+
+なので、`SideLessHome`レイアウトのスタイルを修正します。
+
+`SideLessHome`の要素の高さと、上部に padding を指定します。
+
+```TS
+// src/layouts/SideLessHome/styles.tsを作成
+
+import { makeStyles } from "@material-ui/core";
+
+// ./Home/style.tsにも全く同じ定数を宣言したことを覚えている方がいるかもしれません。
+// この場合、`src/utils.ts`のようなファイルを作成してこの`APP_BAR`という定数を一つにまとめると、仮にこの定数の値を変更したい時など、一箇所のみ変えれば良いだけなので楽になります。
+const APP_BAR = 64;
+
+export default makeStyles({
+  // 要素を画面全体のサイズに調整する
+  root: {
+    minHeight: "100%",
+  },
+
+  main: {
+    paddingTop: APP_BAR + 30,
+  },
+});
+
+```
+
+上記のスタイリングを、`SideLessHome`レイアウトに適用させます。
+
+```TSX
+// src/layouts/SideLessHome/index.tsx
+
+import { Outlet } from "react-router-dom";
+import { DashboardHeader } from "../../templates/DashboardHeader";
+
+// styleをimportし、
+import useStyles from "./styles";
+
+export const SideLessHomeLayout = () => {
+
+  // スタイルを生成し、
+  const styles = useStyles();
+
+  return (
+
+    // スタイルをあてる
+    <div className={styles.root}>
+
+      {/*
+        DashboardHeaderコンポーネントを表示する
+      */}
+      <DashboardHeader />
+      {/*
+        <Outlet />を配置した箇所に、childrenコンポーネントが展開される
+        childrenコンポーネントとは、Route.tsx内でchildren>elementで指定したコンポーネントである
+      */}
+
+      {/*
+        スタイルをあてる
+      */}
+      <div className={styles.main}>
+        <Outlet />
+      </div>
+    </div>
+  );
+};
+
+```
+
+改めて、画面を表示してみましょう。
+
+![view watch page]()
+
+無事に、画面表示が想定通りになりました。
+
+では、メインコンテンツとなる、動画プレイヤーとその説明文を作っていきます。
+
+ビデオプレイヤーを作るときに、丈夫にメディアを表示するコンポーネントがあり、株にテキスト群があるというデザインをしているので、ここでも、`Card`コンポーネントを使用していきます。
+
+[Card Component - Material-UI](https://material-ui.com/ja/components/cards/)
+
+ビデオプレイヤーのコンポーネントでは、動画の読み込みや、動画情報の読み込みなどのロジックが入ってくるので、このコンポーネントを作る場合は、`pages`か`templates`にコンポーネントを作っていきます。
+
+ビデオプレイヤーは今の所、別の箇所での使用が無いので、[ディレクトリ構造](https://github.com/Hiro-mackay/react-bootcamp/tree/bootcamp-2#%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA%E6%A7%8B%E9%80%A0)のルールにより、`pages`の`watch`以下に作成していきます。
+
+```TSX
+// src/pages/Watch/VideoPlayerCard/index.tsxを作成
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Divider,
+} from "@material-ui/core";
+
+export const VideoPlayerCard = () => {
+  return (
+    <Card>
+      {/* 動画プレイヤー表示エリア */}
+      <CardMedia />
+
+      {/* タイトル表示エリア */}
+      <CardContent></CardContent>
+
+      {/* タイトル下の横線 */}
+      <Divider />
+
+      {/* 投稿者情報エリア */}
+      <CardHeader />
+
+      {/* 説明文エリア */}
+      <CardContent></CardContent>
+    </Card>
+  );
+};
+
+```
+
+これで、ビデオプレイヤーの骨格ができました。
+
+それぞれ、細かいデザインをしていきます。
+
+まずは、`CardMedia`に動画を表示するデザインを作っていきます。
+
+今回、動画表示をテストするために、テスト用の動画をローカルで指定してテストします。
+
+下記リンクから、動画をダウンロードして、`public/static`にダウンロードした動画を移動させてください。
+
+[テスト用の動画をダウンロード](https://www.pexels.com/video/drone-flying-over-the-mountain-peak-4763824/)
+
+ではこの動画を使って、画面にプレイヤーを表示させていきましょう。
+
+先ほどの`VideoPlayerCard`コンポーネント内の`CardMedia`に動画を表示していきます。
+
+```TSX
+// src/pages/Watch/VideoPlayerCard/index.tsx
+
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Divider,
+} from "@material-ui/core";
+
+export const VideoPlayerCard = () => {
+  return (
+    <Card>
+      {/*
+        CardMediaは、画像の他に動画,音声などのメディア系コンポーネントの作成もできます。
+        メディアの指定は、`component`というプロパティに指定のメディアコンポーネント`img`,`video`,`audio`などのHTMLタグを指定するだけです。
+        そして、`src`にメディアのパスを指定すると画面に表示されます。
+        そして、今回はビデオプレイヤーに操作用のコントローラーを表示させたいので、`controls`というプロパティを指定しています。
+        (`controls`はMaterial-UI特有のプロパティではなく、<video>HTMLタグのプロパティです。)
+      */}
+      <CardMedia
+        component="video"
+        controls
+        src="/static/productionID_4763824.mp4"
+      />
+
+      {/* タイトル表示エリア */}
+      <CardContent></CardContent>
+
+      {/* タイトル下の横線 */}
+      <Divider />
+
+      {/* 投稿者情報エリア */}
+      <CardHeader />
+
+      {/* 説明文エリア */}
+      <CardContent></CardContent>
+    </Card>
+  );
+};
+
+```
+
+左側の領域に動画を表示することができました。
+
+![watch video player]()
+
+残りのタイトルや、説明文も作ってみましょう。
+
+```TSX
+// src/pages/Watch/VideoPlayerCard
+import {
+  Avatar,
+  Card,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Divider,
+  Typography,
+} from "@material-ui/core";
+
+export const VideoPlayerCard = () => {
+  return (
+    <Card>
+      {/* ビデオプレイヤー */}
+      <CardMedia
+        component="video"
+        controls
+        src="/static/productionID_4763824.mp4"
+      />
+
+      {/* タイトル表示エリア */}
+      <CardContent>
+        {/*
+          `Typography`コンポーネントは、テキストコンポーネントを簡単に作ることができます。
+          今回、componentには`h2`を、`variant`には`h6`を指定しています。
+          これは、HTMLタグは`<h2>`を使いスタリングは、Material-UIで用意されているh6用のスタリングを使うよう指示しています。
+          <h2>タグ使いたいけど、フォントサイズなどはh6でのサイズを使いたい場合などに便利です。
+        */}
+        <Typography component="h2" variant="h6">
+          Organization Admin Settings: Dashboard overview [1/7]
+        </Typography>
+
+        {/*
+          color="textSecondary"はMaterial-UIでデフォルトで設定されているtextSecondaryという名前のカラーを指定しています。
+          独自のカラーを使いたい場合は、下記を参考にカスタマイズが必要です。
+          https://material-ui.com/customization/color/#color-tool
+        */}
+        <Typography variant="body2" color="textSecondary">
+          10,094,526 回視聴 • 2018/08/06
+        </Typography>
+      </CardContent>
+
+      {/* タイトル下の横線 */}
+      <Divider />
+
+      {/* 投稿者情報エリア */}
+      <CardHeader
+        avatar={<Avatar />}
+        title="Movieclips Trailers"
+        subheader="104K subscribers"
+      />
+
+      {/* 説明文エリア */}
+      <CardContent>
+        Find your absolutely beautiful and serene place and listen to nature
+        sounds, birds signing and relaxing water sounds with breathtaking views
+        of Mount Shuksan. It’s 8-hour 4k video of discovery and peace. Download
+        it for your personal use and transform your 4K TV into a source of
+        relaxation and restoration.
+      </CardContent>
+    </Card>
+  );
+};
+```
+
+![Video default card design]()
+
+おおよそ全体のデザインはできてきました。
+
+あとは、細かなデザインの違いを修正していきます。
+
+![video difference design]()
+
+まずは、`box-shadow`と`border-radius`は`Card`コンポーネントにプロパティを指定するだけで除去できます。
+
+```TSX
+// src/pages/Watch/VideoPlayerCard/index.tsx
+
+import {
+  Avatar,
+  Card,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Divider,
+  Typography,
+} from "@material-ui/core";
+
+export const VideoPlayerCard = () => {
+  return (
+
+    // `box-shadow`と`border-radius`を除去
+    // elevation={0} : box-shadowの値を調整
+    // square: border-radisuを除去
+    <Card elevation={0} square>
+
+      <CardMedia
+        component="video"
+        controls
+        src="/static/productionID_4763824.mp4"
+      />
+      <CardContent>
+        <Typography component="h2" variant="h6">
+          Organization Admin Settings: Dashboard overview [1/7]
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          10,094,526 回視聴 • 2018/08/06
+        </Typography>
+      </CardContent>
+      <Divider />
+      <CardHeader
+        avatar={<Avatar />}
+        title="Movieclips Trailers"
+        subheader="104K subscribers"
+      />
+      <CardContent>
+        Find your absolutely beautiful and serene place and listen to nature
+        sounds, birds signing and relaxing water sounds with breathtaking views
+        of Mount Shuksan. It’s 8-hour 4k video of discovery and peace. Download
+        it for your personal use and transform your 4K TV into a source of
+        relaxation and restoration.
+      </CardContent>
+    </Card>
+  );
+};
+```
+
+次は、`padding`の調整と、`background-color`の変更をします。
+
+```TS
+// src/pages/Watch/VideoPlayerCard/style.ts
+
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  paddingHorizontalLess: {
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
+  transparent: {
+    backgroundColor: "transparent",
+  },
+  descPadding: {
+    paddingLeft: 56
+  },
+});
+```
+
+スタイルを適用します。
+
+```TSX
+//
+
+import {
+  Avatar,
+  Card,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Divider,
+  Typography,
+} from "@material-ui/core";
+
+// styleのimport
+import useStyles from "./style";
+
+export const VideoPlayerCard = () => {
+  // styleの生成
+  const styles = useStyles();
+
+  return (
+    // stylesの適用
+    <Card className={styles.transparent} elevation={0} square>
+
+      <CardMedia
+        component="video"
+        controls
+        src="/static/productionID_4763824.mp4"
+      />
+
+      {/*
+        stylesの適用
+      */}
+      <CardContent className={styles.paddingHorizontalLess}>
+        <Typography component="h2" variant="h6">
+          Organization Admin Settings: Dashboard overview [1/7]
+        </Typography>
+
+        <Typography variant="body2" color="textSecondary">
+          10,094,526 回視聴 • 2018/08/06
+        </Typography>
+      </CardContent>
+
+      <Divider />
+
+      {/*
+        stylesの適用
+      */}
+      <CardHeader
+        className={styles.paddingHorizontalLess}
+        avatar={<Avatar />}
+        title="Movieclips Trailers"
+        subheader="104K subscribers"
+      />
+
+      {/*
+        stylesの適用
+      */}
+      <CardContent className={styles.descPadding}>
+        Find your absolutely beautiful and serene place and listen to nature
+        sounds, birds signing and relaxing water sounds with breathtaking views
+        of Mount Shuksan. It’s 8-hour 4k video of discovery and peace. Download
+        it for your personal use and transform your 4K TV into a source of
+        relaxation and restoration.
+      </CardContent>
+    </Card>
+  );
+};
+```
+
+また画面全体の横幅を調整します。
+
+```TSX
+// src/pages/Watch/style.tsを作成
+// style.tsのコード
+
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  // 要素の横幅の最大値を調整
+  root: {
+    maxWidth: 1380,
+  },
+});
+```
+
+スタイルの適用
+
+```TSX
+// src/pages/Watch/index.tsx
+
+import { Container, Grid } from "@material-ui/core";
+import { VideoPlayerCard } from "./VideoPlayerCard";
+
+// styleのimport
+import useStyles from "./style";
+
+export const Watch = () => {
+  // styleの生成
+  const styles = useStyles();
+
+  return (
+
+    // styleの適用
+    <Container className={styles.root}>
+
+      <Grid container spacing={4}>
+        <Grid item xs={8}>
+          <VideoPlayerCard />
+        </Grid>
+        <Grid item xs={4}>
+          Video Card List
+        </Grid>
+      </Grid>
+    </Container>
+  );
+};
+
+```
+
+ここまでで、ビデオプレイヤーのデザインが完成しました。
+
+![video player comp]()
+
+次に、右側のビデオカードリストを作成しましょう。
+
+こちらは、考え方は`Home`コンポーネントで作成したビデオカードと同じです。
+
+このビデオカードは、`Home`で作成したビデオカードとはデザインが違います。
+
+ここで、コンポーネントの分割として二つの方法があります。
+
+- `Home`のコンポーネントにプロパティを渡して、デザインを内部的に変更する
+- 全く新しいコンポーネントとして作成する
+
+今回は、わかりやすさの観点を重視するのと、使い回すメリットが大きく無いので 2 番目の方法をとります。
+
+新しいコンポーネントを作成していきます。
+
+```TSX
+// src/compoennts/VideoHorizontalCard/index.tsxを作成
+// index.tsxのコード
+
+import { Card, CardHeader, CardMedia } from "@material-ui/core";
+import { HeaderTitle } from "../VideoCard/HeaderTitle";
+import { SubHeaderContent } from "../VideoCard/SubHeaderContent";
+
+export const VideoHorizontalCard = () => {
+  return (
+    // elevation={0} : box-shadowの影を削除する
+    // square: border-radiusを削除する
+    <Card elevation={0} square>
+      {/*
+        サムネイル用のメディアコンポーネントを作成
+      */}
+      <CardMedia image="/static/no-image.jpg" title="Thumbnail" />
+
+      {/*
+        `Home`で作成した<HeaderTitle>と<SubHeaderContent>を流用する
+      */}
+      <CardHeader title={<HeaderTitle />} subheader={<SubHeaderContent />} />
+    </Card>
+  );
+};
+```
+
+このままでは、デザインが適用されていないので、スタリングをしてきます。
+
+スタイリングは、「サムネイルとタイトルを横並びにする」「メディアコンポーネントを 16:9 で表示させる」「背景色を削除」を行います。
+
+```TS
+// src/compoennts/VideoHorizontalCard/styles.ts
+
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  root: {
+    display: "flex",
+  },
+  transparent: {
+    backgroundColor: "transparent",
+  },
+  thumbnail: {
+    width: "50%",
+  },
+  media: {
+    paddingTop: "56.25%", // 16:9
+  },
+  contentPadding: {
+    paddingTop: 0,
+    paddingRight: 0,
+    paddingBottom: 0,
+    paddingLeft: 10,
+  },
+});
+```
+
+スタイルを`VideoHorizontalCard`に適用します。
+
+```TSX
+// src/compoennts/VideoHorizontalCard/index.tsx
+
+import { Card, CardHeader, CardMedia } from "@material-ui/core";
+import { HeaderTitle } from "../VideoCard/HeaderTitle";
+import { SubHeaderContent } from "../VideoCard/SubHeaderContent";
+
+// styleのimport
+import useStyles from "./styles";
+
+export const VideoHorizontalCard = () => {
+  // styleの生成
+  const styles = useStyles();
+  return (
+    // styleの適用
+    // 複数のスタイルを適用したい場合、このような形で記述します。
+    // `${}`という記法を用いることで、変数の値を文字として展開できます。
+    // 例：ten = 10 → `${ten}` == "10"
+    // 詳しくはhttps://jsprimer.net/basic/data-type/#template-literal
+    <Card
+      className={`${styles.root} ${styles.transparent}`}
+      elevation={0}
+      square
+    >
+      {/*
+      styleの適用
+
+      サムネイルを16:9で表示するために、`CardMedia`を<div>で囲み、widthプロパティを固定しています。
+      */}
+      <div className={styles.thumbnail}>
+        <CardMedia
+          className={styles.media}
+          image="/static/no-image.jpg"
+          title="Thumbnail"
+        />
+      </div>
+
+      {/* styleの適用 */}
+      <CardHeader
+        className={styles.contentPadding}
+        title={<HeaderTitle />}
+        subheader={<SubHeaderContent />}
+      />
+    </Card>
+  );
+};
+```
+
+これでカードのデザインが完了しました。
+
+画面表示してみましょう。
+
+```TSX
+// src/pages/Watch/index.tsx
+
+import { Container, Grid } from "@material-ui/core";
+import { VideoPlayerCard } from "./VideoPlayerCard";
+import useStyles from "./style";
+import { VideoHorizontalCard } from "../../compoennts/VideoHorizontalCard";
+
+export const Watch = () => {
+  const styles = useStyles();
+  return (
+    <Container className={styles.root}>
+      <Grid container spacing={5}>
+        <Grid item xs={8}>
+          <VideoPlayerCard />
+        </Grid>
+        {/*
+          <VideoHorizontalCard />を右側に表示
+        */}
+        <Grid item xs={4}>
+          <VideoHorizontalCard />
+          <VideoHorizontalCard />
+          <VideoHorizontalCard />
+          <VideoHorizontalCard />
+        </Grid>
+      </Grid>
+    </Container>
+  );
+};
+```
+
+上記のコードを`http://localhost:3000/watch/videoid`で画面表示してみると、ビデオカードが隙間なく並べられてしまっています。
+
+![video card non padding]()
+
+それぞれのビデオカードに`padding`を指定して、見やすくしましょう。
+
+スタイリングで調整します。
+
+```TS
+// src/pages/Watch/style.ts
+
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  root: {
+    maxWidth: 1400,
+  },
+  // CardのPaddingを指定する
+  cardPadding: {
+    marginBottom: 10,
+  },
+});
+
+```
+
+スタイルを適用します。
+
+```TSX
+// src/pages/Watch/index.tsx
+
+import { Container, Grid } from "@material-ui/core";
+import { VideoPlayerCard } from "./VideoPlayerCard";
+import useStyles from "./style";
+import { VideoHorizontalCard } from "../../compoennts/VideoHorizontalCard";
+
+export const Watch = () => {
+  const styles = useStyles();
+  return (
+    <Container className={styles.root}>
+      <Grid container spacing={2}>
+        <Grid item xs={8}>
+          <VideoPlayerCard />
+        </Grid>
+        <Grid item xs={4}>
+
+          {/*
+            それぞれの<VideoHorizontalCard />を<div>で囲み、スタイルをあてる
+          */}
+          <div className={styles.cardPadding}>
+            <VideoHorizontalCard />
+          </div>
+          <div className={styles.cardPadding}>
+            <VideoHorizontalCard />
+          </div>
+          <div className={styles.cardPadding}>
+            <VideoHorizontalCard />
+          </div>
+          <div className={styles.cardPadding}>
+            <VideoHorizontalCard />
+          </div>
+        </Grid>
+      </Grid>
+    </Container>
+  );
+};
+
+```
+
+デザインが良い感じになりました！
+
+これで、`watch`コンポーネントのデザインが完了しました。
+
+![watch page comp]()
 
 ## 動画アップロード画面のデザイン作成
 
