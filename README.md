@@ -2494,7 +2494,7 @@ export const Home = () => {
 
 では次は、動画を再生する画面をデザインしていきます。
 
-![Video Player]()
+![Video Player](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/video_player.png?raw=true)
 
 動画再生画面からはデザインが細かくなってきたので、最初にどのようなコンポーネントで区切るかの戦略を考えます。
 
@@ -2583,13 +2583,13 @@ export const RootRouter = () => {
 
 サイドバーが表示されていないページが表示されたかと思います。
 
-![Side less page]()
+![Side less page](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/side_less_page.png?raw=true)
 
 では、次にメインとなる動画プレイヤーと、サイドのビデオカードを作っていきます。
 
 コンポーネントは、まずは、動画プレイヤーとビデオカードリストのレイアウトで分けます。
 
-![Watch main layouts]()
+![Watch main layouts](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/watch_main_layouts.png?raw=true)
 
 まずはこの 2 カラムのデザインを作っていきます。
 
@@ -2675,7 +2675,7 @@ export const RootRouter = () => {
 
 Watch コンポーネントを確認するためには、`http://localhost:3000/watch/videoid`にアクセスします。
 
-![watch not padding top]()
+![watch not padding top](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/watch_main_layouts.png?raw=true)
 
 「Video Player Area」と「Video Card List」が表示されるはずが、表示されていません。
 
@@ -2751,7 +2751,7 @@ export const SideLessHomeLayout = () => {
 
 改めて、画面を表示してみましょう。
 
-![view watch page]()
+![view watch page](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/view_watch_page.png?raw=true)
 
 無事に、画面表示が想定通りになりました。
 
@@ -2860,7 +2860,7 @@ export const VideoPlayerCard = () => {
 
 左側の領域に動画を表示することができました。
 
-![watch video player]()
+![watch video player](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/watch_video_player.png?raw=true)
 
 残りのタイトルや、説明文も作ってみましょう。
 
@@ -2931,13 +2931,13 @@ export const VideoPlayerCard = () => {
 };
 ```
 
-![Video default card design]()
+![Video default card design](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/video_default_card_design.png?raw=true)
 
 おおよそ全体のデザインはできてきました。
 
 あとは、細かなデザインの違いを修正していきます。
 
-![video difference design]()
+![video difference design](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/video_difference_design.png?raw=true)
 
 まずは、`box-shadow`と`border-radius`は`Card`コンポーネントにプロパティを指定するだけで除去できます。
 
@@ -3138,7 +3138,7 @@ export const Watch = () => {
 
 ここまでで、ビデオプレイヤーのデザインが完成しました。
 
-![video player comp]()
+![video player comp](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/video_player_comp.png?raw=true)
 
 次に、右側のビデオカードリストを作成しましょう。
 
@@ -3300,7 +3300,7 @@ export const Watch = () => {
 
 上記のコードを`http://localhost:3000/watch/videoid`で画面表示してみると、ビデオカードが隙間なく並べられてしまっています。
 
-![video card non padding]()
+![video card non padding](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/video_card_non_padding.png?raw=true)
 
 それぞれのビデオカードに`padding`を指定して、見やすくしましょう。
 
@@ -3370,7 +3370,7 @@ export const Watch = () => {
 
 これで、`watch`コンポーネントのデザインが完了しました。
 
-![watch page comp]()
+![watch page comp](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/watch_page_comp.png?raw=true)
 
 ## 動画アップロード画面のデザイン作成
 
