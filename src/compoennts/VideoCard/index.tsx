@@ -7,6 +7,7 @@ export const VideoCard = () => {
   const styles = useStyles();
   return (
     // elevation={0} : Cardの影を削除する
+    // square: border-radiusを削除する
     <Card className={styles.root} elevation={0} square>
       {/* 
         サムネイルの表示
