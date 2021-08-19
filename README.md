@@ -555,9 +555,9 @@ React 以前のフロントエンド開発をしたことがある方は、こ�
 
 理由は色々あるのですが、最も大きな理由は「コンポーネント指向の React との相性が最悪」ということです。
 
-React は、コンポーネントという「箱」にコンポーネントに関係するものを閉じ込めることができるのに、グローバルな CSS ファイルで CSS を管理してしまうと、そのコンポーネントがどの CSS スタリングを使用しているのかの管理が煩雑になります。
+React は、コンポーネントという「箱」にコンポーネントに関係するものを閉じ込めることができるのに、グローバルな CSS ファイルで CSS を管理してしまうと、そのコンポーネントがどの CSS スタイリングを使用しているのかの管理が煩雑になります。
 
-なので、もし、React で CSS ファイルによるデザインを行いたい場合は次の`CSSモジュール`によってスタイルするのがスタンダードになっています。
+なので、もし、React で CSS ファイルによるデザインを行いたい場合は次の`CSSモジュール`によってスタイリングするのがスタンダードになっています。
 
 ちなみに、`create-react-app`で作成したテンプレートプロジェクトはこのグローバルな CSS が用いられています。
 
@@ -565,7 +565,7 @@ React は、コンポーネントという「箱」にコンポーネントに�
 
 React で CSS ファイルを用いたスタイリングを行うときは、もうほとんどこの方法を使用します。
 
-先程のグローバルな CSS スタリングと何が違うのか実際の画面を見てもらおうと思います。
+先程のグローバルな CSS スタイリングと何が違うのか実際の画面を見てもらおうと思います。
 
 ```TSX:App.tsx
 import styles from "./App.module.css";
@@ -622,11 +622,11 @@ type styles = {
 
 - ### CSS フレームワークを使った方法
 
-CSS フレームワークとは、あらかじめ様々なスタリングが用意されている CSS ファイルをインポートすることで、最小限のスタイリングでデザインを完成させることができるツールです。
+CSS フレームワークとは、あらかじめ様々なスタイリングが用意されている CSS ファイルをインポートすることで、最小限のスタイリングでデザインを完成させることができるツールです。
 
 有名なフレームワークで言うと、`Bootstrap`や`Tailwind`があります。
 
-CSS フレームワークには、何百個と言うスタリング済み CSS が用意されており、その CSS を HTML 要素に指定するだけで、デザインが完成します。
+CSS フレームワークには、何百個と言うスタイリング済み CSS が用意されており、その CSS を HTML 要素に指定するだけで、デザインが完成します。
 
 例えば、人数が少ない開発チームや、デザイナーがいない開発チームでは、このような CSS フレームワークを使用することで、開発スピードを大幅に上げることができます。
 
@@ -642,7 +642,7 @@ Semantic UI : [https://semantic-ui.com/](https://semantic-ui.com/)
 
 最近では、React 界隈で Tailwind をデザインシステムに採用する動きがあります。
 
-Tailwind には様々な CSS プロパティを`class`ベースで用意されており、それを組み合わせることで、あたかも HTML のマークアップ上で擬似的に CSS を記述してスタリングしているかのような開発体験を実現しています。
+Tailwind には様々な CSS プロパティを`class`ベースで用意されており、それを組み合わせることで、あたかも HTML のマークアップ上で擬似的に CSS を記述してスタイリングしているかのような開発体験を実現しています。
 
 コミュニティも非常に活発に活動しており、これからのフロントエンドのトレンドとしては目が離せないフレームワークです。
 
@@ -650,7 +650,7 @@ Tailwind には様々な CSS プロパティを`class`ベースで用意され�
 
 次は、React UI フレームワークを使ったデザインの方法です。
 
-こちらは、先程の CSS フレームワークを用いたスタリングと非常に似ており、既にデザイン済みのスタイリングを用いてデザインを実装することができます。
+こちらは、先程の CSS フレームワークを用いたスタイリングと非常に似ており、既にデザイン済みのスタイリングを用いてデザインを実装することができます。
 
 しかし、UI フレームワークは CSS フレームワークとは異なり、React で運用することを念頭に置いたフレームワークになっています。
 
@@ -676,9 +676,9 @@ Ant Design : [https://ant.design/](https://ant.design/)
 
 - ### CSS in JS を使った方法
 
-最後はスタリング界の異端児、CSS in JS を使った方法です。
+最後はスタイリング界の異端児、CSS in JS を使った方法です。
 
-まず、CSS in JS が何かと言うと、CSS のスタリングを JS のファイル内に記述するスタリング手法です。
+まず、CSS in JS が何かと言うと、CSS のスタイリングを JS のファイル内に記述するスタイリング手法です。
 
 説明するより見た方が早いと思うので、下記の例を見てください。
 
@@ -1013,7 +1013,7 @@ export const RootRouter = () => {
       element: <SideLessHomeLayout />,
       children: [
          { path: "watch", element: <Navigate to="/" /> },
-        { path: "watch/:videId", element: <div>watch</div> }
+        { path: "watch/:videoId", element: <div>watch</div> }
       ],
     },
 
@@ -1335,7 +1335,7 @@ export default makeStyles({
 
 `style.ts`内で、`makeStyles`を使うことで、カスタム用の CSS を生成してくれます。
 
-`style.ts`にカスタム用のスタリングを書くことで、`index.tsx`からスタリング用のソースコードがなくなり、見やすいソースコードを書くことができます。
+`style.ts`にカスタム用のスタイリングを書くことで、`index.tsx`からスタイリング用のソースコードがなくなり、見やすいソースコードを書くことができます。
 
 `style.ts`は以下のように呼び出して使用します。
 
@@ -1442,7 +1442,7 @@ export const SearchBar = () => {
 };
 ```
 
-`<SearchBar>`のスタリング行います。
+`<SearchBar>`のスタイリング行います。
 
 ```TS
 // src/templates/DashboardHeader/SearchBar/style.tsを生成
@@ -1505,7 +1505,7 @@ export const SearchBar = () => {
 
 ```
 
-検索バーのスタリングが完了しました。
+検索バーのスタイリングが完了しました。
 
 次は、`Header`の右側、アバター等が表示されているプロフィール欄を作ります。
 
@@ -1785,7 +1785,7 @@ export const HomeLayout = () => {
 
 ![Sidebar hidden in header](https://github.com/Hiro-mackay/react-bootcamp/blob/056d54efd1f5eae35f23b6b8a647e1242b2251a1/assets/sidebar_hidden_in_header.png?raw=true)
 
-これを解決するために、`Layout`のスタリングを調整します。
+これを解決するために、`Layout`のスタイリングを調整します。
 
 ```TS
 // src/layouts/Home/style.ts
@@ -1880,7 +1880,7 @@ export default makeStyles({
 });
 ```
 
-横並びにさせるスタリングを反映させます。
+横並びにさせるスタイリングを反映させます。
 
 ```TSX
 // src/layouts/Home/index.tsx
@@ -2015,7 +2015,7 @@ export const Sidebar = () => {
 
 これを解決するためには、まず、このアプリケーション全体の CSS を調整する必要があります。
 
-以下のように特殊なグローバルスタリングとして`GlobalStyle.ts`を作成してください。
+以下のように特殊なグローバルスタイリングとして`GlobalStyle.ts`を作成してください。
 
 ```TS
 // src/GlobalStyle.tsを作成
@@ -2069,7 +2069,7 @@ ReactDOM.render(
         <CssBaseline />
 
         {/*
-          アプリ全体の特殊なグローバルスタリング
+          アプリ全体の特殊なグローバルスタイリング
         */}
         <GlobalStyle />
 
@@ -2095,7 +2095,7 @@ const SIDEBAR_WIDTH = 240;
 const APP_BAR = 64;
 
 export default makeStyles({
-  // flexというスタリングを「root」に変更。
+  // flexというスタイリングを「root」に変更。
   // flexとminHeight:100%を指定する
   root: {
     display: "flex",
@@ -2129,7 +2129,7 @@ export const HomeLayout = () => {
   const styles = useStyles();
   return (
 
-    // 一番上位の<div>に対して"root"スタリングを指定
+    // 一番上位の<div>に対して"root"スタイリングを指定
     // 今ままで`<div className={styles.flex}>`としていた要素は削除
     <div className={styles.root}>
 
@@ -2150,7 +2150,7 @@ export const HomeLayout = () => {
 };
 ```
 
-そして、最後に、`Sidebar`コンポーネントのスタリングを完成させましょう。
+そして、最後に、`Sidebar`コンポーネントのスタイリングを完成させましょう。
 
 ```TSX
 // src/templates/Sidebar/style.ts
@@ -2208,7 +2208,7 @@ export const VideoCard = () => {
       {/*
         サムネイルの表示
         今回はno-image.jpgという画像を作成し、デフォルトのサムネイルとした。
-        このno-image.jpgを使いたい方は、/public/staticから自由にダウンローそしてください。
+        このno-image.jpgを使いたい方は、/public/staticから自由にダウンロードしてください。
       */}
       <CardMedia
         image="/static/no-image.jpg"
@@ -2273,7 +2273,7 @@ export const RootRouter = () => {
 
       children: [
         { path: "watch", element: <Navigate to="/" /> },
-        { path: "watch/:videId", element: <div>watch</div> },
+        { path: "watch/:videoId", element: <div>watch</div> },
       ],
     },
 
@@ -2298,7 +2298,7 @@ export const RootRouter = () => {
 
 ![Video Card miss](https://github.com/Hiro-mackay/react-bootcamp/blob/4fe016b02d130f2772ad631daefc45293628188e/assets/video_caed_miss.png?raw=true)
 
-スタリング で調整してきましょう。
+スタイリング で調整してきましょう。
 
 ```TS
 // src/components/VideoCard/style.tsを作成
@@ -2331,7 +2331,7 @@ export default makeStyles({
 });
 ```
 
-スタリングを反映させていきます。
+スタイリングを反映させていきます。
 
 ```TSX
 // src/components/VideoCard/index.tsx
@@ -2550,7 +2550,7 @@ export const RootRouter = () => {
         // :videoIdとは、動的なURLを指定する変数であり、Reactから"videoId"という変数名で動的なURLのパスを取得できる仕組みである。
         // 詳しくは、実際にこの変数を使う際に説明します。
         { path: "watch", element: <Navigate to="/" /> },
-        { path: "watch/:videId", element: <div>watch</div> },
+        { path: "watch/:videoId", element: <div>watch</div> },
       ],
     },
 
@@ -2575,7 +2575,7 @@ export const RootRouter = () => {
 
 今回は、今まで通り URL を表示するだけでは、'/watch'にはアアクセスできません。
 
-なので、先ほど作成した`SideLessHomeLayout`を見る場合は、[http://localhost:3000/watch/videoid](http://localhost:3000/watch/videoid)にアクセスしてください。
+なので、先ほど作成した`SideLessHomeLayout`を見る場合は、[http://localhost:3000/watch/videoId](http://localhost:3000/watch/videoId)にアクセスしてください。
 
 サイドバーが表示されていないページが表示されたかと思います。
 
@@ -2621,7 +2621,7 @@ export const Watch = () => {
 };
 ```
 
-この`Watch`コンポーネントを`Routes.tsx`から呼び出すことで、`http://localhost:3000/watch/videoid`にアクセスした時に表示できるようにします。
+この`Watch`コンポーネントを`Routes.tsx`から呼び出すことで、`http://localhost:3000/watch/videoId`にアクセスした時に表示できるようにします。
 
 ```TSX
 // src/Route.tsx
@@ -2647,8 +2647,8 @@ export const RootRouter = () => {
       children: [
         { path: "watch", element: <Navigate to="/" /> },
 
-        // Watchコンポーネントを`watch/:videId`のURLパスで表示
-        { path: "watch/:videId", element: <Watch /> },
+        // Watchコンポーネントを`watch/:videoId`のURLパスで表示
+        { path: "watch/:videoId", element: <Watch /> },
       ],
     },
 
@@ -2669,7 +2669,7 @@ export const RootRouter = () => {
 
 ここまでで、一度画面表示を確認してみましょう。
 
-Watch コンポーネントを確認するためには、`http://localhost:3000/watch/videoid`にアクセスします。
+Watch コンポーネントを確認するためには、`http://localhost:3000/watch/videoId`にアクセスします。
 
 ![watch not padding top](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/watch_main_layouts.png?raw=true)
 
@@ -2753,7 +2753,7 @@ export const SideLessHomeLayout = () => {
 
 では、メインコンテンツとなる、動画プレイヤーとその説明文を作っていきます。
 
-ビデオプレイヤーを作るときに、丈夫にメディアを表示するコンポーネントがあり、株にテキスト群があるというデザインをしているので、ここでも、`Card`コンポーネントを使用していきます。
+ビデオプレイヤーを作るときに、上部にメディアを表示するコンポーネントがあり、下部にテキスト群があるというデザインをしているので、ここでも、`Card`コンポーネントを使用していきます。
 
 [Card Component - Material-UI](https://material-ui.com/ja/components/cards/)
 
@@ -2887,7 +2887,7 @@ export const VideoPlayerCard = () => {
         {/*
           `Typography`コンポーネントは、テキストコンポーネントを簡単に作ることができます。
           今回、componentには`h2`を、`variant`には`h6`を指定しています。
-          これは、HTMLタグは`<h2>`を使いスタリングは、Material-UIで用意されているh6用のスタリングを使うよう指示しています。
+          これは、HTMLタグは`<h2>`を使いスタイリングは、Material-UIで用意されているh6用のスタイリングを使うよう指示しています。
           <h2>タグ使いたいけど、フォントサイズなどはh6でのサイズを使いたい場合などに便利です。
         */}
         <Typography component="h2" variant="h6">
@@ -3152,7 +3152,7 @@ export const Watch = () => {
 新しいコンポーネントを作成していきます。
 
 ```TSX
-// src/compoennts/VideoHorizontalCard/index.tsxを作成
+// src/components/VideoHorizontalCard/index.tsxを作成
 // index.tsxのコード
 
 import { Card, CardHeader, CardMedia } from "@material-ui/core";
@@ -3178,12 +3178,12 @@ export const VideoHorizontalCard = () => {
 };
 ```
 
-このままでは、デザインが適用されていないので、スタリングをしてきます。
+このままでは、デザインが適用されていないので、スタイリングをしてきます。
 
 スタイリングは、「サムネイルとタイトルを横並びにする」「メディアコンポーネントを 16:9 で表示させる」「背景色を削除」を行います。
 
 ```TS
-// src/compoennts/VideoHorizontalCard/styles.ts
+// src/components/VideoHorizontalCard/styles.ts
 
 import { makeStyles } from "@material-ui/core";
 
@@ -3212,7 +3212,7 @@ export default makeStyles({
 スタイルを`VideoHorizontalCard`に適用します。
 
 ```TSX
-// src/compoennts/VideoHorizontalCard/index.tsx
+// src/components/VideoHorizontalCard/index.tsx
 
 import { Card, CardHeader, CardMedia } from "@material-ui/core";
 import { HeaderTitle } from "../VideoCard/HeaderTitle";
@@ -3269,7 +3269,7 @@ export const VideoHorizontalCard = () => {
 import { Container, Grid } from "@material-ui/core";
 import { VideoPlayerCard } from "./VideoPlayerCard";
 import useStyles from "./style";
-import { VideoHorizontalCard } from "../../compoennts/VideoHorizontalCard";
+import { VideoHorizontalCard } from "../../components/VideoHorizontalCard";
 
 export const Watch = () => {
   const styles = useStyles();
@@ -3294,7 +3294,7 @@ export const Watch = () => {
 };
 ```
 
-上記のコードを`http://localhost:3000/watch/videoid`で画面表示してみると、ビデオカードが隙間なく並べられてしまっています。
+上記のコードを`http://localhost:3000/watch/videoId`で画面表示してみると、ビデオカードが隙間なく並べられてしまっています。
 
 ![video card non padding](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/video_card_non_padding.png?raw=true)
 
@@ -3327,7 +3327,7 @@ export default makeStyles({
 import { Container, Grid } from "@material-ui/core";
 import { VideoPlayerCard } from "./VideoPlayerCard";
 import useStyles from "./style";
-import { VideoHorizontalCard } from "../../compoennts/VideoHorizontalCard";
+import { VideoHorizontalCard } from "../../components/VideoHorizontalCard";
 
 export const Watch = () => {
   const styles = useStyles();
