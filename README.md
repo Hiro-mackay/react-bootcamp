@@ -2802,7 +2802,7 @@ export const VideoPlayerCard = () => {
 
 今回、動画表示をテストするために、テスト用の動画をローカルで指定してテストします。
 
-下記リンクから、動画をダウンロードして、`public/static`にダウンロードした動画を移動させてください。
+下記リンクから動画をダウンロードして、動画のファイル名を`productionID_4763824.mp4`に変更後、`public/static`に`productionID_4763824.mp4`を配置させてください。
 
 [テスト用の動画をダウンロード](https://www.pexels.com/video/drone-flying-over-the-mountain-peak-4763824/)
 
