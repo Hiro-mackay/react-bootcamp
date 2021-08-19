@@ -2675,11 +2675,11 @@ export const RootRouter = () => {
 
 Watch コンポーネントを確認するためには、`http://localhost:3000/watch/videoid`にアクセスします。
 
-![watch not padding top](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/watch_main_layouts.png?raw=true)
+![watch not padding top](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/side_less_page.png?raw=true)
 
 「Video Player Area」と「Video Card List」が表示されるはずが、表示されていません。
 
-これは`Home`コンポーネントを作成 s 他時にも発生した問題で、`Header`の裏に文字が隠れてしまっています。
+これは`Home`コンポーネントを作成時にも発生した問題で、`Header`の裏に文字が隠れてしまっています。
 
 なので、`SideLessHome`レイアウトのスタイルを修正します。
 
@@ -2757,7 +2757,7 @@ export const SideLessHomeLayout = () => {
 
 では、メインコンテンツとなる、動画プレイヤーとその説明文を作っていきます。
 
-ビデオプレイヤーを作るときに、丈夫にメディアを表示するコンポーネントがあり、株にテキスト群があるというデザインをしているので、ここでも、`Card`コンポーネントを使用していきます。
+ビデオプレイヤーを作るときに、上部にメディアを表示するコンポーネントがあり、下部にテキスト群があるというデザインをしているので、ここでも、`Card`コンポーネントを使用していきます。
 
 [Card Component - Material-UI](https://material-ui.com/ja/components/cards/)
 
@@ -2838,7 +2838,7 @@ export const VideoPlayerCard = () => {
       <CardMedia
         component="video"
         controls
-        src="/static/productionID_4763824.mp4"
+        src="/static/production ID_4763824.mp4"
       />
 
       {/* タイトル表示エリア */}
@@ -2858,7 +2858,37 @@ export const VideoPlayerCard = () => {
 
 ```
 
-左側の領域に動画を表示することができました。
+この作成した`VideoPlayerCard`を画面表示できるようにしていきます。
+
+`src/pages/Watch/index.tsx`にて、`VideoPlayerCard`コンポーネントを読み込むコードを追記します。
+
+```TSX
+// src/pages/Watch/index.tsx
+
+import { Container, Grid } from "@material-ui/core";
+
+// VideoPlayerCardコンポーネントをimport
+import { VideoPlayerCard } from "./VideoPlayerCard";
+
+export const Watch = () => {
+  return (
+    <Container>
+      <Grid container spacing={4}>
+
+        {/*
+          VideoPlayerCardコンポーネントを表示
+        */}
+        <Grid item xs={8}>
+          <VideoPlayerCard />
+        </Grid>
+        <Grid item xs={4}>Video Card List</Grid>
+      </Grid>
+    </Container>
+  );
+};
+```
+
+表示を確認してみましょう。
 
 ![watch video player](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/watch_video_player.png?raw=true)
 
@@ -2883,7 +2913,7 @@ export const VideoPlayerCard = () => {
       <CardMedia
         component="video"
         controls
-        src="/static/productionID_4763824.mp4"
+        src="/static/production ID_4763824.mp4"
       />
 
       {/* タイトル表示エリア */}
@@ -2965,7 +2995,7 @@ export const VideoPlayerCard = () => {
       <CardMedia
         component="video"
         controls
-        src="/static/productionID_4763824.mp4"
+        src="/static/production ID_4763824.mp4"
       />
       <CardContent>
         <Typography component="h2" variant="h6">
@@ -3017,7 +3047,7 @@ export default makeStyles({
 スタイルを適用します。
 
 ```TSX
-//
+// src/pages/Watch/VideoPlayerCard/index.tsx
 
 import {
   Avatar,
@@ -3043,7 +3073,7 @@ export const VideoPlayerCard = () => {
       <CardMedia
         component="video"
         controls
-        src="/static/productionID_4763824.mp4"
+        src="/static/production ID_4763824.mp4"
       />
 
       {/*
@@ -3184,7 +3214,7 @@ export const VideoHorizontalCard = () => {
 
 このままでは、デザインが適用されていないので、スタリングをしてきます。
 
-スタイリングは、「サムネイルとタイトルを横並びにする」「メディアコンポーネントを 16:9 で表示させる」「背景色を削除」を行います。
+スタイリングは、「サムネイルとタイトルを横並びにする」「サムネイル画像を 16:9 で表示させる」「背景色を削除」を行います。
 
 ```TS
 // src/compoennts/VideoHorizontalCard/styles.ts
@@ -3374,4 +3404,1513 @@ export const Watch = () => {
 
 ## 動画アップロード画面のデザイン作成
 
+次に動画アップロード画面のデザインを行なっていきます。
+
+![video_uploader_design]()
+
+動画アップロードの画面では、Material-UI の[Dialogs コンポーネント](https://material-ui.com/components/dialogs/)を使用して、モーダルのようなデザインを実現します。
+
+まずは、画面の中央に Dialog を表示していきます。
+
+`pages`に`/upload`用のコンポーネントを作成します。
+
+```TSX
+// src/pages/Upload/index.tsx
+
+import { Dialog, DialogTitle, DialogContent } from "@material-ui/core";
+
+export const Upload = () => {
+  return (
+    // ダイアログコンポーネント
+    // fullWidth: trueの場合、画面いっぱいにダイアログを表示
+    // maxWidth: ダイアログの横幅の最大値を指定。指定できるプロパティはこちら(https://material-ui.com/api/dialog/)
+    // open: ダイアログを表示するか。今回はURLを開いている際は、表示し続けるのでtrueを指定
+    <Dialog fullWidth={true} maxWidth="md" open={true}>
+      {/* タイトル用コンポーネント */}
+      <DialogTitle>動画のアップロード</DialogTitle>
+
+      {/* 横線コンポーネント */}
+      <Divider />
+
+      {/* コンテント用コンポーネント */}
+      <DialogContent>ダイアログのコンテンツを作成</DialogContent>
+    </Dialog>
+  );
+};
+```
+
+Material-UI を使用すれば、このようなデザインもすぐに実装することができます。
+
+`Routes.tsx`から`Upload`コンポーネントをインポートして、`/upload`URL パスから表示できるようにします。
+
+```TSX
+// src/Route.tsx
+
+import { Navigate, useRoutes } from "react-router-dom";
+import { HomeLayout } from "./layouts/Home";
+import { SideLessHomeLayout } from "./layouts/SideLessHome";
+import { SimpleLayout } from "./layouts/Simple";
+import { Home } from "./pages/Home";
+import { Upload } from "./pages/Upload";
+import { Watch } from "./pages/Watch";
+
+export const RootRouter = () => {
+  return useRoutes([
+    {
+      element: <HomeLayout />,
+      children: [
+        { path: "/", element: <Home /> },
+
+        // `Header`と`Sidebar`があるレイアウトのため、<HomeLayout>が指定しているelementで`upload`を呼び出します。
+        { path: "upload", element: <Upload /> },
+      ],
+    },
+
+    {
+      element: <SideLessHomeLayout />,
+      children: [
+        { path: "watch", element: <Navigate to="/" /> },
+        { path: "watch/:videId", element: <Watch /> },
+      ],
+    },
+
+    {
+      element: <SimpleLayout />,
+      children: [
+        { path: "login", element: <div>ログイン</div> },
+        { path: "signup", element: <div>新規作成</div> },
+        { path: "forget", element: <div>パスワードリセット</div> },
+        { path: "404", element: <div>Not Found</div> },
+        { path: "*", element: <Navigate to="/404" /> },
+      ],
+    },
+    { path: "*", element: <Navigate to="/404" /> },
+  ]);
+};
+```
+
+画面を表示してみましょう。[http://localhost:3000/upload](http://localhost:3000/upload)
+
+![upload dialog]()
+
+ダイアログの中にアップロード用のフォームをデザインしていきます。
+
+今回のデザインは少し特殊で、ユーザーがファイルを選択すると、デザインが変更されるデザインになっています。
+
+そこで、ファイル選択後のデザインを表示するために、ファイル選択を行うロジックも合わせて実装していきます。
+
+![upload file select]()
+
+初めに、ファイル選択前の「デザインのみ」を実装してきます。
+
+このデザインでは、ダイアログの右側と左側でコンポーネントを分ける方法で分割します。
+
+このコンポーネントは、今のことろ、共通化する予定がないので、`pages/upload`以下にコンポーネントを作成していきます。
+
+```TSX
+// src/pages/Upload/index.tsx
+// ダイアログ全体のレイアウトをデザインする
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Grid,
+  Divider,
+} from "@material-ui/core";
+
+export const Upload = () => {
+  return (
+    <Dialog fullWidth={true} maxWidth="md" open={true}>
+      <DialogTitle>動画のアップロード</DialogTitle>
+      <Divider />
+
+      {/*
+        コンテント用
+        2カラムのレイアウトを実装する
+      */}
+      <DialogContent>
+        <Grid container spacing={4}>
+          <Grid xs item>
+            左側
+          </Grid>
+
+          {/*
+            真ん中に縦線を挿入
+            デザインにあるような線を入れるため
+          */}
+          <Divider orientation="vertical" flexItem />
+
+          <Grid xs item>
+            右側
+          </Grid>
+        </Grid>
+      </DialogContent>
+    </Dialog>
+  );
+};
+```
+
+まずは、デザイン左側のファイルを選択して、動画のプレビュを表示するコンポーネントを作成していきます。
+
+ファイルが選択されていない時はボタンを表示し、ファイルが選択されているときはプレビューを表示する条件分岐を記述していきます。
+
+```TSX
+// src/pages/Upload/VideoSelector/index.tsxを作成
+// index.tsxのコード
+
+import { Button } from "@material-ui/core";
+
+export const VideoSelect = () => {
+  return (
+    // 後にスタイリングでデザインを整える用の<div>要素を配置する
+    <div>
+        <Button variant="contained" color="primary">
+          ファイルを選択
+        </Button>
+    </div>
+  );
+};
+```
+
+このコンポーネントに、ファイルが選択されたら表示を切り替えるロジックを組みます。
+
+ファイルを選択するために、`<input>`を使用します。
+
+```TSX
+// src/pages/Watch/VideoPlayerCard/index.tsx
+
+import { Button } from "@material-ui/core";
+
+export const VideoSelect = () => {
+  return (
+    <div>
+        {/*
+          <input>タグをボタンの上に配置する。
+          今回は、<Button>をクリックしたらファイルを選択する使用にしたいので、<input type="file"/>という形で、インプットのタイプに'file'を指定します。
+          また、デザインを見て頂くと、<input>の表示はされていません。
+          このデザインにするために、<input type="file" hidden />とすることで<input>タグを非表示にしています。
+        */}
+        <input type="file" hidden />
+        <Button variant="contained" color="primary">
+          ファイルを選択
+        </Button>
+    </div>
+  );
+};
+```
+
+ここから少しテクニカルなことをしていきます。
+
+このコンポーネントで行いたいことは、`<Button>`をクリックすると、ファイルが選択できるようになるということです。
+
+そのために、`<Button>`クリック時に、`<input type="file" hidden />`を直接参照して、ファイル選択のイベントを発火させる必要があります。
+
+言葉だと、何をするのかわからないと思うので、実際のソースコードで見ていきます。
+
+ファイル選択が可能なコードまで一気にお見せるので、慎重にソースコードを追って見てください。
+
+コードの説明は、長くなったので分割して説明していきます。
+
+```TSX
+// src/pages/Watch/VideoPlayerCard/index.tsx
+// コードの説明は、このコードの下に記載
+import { Button } from "@material-ui/core";
+
+// 追加
+import { useRef } from "react";
+
+export const VideoSelect = () => {
+  // 追加
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // 追加
+  const handleClick = () => {
+    inputRef.current?.click();
+  };
+
+  return (
+    <div>
+        {/*
+          追記
+        */}
+        <input type="file" hidden ref={inputRef}  />
+
+        {/*
+          追記
+        */}
+        <Button onClick={handleClick}>
+          ファイルを選択
+        </Button>
+    </div>
+  );
+};
+```
+
+一気に、React 特有の書き方がたくさん出てきました。
+
+一個づつ説明していきます。
+
+```TSX
+import { useRef } from "react";
+```
+
+上記は、「`<input type="file" hidden />`を直接参照」するために用いる React 特有の関数です。
+
+```TSX
+const inputRef = useRef<HTMLInputElement>(null);
+```
+
+`inputRef`は、「`<input type="file" hidden />`を直接参照」するための変数です。
+
+useRef は、React 特有の機能で、useRef を使用すると inputRef に何かの値(本当になんでも)を代入することが可能になります。
+
+代入した値には、"inputRef.current"という形でアクセスできます。
+
+今回は、 inputRef.current に`<input type="file" hidden />`の参照が入ります。
+
+> また、もう一つ新しい書き方としては、`<HTMLInputElement>`です。  
+>  これは Typescript の機能で、型定義を行っています。  
+> HTMLInputElement は、`<input>`の HTML 要素の型で、Typescript がデフォルトで用意している型です。  
+> inputRef には、HTMLInputElement（`<input>`の HTML 要素の型）が入りますよ、ということを型定義しています。
+
+```TSX
+const handleClick = () => {
+  inputRef.current?.click();
+};
+```
+
+ここでは、`<Button>`がクリックされた時に実行する関数を定義します。
+
+今回は、「ファイルを選択する」という処理を関数内で記載しています。
+
+先程、`inputRef.current`には`<input type="file" hidden />`の参照が入ると説明しました。
+
+まさにここで、`<input type="file" hidden />`の参照にアクセスしています。
+
+参照の`click()`を呼び出すことで、「ファイルを選択する」という処理を実行できます。
+
+> 補足として、`current?.click`の?マークは、Typescript 特有の機能です。  
+> 初めの段階で、`inputRef.current`には値が入っていない状態を表す`null`が入っています。  
+> ということは、初めは`inputRef.current`に`<input type="file" hidden />`が入っていないので、`click`関数を呼び出すことができません。  
+> このようなとき、?記法を用いることで、`click`が「あったら呼び出す」、「なかったら呼び出さない」という処理ができます。
+
+```TSX
+<input type="file" hidden ref={inputRef} />
+```
+
+`inputRef`に`<input type="file" hidden />`の参照を実際に格納する処理を書いています。
+
+useRef で作成した関数を、"ref"にわたすことで、その HTML 要素に直接アクセスできるようになります。
+
+この処理が終わった後に、`inputRef.current`から、`<input type="file" hidden />`にアクセスできるようになります。
+
+React で HTML 要素を操作したい時に頻出する書き方です。
+
+この書き方は、`<input>`以外にも全ての HTML 要素で、使用する事ができます。
+
+```TSX
+<Button onClick={handleClick}>
+  ファイルを選択
+</Button>
+```
+
+上記の、`handleClick`を`<Button>`で呼び出します。
+
+`onCkick`は、そのコンポーネントがクリックされた時に実行する処理を書くことができます。
+
+`onClick`に、`handleClick`を入れているので、`<Button>`要素が押されたとき、`handleClick`を実行、つまり「ファイルの選択」が実行されます。
+
+長くなりましたが、これで、`<Button>`をクリックしたら「ファイルを選択する」という処理が実現します。
+
+画面表示して実際の挙動を確認してみましょう。
+
+```TSX
+// src/pages/Upload/index.tsx
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Grid,
+  Divider,
+} from "@material-ui/core";
+
+// 先程のファイルを選択するコンポーネントをimport
+import { VideoSelect } from "./VideoSelector";
+
+export const Upload = () => {
+  return (
+    <Dialog fullWidth={true} maxWidth="md" open={true}>
+      <DialogTitle>動画のアップロード</DialogTitle>
+      <Divider />
+      <DialogContent>
+        <Grid container spacing={4}>
+
+          {/*
+            カラムの左側に
+          */}
+          <Grid xs item>
+
+            {/*
+              VideoSelectコンポーネントを表示
+            */}
+            <VideoSelect />
+          </Grid>
+
+          <Divider orientation="vertical" flexItem />
+          <Grid xs item>
+            右側
+          </Grid>
+        </Grid>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+```
+
+下記のように、「ファイルを選択」をクリックすると、ファイルを選択できるようになります。
+
+![upload file selector]()
+
+しかし、ファイルを選択しても、選択後の処理を書いていないので、何も起こりません。
+
+ここから、ファイルを選択して、選択したファイルを表示（つまり動画の表示）する処理を書いていきます。
+
+処理の流れとして、以下です。
+
+1. ファイルの選択（実装済）
+2. ファイルをアプリ内で保持
+3. ファイルから動画の生成
+4. 動画からサムネイルを生成
+
+ファイルをアプリ内で保持する処理から書いていきます。
+
+```TSX
+// src/pages/Upload/VideoSelector/index.tsx
+// コードの下に詳細記載
+
+import { Button } from "@material-ui/core";
+
+// useStateとChangeEventを追記
+import { useState, useRef, ChangeEvent } from "react";
+
+export const VideoSelect = () => {
+  // 追加
+  // 選択されたファイルを保持します。
+  const [file, setFile] = useState<File>();
+
+  // 「ファイルを選択」したあとに、選択されたファイルを上記のfileに代入する処理
+  const selectedFile = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.currentTarget.files?.length) {
+      setFile(event.currentTarget.files[0]);
+    }
+  };
+
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleClick = () => {
+    inputRef.current?.click();
+  };
+
+  return (
+    <div>
+        {/*
+          onChange={selectedFile}を追加
+          <input>の値が変更される、つまりファイルが選択時にselectedFile関数を実行する
+        */}
+        <input type="file" hidden ref={inputRef} onChange={selectedFile} />
+
+        {/*
+          ファイルが選択されたら、ここにファイルの名前を表示して、ちゃんとファイルが保持されているか確認できます。
+        */}
+        {file?.name}
+
+        <Button onClick={handleClick}>ファイルを選択</Button>
+    </div>
+  );
+};
+
+```
+
+コードの詳細を説明していきます。
+
+```TS
+const [file, setFile] = useState<File>();
+```
+
+React 用のファイルを格納するための変数を宣言しています。
+
+useState については、[state の実態](https://github.com/Hiro-mackay/react-bootcamp/tree/bootcamp-2#state-%E3%81%AE%E5%AE%9F%E6%85%8B)で説明したとおりです。
+
+> `<File>`は、Typescript の型定義です。  
+> `file`にはファイルが入るということを指定しています。  
+> File は Typescript にデフォルトで用意されている、ファイル用の型定義です。
+
+```TS
+const selectedFile = (event: ChangeEvent<HTMLInputElement>) => {
+  if (event.currentTarget.files?.length) {
+    setFile(event.currentTarget.files[0]);
+  }
+};
+```
+
+ここでは、ファイルを選択した後に、`setFile`を使用して`file`に選択されたファイルを格納しています。
+
+選択されたファイルは、`event.currentTarget.files` に配列で格納されます。
+
+今回は、1 つのファイルしか選択しないので、`event.currentTarget.files[0]`に選択したファイルが格納されています。
+
+`event.currentTarget.files`にファイルが格納されているかを、` if (event.currentTarget.files?.length)`で確認しています。
+
+ファイルが一個以上なら、`if`以下の処理が実行されます。
+
+> `ChangeEvent<HTMLInputElement>`は、Typescript の型定義です。  
+> これは、`<input />`にて、onChange から渡されるの引数の型です。
+
+```TSX
+<input type="file" hidden ref={inputRef} onChange={selectedFile} />
+```
+
+`onChange`に先程作成した selectedFile 関数を渡しています。
+
+ここで何をしているかと言うと、`inputRef.current?.click();`という処理でファイルを選択すると、`<input />`要素にはファイルが格納されます。
+
+それにより、`<input />`の値(入力値)が変更されるので、`onChange`が実行されます。
+
+イメージとしては、`onClick`はクリック時に実行されるように、`onChange`は入力値の変更で実行されるといった感じです。
+
+ここで、画面を確認してみましょう。
+
+![select file]()
+
+無事、選択したファイルのファイル名が確認できました。
+
+それでは、`3. ファイルから動画の生成`の処理である、ファイルからの動画の作成処理を書いていきます。
+
+```TSX
+// src/pages/Upload/VideoSelector/index.tsx
+
+import { Button, CardMedia } from "@material-ui/core";
+
+// useEffect追記
+import { useState, useRef, ChangeEvent ,useEffect} from "react";
+
+export const VideoSelect = () => {
+  const [file, setFile] = useState<File>();
+
+  // これは、動画表示用のURLを格納します。
+  // URLは文字列なので、string型を指定しています。
+  const [videoURL, setVideoURL] = useState<string>();
+
+  const selectedFile = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.currentTarget.files?.length) {
+      setFile(event.currentTarget.files[0]);
+    }
+  };
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleClick = () => {
+    inputRef.current?.click();
+  };
+
+
+  // useEffectは、第2引数に指定した変数が変更されたら、第1引数の関数を実行します。
+  useEffect(() => {
+    // ファイルが空の場合は、実行しない
+    if (file) {
+      // URL.createObjectURLは、ファイルを引数に受け取り、<video>タグで読み込み可能なローカルURLを生成します。
+      // URL.createObjectURLで生成されたURLを<video>のsrcにわたすことでファイルを動画で表示できます。
+      setVideoURL(URL.createObjectURL(file));
+    }
+
+
+    // file変数が変更されるのを監視する
+    // fileの変更を検知したら、上記を実行する
+    // fileはstateで宣言された変数でなければ、変更の検知はされない。
+  }, [file]);
+
+  return (
+    <div>
+        {/*
+          これは、React流の`if文`です。
+          if(videoURL){<CardMedia />}と同じ意味を成します。
+          しかし、JSX内では`if文`が使用できないため、このような特殊な書き方をしています。
+          この書き方を使用するときは、この部分の全体を"{}"で囲むことをお忘れなく。
+
+          <CardMedia />のVideoPlayerCardコンポーネントで使用し書き方と同じです。
+        */}
+        {videoURL && <CardMedia component="video" src={videoURL} controls />}
+
+        <input type="file" hidden ref={inputRef} onChange={selectedFile} />
+        <Button onClick={handleClick}>ファイルを選択</Button>
+    </div>
+  );
+};
+```
+
+上記のコードでの画面表示を確認してみましょう。
+
+![video from file]()
+
+ファイルを選択したら、ファイルの動画を表示できていることが確認できるかと思います。
+
+それでは、次に、`4. 動画からサムネイルを生成`の処理を記述し、動画からサムネイルを生成してみましょう。
+
+流れとしては、
+
+1. videoURL から新たに`<video>`を生成
+2. `<video>`から複数枚のサムネイル画像を切り抜き
+3. 切り抜いた画像のローカル URL を state に格納していく
+
+かなり複雑な作業になってくるので、コードを注意深く見て行ってください。
+
+```TSX
+// src/pages/Upload/VideoSelector/index.tsx
+
+import { Button, CardMedia, Grid, Typography } from "@material-ui/core";
+
+import { useState, useRef, ChangeEvent,useEffect } from "react";
+
+export const VideoSelect = () => {
+  const [file, setFile] = useState<File>();
+  const [videoURL, setVideoURL] = useState<string>();
+
+
+  // 追加
+  // サムネイルの画像URLを格納する配列state
+  const [thumbnailURLs, setThumbnailURLs] = useState<string[]>([]);
+
+  // サムネイルを生成する関数
+  const createThumbnail = (videoRefURL: string) => {
+    // サムネイル生成のための準備
+    // canvasタグを使って、<video>のビューを転写する
+    // 詳しく知りたい方はhttps://shanabrian.com/web/javascript/canvas-image.php
+    const video = document.createElement("video");
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+
+
+    // <video>の動画の読み込みが終わったら、<canvas>に<video>と同じサイズにリサイズ
+    video.onloadeddata = () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      video.currentTime = 0;
+    };
+
+    // video.currentTime が変更されるたびに呼び出される関数(onseeked)を指定する
+    // video.currentTimeの時のvideoのビュー表示を<canvas>に転写して画像を生成
+    // video.currentTime が動画の最後になるまで繰り返す
+    video.onseeked = () => {
+      if (video.currentTime >= video.duration || !context) return;
+
+      //  <video>のビューを<canvas>に転写
+      context.drawImage(video, 0, 0);
+
+      // 配列のstateを更新する
+      // prev: 変更前のstateの値
+      // [...prev,canvas.toDataURL("image/jpeg")]
+      // →以前のstateを値を保ちつつ、新しい値を配列に挿入している
+      // イメージとしては、array.append(value)
+      // 詳しくは：https://zenn.dev/gunners6518/articles/4c06488cfa402e
+      setThumbnailURLs((prev) => [...prev, canvas.toDataURL("image/jpeg")]);
+      video.currentTime += Math.ceil(video.duration / 3);
+    };
+
+    // 動画の読み込み
+    video.src = videoRefURL;
+    video.load();
+  };
+
+
+  const selectedFile = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.currentTarget.files?.length) {
+      setFile(event.currentTarget.files[0]);
+    }
+  };
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleClick = () => {
+    inputRef.current?.click();
+  };
+  useEffect(() => {
+    if (file) {
+
+      // 追加
+      // videoURLをsetVideoURLとcreateThumbnailにそれぞれ渡す
+      const videoURL = URL.createObjectURL(file);
+      setVideoURL(videoURL);
+      createThumbnail(videoURL);
+    }
+
+  }, [file]);
+
+  return (
+    <div>
+        {/*
+          ファイルを選択したら、動画とサムネイルを表示
+        */}
+        {videoURL && (
+          <div>
+            <CardMedia component="video" src={videoURL} controls />
+
+            {/*
+              サムネイルを表示
+            */}
+            <Typography>サムネイル</Typography>
+
+            {/*
+              サムネイルをカラム表示
+            */}
+            <Grid container spacing={2}>
+
+              {/*
+                配列の中身を同じコンポーネントで複数表示したい場合の記法
+                mapはJavaScript特有の記法です
+              */}
+              {thumbnailURLs.map((url) => {
+                return (
+                  <Grid item xs={4}>
+                    <CardMedia image={url} style={{ paddingTop: "56.25%" }} />
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </div>
+        )}
+
+
+        <input type="file" hidden ref={inputRef} onChange={selectedFile} />
+
+        {/*
+          videoURLがセットされたら、ボタンを非表示
+        */}
+        {!videoURL && <Button onClick={handleClick}>ファイルを選択</Button>}
+    </div>
+  );
+};
+
+
+```
+
+`createThumbnail`の関数の処理がサムネイルを作成するための処理になっています。
+
+ここの処理はずべてメモリ上で処理されるので、`<video>`や`<canvas>`などの HTML タグを生成していますが、画面表示はされません。
+
+この関数の処理が何をしているかを知りたい方は、[こちらの記事]()をご確認ください。
+
+かなり複雑な処理になってきましたね！
+
+こういう時こそ、コンポーネントの分割を！...と言いたいところですが、このコンポーネントを分割しようとすると今以上に複雑なロジックを理解しないといけません。
+
+とりあえずは画面表示を優先してコンポーネントの分割はまた後で行いたいと思います。
+
+![video thumnanil]()
+
+軽くスタリングを軽く整えていきましょう。
+
+```TSX
+// pages/Upload/VideoSelector/style.ts
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  root: {
+    display: "flex",
+    minHeight: 300,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textPadding: {
+    paddingTop: 20,
+    paddingBottom: 10,
+  },
+  thumbnailContent: {
+    paddingBottom: 30,
+  },
+  full: {
+    width: "100%",
+  },
+});
+
+```
+
+スタリングを適用していきます。
+
+```TSX
+
+import { Button, CardMedia, Grid, Typography } from "@material-ui/core";
+import { useState, useRef, ChangeEvent, useEffect } from "react";
+
+// スタイルimport
+import useStyles from "./style";
+
+export const VideoSelect = () => {
+  // スタイル生成
+  const styles = useStyles();
+
+  // 略
+  // ファイル選択とサムネイル生成処理
+
+
+  return (
+    {/* スタリング適用 */}
+    <div className={styles.root}>
+
+
+      {videoURL && (
+        <div className={styles.full}>
+          <CardMedia component="video" src={videoURL} controls />
+
+          {/* スタリング適用 */}
+          <Typography className={styles.textPadding}>サムネイル</Typography>
+
+          {/* スタリング適用 */}
+          <Grid container spacing={2} className={styles.thumbnailContent}>
+            {thumbnailURLs.map((url) => {
+              return (
+                <Grid item xs={4}>
+                  <CardMedia image={url} style={{ paddingTop: "56.25%" }} />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </div>
+      )}
+
+      <input type="file" hidden ref={inputRef} onChange={selectedFile} />
+
+      {/* ボタンのスタイルを調整 */}
+      {!videoURL && <Button onClick={handleClick}>ファイルを選択</Button>}
+    </div>
+  );
+};
+
+```
+
+いい感じですね
+
+![upload right component]()
+
+次に、右側の入力コンポーネントを作成して、`Upload`コンポーネントを完成させましょう。
+
+```TSX
+// src/pages/Upload/UploadForm/index.tsxを作成
+// index.tsxのコード
+
+import { Button, TextField, Typography } from "@material-ui/core";
+
+export const UploadForm = () => {
+  return (
+    <>
+      <label>
+        <Typography variant="body2">タイトル</Typography>
+        <TextField size="small" fullWidth variant="outlined" />
+      </label>
+
+      <label>
+        <Typography variant="body2">説明</Typography>
+
+        {/*
+          <textarea>のような入力を作るために、multilineとrows={4}を指定
+        */}
+        <TextField
+          size="small"
+          fullWidth
+          variant="outlined"
+          multiline
+          rows={4}
+        />
+      </label>
+
+      <div>
+        <Button variant="contained" color="primary">
+          動画をアップロード
+        </Button>
+      </div>
+    </>
+  );
+};
+```
+
+`Upload`コンポーネントから`UploadForm`を呼び出しましょう。
+
+```TSX
+// src/pages/Upload/index.tsx
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Grid,
+  Divider,
+} from "@material-ui/core";
+import { UploadForm } from "./UploadForm";
+
+// import
+import { VideoSelect } from "./VideoSelector";
+
+export const Upload = () => {
+  return (
+    <Dialog fullWidth={true} maxWidth="md" open={true}>
+      <DialogTitle>動画のアップロード</DialogTitle>
+      <Divider />
+      <DialogContent>
+        <Grid container spacing={4}>
+          <Grid xs item>
+            <VideoSelect />
+          </Grid>
+          <Divider orientation="vertical" flexItem />
+
+          {/*
+            左側に
+          */}
+          <Grid xs item>
+            {/*
+              UploadFormコンポーネントを表示
+            */}
+            <UploadForm />
+          </Grid>
+        </Grid>
+      </DialogContent>
+    </Dialog>
+  );
+};
+```
+
+画面表示するとフォームが表示されました。
+
+![upload form not styles]()
+
+あとはスタイルを調整して完成です。
+
+```TSX
+// src/pages/Upload/UploadForm/style.tsを作成
+// style.tsのコード
+
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  label: {
+    display: "block",
+    paddingBottom: 40,
+  },
+  butotn: {
+    display: "flex",
+    justifyContent: "center",
+  },
+});
+```
+
+スタイルを適用します。
+
+```TSX
+// src/pages/Upload/UploadForm/index.tsx
+
+import { Button, TextField, Typography } from "@material-ui/core";
+
+// スタイルimport
+import useStyles from "./style";
+
+export const UploadForm = () => {
+  // スタイル生成
+  const styles = useStyles();
+  return (
+    <>
+      {/*
+        スタイル適用
+      */}
+      <label className={styles.label}>
+        <Typography variant="body2">タイトル</Typography>
+        <TextField size="small" fullWidth variant="outlined" />
+      </label>
+
+      {/*
+        スタイル適用
+      */}
+      <label className={styles.label}>
+        <Typography variant="body2">説明</Typography>
+        <TextField
+          size="small"
+          fullWidth
+          variant="outlined"
+          multiline
+          rows={4}
+        />
+      </label>
+
+      {/*
+        スタイル適用
+      */}
+      <div className={styles.butotn}>
+        <Button variant="contained" color="primary">
+          動画をアップロード
+        </Button>
+      </div>
+    </>
+  );
+};
+
+```
+
+`Upload`コンポーネントのデザイン合わせて調整してみましょう。
+
+```TSX
+// src/pages/Upload/style.ts
+
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  body: {
+    marginTop: 40,
+    marginBottom: 40,
+  },
+});
+```
+
+```TSX
+// src/pages/Upload/index.tsx
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Grid,
+  Divider,
+} from "@material-ui/core";
+import { UploadForm } from "./UploadForm";
+import { VideoSelect } from "./VideoSelector";
+
+// import
+import useStyles from "./style";
+
+export const Upload = () => {
+
+  // スタイル生成
+  const styles = useStyles();
+  return (
+    <Dialog fullWidth={true} maxWidth="md" open={true}>
+      <DialogTitle>動画のアップロード</DialogTitle>
+      <Divider />
+
+      {/*
+        スタイルを適用
+      */}
+      <DialogContent className={styles.body}>
+        <Grid container spacing={4}>
+          <Grid xs item>
+            <VideoSelect />
+          </Grid>
+          <Divider orientation="vertical" flexItem />
+          <Grid xs item>
+            <UploadForm />
+          </Grid>
+        </Grid>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+
+```
+
+`Upload`コンポーネントのデザインができました。
+
+![upload page]()
+
+> ボタンの色が気になる方がいるかも知れません。  
+> これは、Material-UI のデフォルトテーマで設定されている`primary`というカラーが紫で設定されているためです。  
+> もし、カラーをデザイン通りにしたい場合は、`<ThemeProvider>`で設定している`theme`を修正し見てください。  
+> 参考：[テーマのカラーパレット](https://material-ui.com/ja/customization/palette/)
+
 ## 認証画面のデザイン作成
+
+最後に、ログイン、新規会員登録の画面をデザインして行きます。
+
+皆さんもだいぶ React のコーディングに慣れてきたと思うので、今までより説明を少なくしながらテンポよく、デザインを作成していきます。
+
+まずは、ログイン画面からデザインしていきます。
+
+```TSX
+// src/pages/Login/index.tsxを作成
+import { Button, Card, TextField, Typography } from "@material-ui/core";
+import { Logo } from "../../compoennts/Logo";
+import useStyles from "./style";
+export const Login = () => {
+  const styles = useStyles();
+  return (
+    <Card className={styles.root} variant="outlined">
+      {/* ロゴコンポーネント */}
+      <div className={`${styles.logo} ${styles.margin}`}>
+        <Logo />
+      </div>
+
+      {/* タイトルコンポーネント */}
+      <Typography className={styles.margin} component="h1" variant="h5">
+        ログイン
+      </Typography>
+
+      {/* メールアドレスフィールド */}
+      <label className={`${styles.label} ${styles.margin}`}>
+        <Typography>メールアドレス</Typography>
+        <TextField
+          type="email"
+          required
+          size="small"
+          fullWidth
+          variant="outlined"
+        />
+      </label>
+
+      {/* パスワードフィールド */}
+      <label className={`${styles.label} ${styles.margin}`}>
+        <Typography>パスワード</Typography>
+        <TextField
+          type="password"
+          required
+          size="small"
+          fullWidth
+          variant="outlined"
+        />
+      </label>
+
+      {/* Submitボタン */}
+      <div className={styles.margin}>
+        <Button variant="contained" color="primary">
+          ログイン
+        </Button>
+      </div>
+
+      <div>
+        <Button href="#link" color="primary">
+          アカウント作成はこちら
+        </Button>
+      </div>
+      <div>
+        <Button href="#link" color="primary">
+          パスワードを忘れた場合はこちら
+        </Button>
+      </div>
+    </Card>
+  );
+};
+```
+
+```TSX
+// src/pages/Login/style.tsを作成
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  root: {
+    width: "95%",
+    maxWidth: 550,
+    padding: "50px 70px",
+  },
+  margin: {
+    marginBottom: 40,
+  },
+  logo: {
+    width: 80,
+  },
+  label: {
+    display: "block",
+  },
+});
+```
+
+ここまでで、一度`Route.tsx`からログインコンポーネントを表示してみましょう。
+
+```TSX
+// src/Route.tsx
+
+import { Navigate, useRoutes } from "react-router-dom";
+import { HomeLayout } from "./layouts/Home";
+import { SideLessHomeLayout } from "./layouts/SideLessHome";
+import { SimpleLayout } from "./layouts/Simple";
+import { Home } from "./pages/Home";
+import { Upload } from "./pages/Upload";
+import { Watch } from "./pages/Watch";
+
+// <Login>import
+import { Login } from "./pages/Login";
+
+export const RootRouter = () => {
+  return useRoutes([
+    {
+      element: <HomeLayout />,
+      children: [
+        { path: "/", element: <Home /> },
+
+        // `Header`と`Sidebar`があるレイアウトのため、<HomeLayout>が指定しているelementで`upload`を呼び出します。
+        { path: "upload", element: <Upload /> },
+      ],
+    },
+
+    {
+      element: <SideLessHomeLayout />,
+      children: [
+        { path: "watch", element: <Navigate to="/" /> },
+        { path: "watch/:videId", element: <Watch /> },
+      ],
+    },
+
+    {
+      element: <SimpleLayout />,
+      children: [
+        // <Login>コンポーネントを'/login'を表示
+        { path: "login", element: <Login /> },
+        { path: "signup", element: <div>新規作成</div> },
+        { path: "forget", element: <div>パスワードリセット</div> },
+        { path: "404", element: <div>Not Found</div> },
+        { path: "*", element: <Navigate to="/404" /> },
+      ],
+    },
+    { path: "*", element: <Navigate to="/404" /> },
+  ]);
+};
+
+```
+
+ここまでで`/logion`URL を画面表示してみます。
+
+![simple layout login]()
+
+最初に作成した余分な「Simple」が表示されているのと、フォームの表示が左側によっているのでデザインを修正します。
+
+```TSX
+// src/layouts/Simple/index.tsx
+
+import { Outlet } from "react-router-dom";
+// スタイルimport
+import useStyles from "./style";
+
+export const SimpleLayout = () => {
+  // スタイル生成
+  const styles = useStyles();
+  return (
+    // スタイル適用
+    <div className={styles.root}>
+      <Outlet />
+    </div>
+  );
+};
+```
+
+```TS
+// src/layouts/Simple/style.tsを生成
+
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  root: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100%",
+  },
+});
+```
+
+もう一度画面表示してみると、デザイン通りきれいに表示されました。
+
+全く同じ要領で、`<Signup>`と`<ForgetPassForm>`コンポーネントを作成していきたいと思います。
+
+`<Signup>`の作成
+
+```TSX
+// src/pages/Signup/index.tsxを作成
+// index.tsxのコード
+
+import { Button, Card, TextField, Typography } from "@material-ui/core";
+import { Logo } from "../../compoennts/Logo";
+import useStyles from "./style";
+
+export const Signup = () => {
+  const styles = useStyles();
+  return (
+    <Card className={styles.root} variant="outlined">
+      {/* ロゴコンポーネント */}
+      <div className={`${styles.logo} ${styles.margin}`}>
+        <Logo />
+      </div>
+
+      {/* タイトルコンポーネント */}
+      <Typography className={styles.margin} component="h1" variant="h5">
+        新規アカウント登録
+      </Typography>
+
+      {/* 名前フィールド */}
+      <label className={`${styles.label} ${styles.margin}`}>
+        <Typography>名前</Typography>
+        <TextField required size="small" fullWidth variant="outlined" />
+      </label>
+
+      {/* メールアドレスフィールド */}
+      <label className={`${styles.label} ${styles.margin}`}>
+        <Typography>メールアドレス</Typography>
+        <TextField
+          type="email"
+          required
+          size="small"
+          fullWidth
+          variant="outlined"
+        />
+      </label>
+
+      {/* パスワードフィールド */}
+      <label className={`${styles.label} ${styles.margin}`}>
+        <Typography>パスワード</Typography>
+        <TextField
+          type="password"
+          required
+          size="small"
+          fullWidth
+          variant="outlined"
+        />
+      </label>
+
+      {/* Submitボタン */}
+      <div className={styles.margin}>
+        <Button variant="contained" color="primary">
+          新規作成
+        </Button>
+      </div>
+
+      <div>
+        <Button href="#link" color="primary">
+          ログインはこちら
+        </Button>
+      </div>
+    </Card>
+  );
+};
+
+```
+
+```TS
+// src/pages/Signup/style.tsを作成
+// style.tsのコード
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  root: {
+    width: "95%",
+    maxWidth: 550,
+    padding: "50px 70px",
+  },
+  margin: {
+    marginBottom: 40,
+  },
+  logo: {
+    width: 80,
+  },
+  label: {
+    display: "block",
+  },
+});
+
+```
+
+`<Signup>`コンポーネントを`/signup`URL で表示します。
+
+```TSX
+// src/Route.tsx
+import { Navigate, useRoutes } from "react-router-dom";
+import { HomeLayout } from "./layouts/Home";
+import { SideLessHomeLayout } from "./layouts/SideLessHome";
+import { SimpleLayout } from "./layouts/Simple";
+import { Home } from "./pages/Home";
+import { Upload } from "./pages/Upload";
+import { Watch } from "./pages/Watch";
+import { Login } from "./pages/Login";
+
+// <Signup>import
+import { Signup } from "./pages/Signup";
+
+export const RootRouter = () => {
+  return useRoutes([
+    {
+      element: <HomeLayout />,
+      children: [
+        { path: "/", element: <Home /> },
+        { path: "upload", element: <Upload /> },
+      ],
+    },
+
+    {
+      element: <SideLessHomeLayout />,
+      children: [
+        { path: "watch", element: <Navigate to="/" /> },
+        { path: "watch/:videId", element: <Watch /> },
+      ],
+    },
+
+    {
+      element: <SimpleLayout />,
+      children: [
+        { path: "login", element: <Login /> },
+        // <Signup>コンポーネントを'/signup'を表示
+        { path: "signup", element: <Signup /> },
+        { path: "forget", element: <div>パスワードリセット</div> },
+        { path: "404", element: <div>Not Found</div> },
+        { path: "*", element: <Navigate to="/404" /> },
+      ],
+    },
+    { path: "*", element: <Navigate to="/404" /> },
+  ]);
+};
+```
+
+`/signup`で`<Signup>`コンポーネントを表示できました。
+
+![signup page]()
+
+最後に、パスワードを再発行する画面をデザインします。
+
+```TSX
+// src/pages/ForgetPassForm/index.tsx
+
+import { Button, Card, TextField, Typography } from "@material-ui/core";
+import useStyles from "./style";
+
+export const ForgetPassForm = () => {
+  const styles = useStyles();
+  return (
+    <Card className={styles.root} variant="outlined">
+      {/* タイトルコンポーネント */}
+      <Typography className={styles.margin} component="h1" variant="h5">
+        パスワードの再発行
+      </Typography>
+
+      {/* メールアドレスフィールド */}
+      <label className={`${styles.label} ${styles.margin}`}>
+        <Typography>メールアドレス</Typography>
+        <TextField
+          type="email"
+          required
+          size="small"
+          fullWidth
+          variant="outlined"
+        />
+      </label>
+
+      {/* Submitボタン */}
+      <div className={styles.margin}>
+        <Button variant="contained" color="primary">
+          再発行
+        </Button>
+      </div>
+
+      <div>
+        <Button href="#link" color="primary">
+          ログインはこちら
+        </Button>
+      </div>
+    </Card>
+  );
+};
+
+```
+
+```TS
+// src/pages/ForgetPassForm/style.ts
+
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  root: {
+    width: "95%",
+    maxWidth: 550,
+    padding: "50px 70px",
+  },
+  margin: {
+    marginBottom: 40,
+  },
+  label: {
+    display: "block",
+  },
+});
+```
+
+`/forget`URL で`<ForgetPassForm>`コンポーネントを表示します
+
+```TSX
+// src/Route.tsx
+
+import { Navigate, useRoutes } from "react-router-dom";
+import { HomeLayout } from "./layouts/Home";
+import { SideLessHomeLayout } from "./layouts/SideLessHome";
+import { SimpleLayout } from "./layouts/Simple";
+import { Home } from "./pages/Home";
+import { Upload } from "./pages/Upload";
+import { Watch } from "./pages/Watch";
+import { Login } from "./pages/Login";
+import { Signup } from "./pages/Signup";
+
+// <ForgetPassForm>import
+import { ForgetPassForm } from "./pages/ForgetPassForm";
+
+export const RootRouter = () => {
+  return useRoutes([
+    {
+      element: <HomeLayout />,
+      children: [
+        { path: "/", element: <Home /> },
+        { path: "upload", element: <Upload /> },
+      ],
+    },
+
+    {
+      element: <SideLessHomeLayout />,
+      children: [
+        { path: "watch", element: <Navigate to="/" /> },
+        { path: "watch/:videId", element: <Watch /> },
+      ],
+    },
+
+    {
+      element: <SimpleLayout />,
+      children: [
+        { path: "login", element: <Login /> },
+        { path: "signup", element: <Signup /> },
+        // <ForgetPassForm>コンポーネントを'/forget'を表示
+        { path: "forget", element: <ForgetPassForm /> },
+        { path: "404", element: <div>Not Found</div> },
+        { path: "*", element: <Navigate to="/404" /> },
+      ],
+    },
+    { path: "*", element: <Navigate to="/404" /> },
+  ]);
+};
+
+```
+
+`/forget`で`<ForgetPassForm>`コンポーネントを表示できました。
+
+![forget pages]()
+
+お気づきの方もいらっしゃるかもしれませんが、このログインや新規アカウント登録のコンポーネントはコンポーネントの分割が可能です。
+
+特に、`style.ts`は全て全く同じものを使用しています。
+
+これは確実にコンポーネント分割の合図です。
+
+もし、この段階でコンポーネントの分割に挑戦してみたい方は、ぜひコンポーネントを分割してみて、共通化してみてください。
+
+今回気をつけることは、デザインは全て同じでも、表示するべきコンテンツがそれぞれで違うということです。
+
+コンポーネントに渡す`props`を工夫して、共通のコンポーネントデザインを流用しつつ、コンテンツを出し分ける必要があります。
+
+
+### まとめ
+
+この週では、アプリケーション全体のデザインをまとめて作成しきりました。
+
+
+じつはまだまだデザイン的に詰めるれる箇所や作成できていないコンポーネントもあります。
+
+こちらに関しては、今後、ロジックなどが入ってきた際に一緒に実装できればと思います。
+
+お疲れさまでした。
+
+次週以降も引き続き、Bootcampでの学習を継続していきましょう！
+

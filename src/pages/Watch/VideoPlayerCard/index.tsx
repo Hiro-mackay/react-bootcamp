@@ -27,7 +27,7 @@ export const VideoPlayerCard = () => {
       <CardMedia
         component="video"
         controls
-        src="/static/productionID_4763824.mp4"
+        src="/static/production ID_4763824.mp4"
       />
 
       {/* タイトル表示エリア */}
