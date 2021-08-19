@@ -63,9 +63,9 @@
 - [Header のデザインを作成](#header-のデザインを作成)
 - [Sidebar のデザイン作成](#sidebar-のデザイン作成)
 - [ビデオカードのデザイン作成](#ビデオカードのデザイン作成)
-- 動画再生画面のデザイン作成(編集中)
-- 動画アップロード画面のデザイン作成(編集中)
-- 認証画面のデザイン作成(編集中)
+- [動画再生画面のデザイン作成](#動画再生画面のデザイン作成)
+- [動画アップロード画面のデザイン作成](#動画アップロード画面のデザイン作成)
+- [認証画面のデザイン作成](#認証画面のデザイン作成)
 
 # ReactBootcamp 第二回目勉強会ドキュメント
 
@@ -3402,7 +3402,7 @@ export const Watch = () => {
 
 次に動画アップロード画面のデザインを行なっていきます。
 
-![video_uploader_design]()
+![video_uploader_design](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/video_uploader_design.png?raw=true)
 
 動画アップロードの画面では、Material-UI の[Dialogs コンポーネント](https://material-ui.com/components/dialogs/)を使用して、モーダルのようなデザインを実現します。
 
@@ -3487,7 +3487,7 @@ export const RootRouter = () => {
 
 画面を表示してみましょう。[http://localhost:3000/upload](http://localhost:3000/upload)
 
-![upload dialog]()
+![upload dialog](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/upload_dialog.png?raw=true)
 
 ダイアログの中にアップロード用のフォームをデザインしていきます。
 
@@ -3495,7 +3495,7 @@ export const RootRouter = () => {
 
 そこで、ファイル選択後のデザインを表示するために、ファイル選択を行うロジックも合わせて実装していきます。
 
-![upload file select]()
+![video_uploader_design](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/video_uploader_design.png?raw=true)
 
 初めに、ファイル選択前の「デザインのみ」を実装してきます。
 
@@ -3628,7 +3628,7 @@ export const VideoSelect = () => {
   return (
     <div>
         {/*
-          追記
+          ref={inputRef} 追記
         */}
         <input type="file" hidden ref={inputRef}  />
 
@@ -3678,7 +3678,7 @@ const handleClick = () => {
 
 ここでは、`<Button>`がクリックされた時に実行する関数を定義します。
 
-今回は、「ファイルを選択する」という処理を関数内で記載しています。
+「ファイルを選択する」という処理を関数内で記載しています。
 
 先程、`inputRef.current`には`<input type="file" hidden />`の参照が入ると説明しました。
 
@@ -3697,7 +3697,7 @@ const handleClick = () => {
 
 `inputRef`に`<input type="file" hidden />`の参照を実際に格納する処理を書いています。
 
-useRef で作成した関数を、"ref"にわたすことで、その HTML 要素に直接アクセスできるようになります。
+useRef で作成した関数を"ref"にわたすことで、その HTML 要素に直接アクセスできるようになります。
 
 この処理が終わった後に、`inputRef.current`から、`<input type="file" hidden />`にアクセスできるようになります。
 
@@ -3768,7 +3768,7 @@ export const Upload = () => {
 
 下記のように、「ファイルを選択」をクリックすると、ファイルを選択できるようになります。
 
-![upload file selector]()
+![upload file selector](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/upload_file_selector.png?raw=true)
 
 しかし、ファイルを選択しても、選択後の処理を書いていないので、何も起こりません。
 
@@ -3876,11 +3876,11 @@ const selectedFile = (event: ChangeEvent<HTMLInputElement>) => {
 
 それにより、`<input />`の値(入力値)が変更されるので、`onChange`が実行されます。
 
-イメージとしては、`onClick`はクリック時に実行されるように、`onChange`は入力値の変更で実行されるといった感じです。
+イメージとしては、`onClick`はクリック時に実行されたように、`onChange`は入力値の変更で実行されるといった感じです。
 
 ここで、画面を確認してみましょう。
 
-![select file]()
+![select file](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/select_file.png?raw=true)
 
 無事、選択したファイルのファイル名が確認できました。
 
@@ -3948,7 +3948,7 @@ export const VideoSelect = () => {
 
 上記のコードでの画面表示を確認してみましょう。
 
-![video from file]()
+![video from file](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/video_from_file.png?raw=true)
 
 ファイルを選択したら、ファイルの動画を表示できていることが確認できるかと思います。
 
@@ -4091,7 +4091,7 @@ export const VideoSelect = () => {
 
 `createThumbnail`の関数の処理がサムネイルを作成するための処理になっています。
 
-ここの処理はずべてメモリ上で処理されるので、`<video>`や`<canvas>`などの HTML タグを生成していますが、画面表示はされません。
+ここの処理は全てメモリ上で処理されるので、`<video>`や`<canvas>`などの HTML タグを生成していますが、画面表示はされません。
 
 この関数の処理が何をしているかを知りたい方は、[こちらの記事](https://nannannanan.hatenablog.com/entry/2018/08/28/201344)をご確認ください。
 
@@ -4101,7 +4101,7 @@ export const VideoSelect = () => {
 
 とりあえずは画面表示を優先してコンポーネントの分割はまた後で行いたいと思います。
 
-![video thumnanil]()
+![video thumnanil](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/video_thumnanil.png?raw=true)
 
 軽くスタリングを軽く整えていきましょう。
 
@@ -4185,7 +4185,7 @@ export const VideoSelect = () => {
 
 いい感じですね
 
-![upload left component]()
+![upload left component](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/upload_left_component.png?raw=true)
 
 次に、右側の入力コンポーネントを作成して、`Upload`コンポーネントを完成させましょう。
 
@@ -4275,7 +4275,7 @@ export const Upload = () => {
 
 画面表示するとフォームが表示されました。
 
-![upload form not styles]()
+![upload form not styles](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/upload_form_not_styles.png?raw=true)
 
 あとはスタイルを調整して完成です。
 
@@ -4411,7 +4411,7 @@ export const Upload = () => {
 
 `Upload`コンポーネントのデザインができました。
 
-![upload page]()
+![upload page](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/upload_page.png?raw=true)
 
 > ボタンの色が気になる方がいるかも知れません。  
 > これは、Material-UI のデフォルトテーマで設定されている`primary`というカラーが紫で設定されているためです。  
@@ -4434,6 +4434,7 @@ import useStyles from "./style";
 export const Login = () => {
   const styles = useStyles();
   return (
+    // 全体を囲むCardコンポーネント
     <Card className={styles.root} variant="outlined">
       {/* ロゴコンポーネント */}
       <div className={`${styles.logo} ${styles.margin}`}>
@@ -4568,7 +4569,7 @@ export const RootRouter = () => {
 
 ここまでで`/logion`URL を画面表示してみます。
 
-![simple layout login]()
+![simple layout login](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/simple_layout_login.png?raw=true)
 
 最初に作成した余分な「Simple」が表示されているのと、フォームの表示が左側によっているのでデザインを修正します。
 
@@ -4608,7 +4609,7 @@ export default makeStyles({
 
 もう一度画面表示してみると、デザイン通りきれいに表示されました。
 
-![login page]()
+![login page](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/login_page.png?raw=true)
 
 全く同じ要領で、`<Signup>`と`<ForgetPassForm>`コンポーネントを作成していきたいと思います。
 
@@ -4760,7 +4761,7 @@ export const RootRouter = () => {
 
 `/signup`で`<Signup>`コンポーネントを表示できました。
 
-![signup page]()
+![signup page](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/signup_page.png?raw=true)
 
 最後に、パスワードを再発行する画面をデザインします。
 
@@ -4884,7 +4885,7 @@ export const RootRouter = () => {
 
 `/forget`で`<ForgetPassForm>`コンポーネントを表示できました。
 
-![forget pages]()
+![forget pages](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/forget_pages.png?raw=true)
 
 お気づきの方もいらっしゃるかもしれませんが、このログインや新規アカウント登録のコンポーネントはコンポーネントの分割が可能です。
 
