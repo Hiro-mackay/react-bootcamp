@@ -1,7 +1,7 @@
 import { Container, Grid } from "@material-ui/core";
 import { VideoPlayerCard } from "./VideoPlayerCard";
 import useStyles from "./style";
-import { VideoHorizontalCard } from "../../compoennts/VideoHorizontalCard";
+import { VideoHorizontalCard } from "../../components/VideoHorizontalCard";
 
 export const Watch = () => {
   const styles = useStyles();

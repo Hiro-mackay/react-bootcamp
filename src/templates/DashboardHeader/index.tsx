@@ -1,7 +1,7 @@
 import { AppBar, Avatar, Grid, IconButton, Toolbar } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import VideoCallIcon from "@material-ui/icons/VideoCall";
-import { Logo } from "../../compoennts/Logo";
+import { Logo } from "../../components/Logo";
 import { SearchBar } from "./SearchBar";
 
 // export defaultしているので、import側でuseStylesと命名します。

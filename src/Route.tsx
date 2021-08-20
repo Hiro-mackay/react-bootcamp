@@ -25,7 +25,7 @@ export const RootRouter = () => {
       element: <SideLessHomeLayout />,
       children: [
         { path: "watch", element: <Navigate to="/" /> },
-        { path: "watch/:videId", element: <Watch /> },
+        { path: "watch/:videoId", element: <Watch /> },
       ],
     },
 
