@@ -1117,7 +1117,7 @@ ReactDOM.render(
 
 ![React Router Dom](https://github.com/Hiro-mackay/react-bootcamp/blob/155a6ac3238de53e3c3ca1caad89945f3aede1d1/assets/react_router_dom.png?raw=true)
 
-上部のアドレスバーの URL を`/watch`や`/login`に変更して見てください。
+上部のアドレスバーの URL を`/watch/videoId`や`/login`に変更して見てください。
 
 画面の表示も変わっているのがわかると思います。
 
@@ -1139,7 +1139,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { RootRouter } from "./Route";
 
-// MaterialーUIの設定類をインポート
+// Material-UIの設定類をインポート
 import { createTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
 
 // Material-UIの「テーマ」を作成する。
@@ -1155,7 +1155,7 @@ ReactDOM.render(
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         {/*
-          ブラウザの違いを吸収し、どのデバイスでは同じように表示する用のCSSを使用する
+          ブラウザの違いを吸収し、どのデバイスでも同じように表示する用のCSSを使用する
         */}
         <CssBaseline />
         <RootRouter />
@@ -1178,7 +1178,7 @@ ReactDOM.render(
 
 `Header`コンポーネントは、複数のページでロジックを内包したコンポーネントです。
 
-なので、`Header`コンポーネントは、`src/templates/header`に構築していきます。
+なので、`Header`コンポーネントは、`src/templates/DashboardHeader`に構築していきます。
 
 ```TSX
 // src/templates/DashboardHeader/index.tsxを作成
@@ -2205,8 +2205,9 @@ export const VideoCard = () => {
 
       {/*
         サムネイルの表示
-        今回はno-image.jpgという画像を作成し、デフォルトのサムネイルとした。
-        このno-image.jpgを使いたい方は、/public/staticから自由にダウンロードしてください。
+        今回はno-image.jpgという画像を作成し、デフォルトのサムネイルとしました。
+        ダウンロードはこちら：https://github.com/Hiro-mackay/react-bootcamp/blob/master/public/static/no-image.jpg?raw=true
+        ダウンロードした画像を、`public/static/no-image.jpg`となるように配置してください。
       */}
       <CardMedia
         image="/static/no-image.jpg"
@@ -2889,7 +2890,7 @@ export const Watch = () => {
 残りのタイトルや、説明文も作ってみましょう。
 
 ```TSX
-// src/pages/Watch/VideoPlayerCard
+// src/pages/Watch/VideoPlayerCard/index.tsx
 import {
   Avatar,
   Card,
@@ -4174,7 +4175,7 @@ export const VideoSelect = () => {
       <input type="file" hidden ref={inputRef} onChange={selectedFile} />
 
       {/* ボタンのスタイルを調整 */}
-      {!videoURL && <Button onClick={handleClick}>ファイルを選択</Button>}
+      {!videoURL && <Button  variant="contained" color="primary"  onClick={handleClick}>ファイルを選択</Button>}
     </div>
   );
 };
