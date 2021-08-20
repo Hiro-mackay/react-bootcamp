@@ -1213,9 +1213,9 @@ export const DashboardHeader = () => {
 };
 ```
 
-これだけで、ページの上部に`Header`が現れます。
+この中に`Header`のデザインを構築していきます。
 
-メニュー用のボタンとロゴを追加していきましょう。
+`Header`左側にあるメニュー用のボタンとロゴを追加していきましょう。
 
 ```TSX
 // src/templates/DashboardHeader/index.tsx
@@ -1295,6 +1295,8 @@ export const Logo = () => {
 
 import { AppBar, Box, IconButton, Toolbar } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
+
+// ロゴ画像をimport
 import { Logo } from "../../components/Logo";
 
 export const DashboardHeader = () => {
@@ -1315,9 +1317,65 @@ export const DashboardHeader = () => {
 };
 ```
 
-しかし、プロパティを指定しても、デザインをするのには限界があります。
+ここまでのコードを画面に表示してみましょう。
+
+画面表示するためには、`<DashboardHeader>`を呼び出して、表示する場所を指定する必要があります。
+
+`<DashboardHeader>`を呼び出すべき場所は、`Header`がデザイン内に含まれる`layout`コンポーネントです。
+
+つまり、`src/layouts/Home/index.tsx`と`src/layouts/SideLessHome/index.tsx`のコンポーネントです。
+
+では早速追加しましょう。
+
+```TSX
+// src/layouts/Home/index.tsx
+
+import { Outlet } from "react-router-dom";
+
+// DashboardHeaderをimport
+import { DashboardHeader } from "../../templates/DashboardHeader";
+
+export const HomeLayout = () => {
+  return (
+    <div>
+      {/*
+        DashboardHeaderコンポーネントを表示する
+      */}
+      <DashboardHeader />
+
+      <Outlet />
+    </div>
+  );
+};
+```
+
+```TSX
+// src/layouts/SideLessHome/index.tsx
+
+import { Outlet } from "react-router-dom";
+
+// DashboardHeaderをimport
+import { DashboardHeader } from "../../templates/DashboardHeader";
+
+export const SideLessHomeLayout = () => {
+  return (
+    <div>
+      {/*
+        DashboardHeaderコンポーネントを表示する
+      */}
+      <DashboardHeader />
+
+      <Outlet />
+    </div>
+  );
+};
+```
+
+`npm start`して`http://localhost:3000`にアクセスしてみましょう。
 
 ![Header miss design](https://github.com/Hiro-mackay/react-bootcamp/blob/898fda0d5e492dcca294acefbd54b01c4bc694a2/assets/header_miss_design.png?raw=true)
+
+画面表示はできましたが、今のままではデザインが違います。
 
 そこで、`styles.ts`というファイルを作り、ここにカスタム用のスタイリングを書き、既存のスタイリングを上書きします。
 
@@ -1409,6 +1467,8 @@ export const Logo = () => {
 ```
 
 Header のロゴ部分ができました。
+
+![logo header](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/logo_header.png?raw=true)
 
 引き続き、検索バーと右側プロフィール欄を作っていきましょう。
 
@@ -1572,57 +1632,7 @@ export const DashboardHeader = () => {
 
 ここまでで、`<DashboardHeader>`のデザインがほぼ完成しました。
 
-それでは、この`<DashboardHeader>`を画面に表示していきましょう。
-
-`<DashboardHeader>`を呼び出すべき場所は、`Header`がデザイン内に含まれる`layout`コンポーネントです。
-
-つまり、`src/layouts/Home/index.tsx`と`src/layouts/SideLessHome/index.tsx`のコンポーネントです。
-
-では早速追加しましょう。
-
-```TSX
-// src/layouts/Home/index.tsx
-
-import { Outlet } from "react-router-dom";
-
-// DashboardHeaderをimport
-import { DashboardHeader } from "../../templates/DashboardHeader";
-
-export const HomeLayout = () => {
-  return (
-    <div>
-      {/*
-        DashboardHeaderコンポーネントを表示する
-      */}
-      <DashboardHeader />
-
-      <Outlet />
-    </div>
-  );
-};
-```
-
-```TSX
-// src/layouts/SideLessHome/index.tsx
-
-import { Outlet } from "react-router-dom";
-import { DashboardHeader } from "../../templates/DashboardHeader";
-
-export const SideLessHomeLayout = () => {
-  return (
-    <div>
-      {/*
-        DashboardHeaderコンポーネントを表示する
-      */}
-      <DashboardHeader />
-
-      <Outlet />
-    </div>
-  );
-};
-```
-
-これで、`npm start`をして画面を表示してみましょう。
+画面表示を確認してみましょう。
 
 ![Header left side](https://github.com/Hiro-mackay/react-bootcamp/blob/898fda0d5e492dcca294acefbd54b01c4bc694a2/assets/header_left_side.png?raw=true)
 
