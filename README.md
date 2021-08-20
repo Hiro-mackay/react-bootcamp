@@ -1410,8 +1410,6 @@ export const Logo = () => {
 
 Header のロゴ部分ができました。
 
-![Logo Header](https://github.com/Hiro-mackay/react-bootcamp/blob/898fda0d5e492dcca294acefbd54b01c4bc694a2/assets/logo_header.png?raw=true)
-
 引き続き、検索バーと右側プロフィール欄を作っていきましょう。
 
 検索バーを作成します。
@@ -3413,7 +3411,7 @@ export const Watch = () => {
 ```TSX
 // src/pages/Upload/index.tsx
 
-import { Dialog, DialogTitle, DialogContent } from "@material-ui/core";
+import { Dialog, DialogTitle, DialogContent, Divider} from "@material-ui/core";
 
 export const Upload = () => {
   return (
@@ -3574,7 +3572,7 @@ export const VideoSelect = () => {
 ファイルを選択するために、`<input>`を使用します。
 
 ```TSX
-// src/pages/Watch/VideoPlayerCard/index.tsx
+// src/pages/Upload/VideoSelector/index.tsx
 
 import { Button } from "@material-ui/core";
 
