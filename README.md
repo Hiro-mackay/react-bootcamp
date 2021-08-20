@@ -270,7 +270,7 @@ GraphQL とは、Facebook が開発している Web API のための規格です
 
 では、反対に GraphQL の場合、どうなるか見ていきましょう。
 
-![GraphQL architecture](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/graphql_architecture.png?raw=true)
+![GraphQL architecture](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/graphql_api_architecture.png?raw=true)
 
 GraphQL ではエンドポイントがただ一つのみ提供されます。
 
