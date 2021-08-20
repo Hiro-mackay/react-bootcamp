@@ -4427,7 +4427,7 @@ export const Upload = () => {
 ```TSX
 // src/pages/Login/index.tsxを作成
 import { Button, Card, TextField, Typography } from "@material-ui/core";
-import { Logo } from "../../compoennts/Logo";
+import { Logo } from "../../components/Logo";
 import useStyles from "./style";
 export const Login = () => {
   const styles = useStyles();
@@ -4618,7 +4618,7 @@ export default makeStyles({
 // index.tsxのコード
 
 import { Button, Card, TextField, Typography } from "@material-ui/core";
-import { Logo } from "../../compoennts/Logo";
+import { Logo } from "../../components/Logo";
 import useStyles from "./style";
 
 export const Signup = () => {
