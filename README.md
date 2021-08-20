@@ -86,11 +86,11 @@
 - Heroku : PaaS
   - PostgreSQL : データベースの実態
 
-![bootcamp infra list]()
+![bootcamp infra list](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/bootcamp_infra_list.jpg?raw=true)
 
 それぞれのクラウドは以下のようなアーキテクチャで関連しています。
 
-![bootcamp infra architecture]()
+![bootcamp infra architecture](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/bootcamp_infra_architecture.jpg?raw=true)
 
 データの保存場所としての Hasura と Heroku、ユーザーの認証のための Firebase Authentication、動画を保存する外レージとしての Firebase Storage と言う形で、それぞれを必要に応じて呼び出し分ける形にしています。
 
@@ -141,11 +141,11 @@
 
 - ### 枯れた技術を踏襲しつつトレンドにもノッていく
 
-今回の構成で一番のポイント`GraphQL`を用いた構成になっていることではないでしょうか。
+今回の構成で一番のポイント GraphQL を用いた構成になっていることではないでしょうか。
 
-`GraphQL`はここ数年でたくさんの運用事例が生まれ、`Github`や`Airbnb`、`Netflix`などの巨大企業が`GraphQL`での開発を進めています。
+GraphQL はここ数年でたくさんの運用事例が生まれ、`Github`や`Airbnb`、`Netflix`などの巨大企業が GraphQL での開発を進めています。
 
-もう既に`GraphQL`は、革新的な技術からスタンダードな技術へと変貌を遂げつつあります。
+もう既に GraphQL は、革新的な技術からスタンダードな技術へと変貌を遂げつつあります。
 
 とは言え、まだまだ「枯れた技術」の域まではいっていなく、今後も「トレンディングな技術」としてたくさんの導入事例が生まれてくる技術であると思っています。
 
@@ -194,13 +194,183 @@ Firebase にはたくさんのバックエンド処理が用意されていま�
 
 - ### どのくらい便利なのか
 
+この Firebase、例えば React にログイン機能を実装したい場合、たったの 3 ステップでアプリケーションにログインの機能をつけるとことができます。
 
+> Firebase セットアップの詳細は[Firebase の設定](#firebase-の設定)をご覧ください。
 
+1. Firebase のセットアップ
 
+[firebase のコンソール](https://console.firebase.google.com/u/0/)にアクセスして、ご自身の Google アカウントでログインするだけでプロジェクトの作成が可能になります。
+
+![step1 firebase setup](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/step1_firebase_setup.png?raw=true)
+
+2. Firebase API キーの取得
+
+プロジェクトの作成が完了した後に、この Firebase プロジェクトにアクセスするための API キーを取得する事ができます。
+
+![step2 firebase api key](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/step2_firebase_api_key.png?raw=true)
+
+3. React で Firebase を呼び出す。
+
+API キーを React で読み込み、`firebase`のライブラリを使用するだけで、もうログインの機能が実装完了しました。
+
+![step3 firebase login](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/step3_firebase_login.png?raw=true)
+
+たったのこの 3 ステップでアプリケーションにログイン機能を実装することができました。
+
+この恐ろしいほど早い実装が Firebase の威力です。
+
+ただ単純に機能を実装するためには、これだけの簡単さで実装することができます。
+
+今回の Bootcamp ではここから少し踏み込んで、エラー処理やリダイレクト機能を組み込むことで、より使いやすいプロダクトにしていきます。
+
+- ### 驚異の無料枠
+
+もう一つ、Firebase を語る上で、外せないのがその無料枠の規模です。
+
+大抵、クラウド系のサービスは無料枠が設けられていることがほとんどですが、その中でも Firebase は群を抜いて無料枠が充実しています。
+
+[Firebase の料金表](https://firebase.google.com/pricing?hl=ja)
+
+![firebase pricing](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_pricing.png?raw=true)
+
+例えば、今回の認証について、1 ヶ月間に 1 万回の認証までは無料で運用する事ができます。
+
+そして、課金が必要なトラクションになったとしても、1 認証あたり 6 円と急に課金が跳ね上がるといった心配もありません。
+
+ここでも、Google 帝国のパワーは健在です。
 
 ## Hasura について
 
-## GraphQL について
+Hasura とは、GraphQL サーバーを簡単に構築するサービスです。
+
+Hasura の説明の前に、GraphQL の説明を先にしたほうが理解が早いかもしれません。
+
+- ### GraphQL について
+
+GraphQL とは、Facebook が開発している Web API のための規格です。
+
+その実態は、「クエリ言語」と「スキーマ言語」からなります。
+
+技術詳細の前に、GraphQL と RESTfull API との比較を行うことでその概観を把握していきます。
+
+- ### GraphQL と RESTfull API
+
+今までの WEB 開発では、フロントエンドとバックエンドの橋渡しとして REST API を用いた方法でデータのやり取りをしていました。
+
+例えば、`user`データをバックエンドから取得しようとすると、`/user`という API のエンドポイントに`Request`を送信することで、`user`データを取得していました。
+
+![RESTfull api architecture](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/restfull_api_architecture.png?raw=true)
+
+上記であれば、エンドポイントが`user`と`video`の 2 つなのでまたシンプルです。
+
+これが、10 個、50 個とエンドポイントが増えていった場合どうなるでしょうか。
+
+開発も運用もかなり複雑になることが想像できるかと思います。
+
+では、反対に GraphQL の場合、どうなるか見ていきましょう。
+
+![GraphQL architecture](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/graphql_architecture.png?raw=true)
+
+GraphQL ではエンドポイントがただ一つのみ提供されます。
+
+クライアントからは、この唯一提供されるエンドポイントに対して`Request`を送るのみでデータを取得できます。
+
+- ### GraphQL のメリット
+
+GraphQL 最大のメリットは、データの型がしっかり定義されているので、クライアントとサーバー間の食い違いが減少します。
+
+例えば、`User`というデータを取る時、クライアントでもサーバーでも同じ`User`の型を参照する事ができます。
+
+RESTful API での`user`取得
+
+![rest fetch user](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/rest_fetch_user.png?raw=true)
+
+GraphQL API での`user`取得
+
+![graphql fetch user](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/graphql_fetch_user.png?raw=true)
+
+[GraphQL について](#graphql-について)で`「その実態は、「クエリ言語」と「スキーマ言語」からなります。」`と説明しました。
+
+この「クエリ」と「スキーマ」というものをクライアントとサーバーで共有することで、全く同じデータソースのもとデータのやり取りを行うことができます。
+
+クライアントは、どの「クエリ」と「スキーマ」を指定して取得するかに注意すればよく、そのデータを実際にどのように取得するかは GraphQL サーバーに全て一任することができます。
+
+また、サーバーは「クエリ」と「スキーマ」のルールに則ってさえいれば、データを実際にどのように取得するかは開発者に任せられます。
+
+GraphQL では「クエリ」と「スキーマ」が唯一信頼できるデータソースとしてクライアントとサーバーに秩序をもたらします。
+
+また、GraphQL は「秩序ある神エンドポイント`/graphql`」API を提供します。
+
+GraphQL は、RESTful API のようにデータソースごとに無限にエンドポイントを生やすということをすることなく、ただ唯一信頼できる「エンドポイント」と「データソース」を提供します。
+
+他にもたくさんの RESTful API にはないメリットが存在します。
+
+そちらに関しては、ネットの記事のほうが詳しく記載されているので、気になる方は下記をご確認ください。
+
+[アプリ開発の流れを変える「GraphQL」は REST とどう違うのか比較してみた](https://www.webprofessional.jp/rest-2-0-graphql/)
+
+[REST と比較 GraphQL について調べてみた。](https://www.slideshare.net/atsu666/rest-graphql-75297436)
+
+- ### そんな GraphQL を簡単に構築できるのが Hasura です
+
+上記までで、GraphQL を導入するメリットをご理解いただけたと思います。
+
+そんな便利な GraphQL ですが、GraphQL 自体はあくまで「規格」です。
+
+なので、GraphQL が実装されたサーバーを用意しないと、GraphQL を使用することはできません。
+
+GraphQL サーバーの構築に必要なのは、「GraphQL のエンドポイントの作成」「データベースの構築」「クエリやスキーマの実際のデータベースへの処理」「エラー処理」などなどが必要になります。
+
+お気づきの方もおられるかもしれませんが、「GraphQL」は決してバックエンド処理を「書かなくて良い」銀の弾丸なのではなく、あくまでバックエンドとフロントエンドの開発のエクスペリエンスを高めるものでしかありません。
+
+そんな GraphQL を「銀の弾丸」に進化させるサービスが今回使用する Hasura です。
+
+初めに Hasura の説明で`「GraphQL サーバーを簡単に構築するサービスです。」`とご説明しました。
+
+そうです、Hasura はこの便利な GraphQL を簡単に構築する事ができるサービスです。
+
+GraphQL を本当に意味で、バックエンド処理を書かなくて良い銀の弾丸にしてくれるサービスなのです。
+
+- ### Hasura のメリット
+
+Hasura は、簡単に GraphQL サーバーを構築できるサービスなのですが、その中でも嬉しい機能がたくさん用意されています。
+
+1. Web だけで完結
+
+Hasura には Web コンソールが用意されています。
+
+これにより、ブラウザ上で全ての操作が可能になっています。
+
+2. データベースの管理までしてくれる
+
+GraphQL は、あくまでデータフェッチ用のプロキシサーバーでしかなく、データベースの管理は別途必要になります。
+
+Hasura であれば、このデータベースの管理まで自動化してくれています。
+
+Web コンソール上でポチポチするだけで、データベースの構築からテーブルの操作、カラムの管理まで全て Hasura 内で完結させることも可能です。
+
+3. 無料枠がある
+
+Hasura にも無料枠が存在する
+
+無料の条件は「1 分間に 60 リクエストまで」です。
+
+Firebase と比べると、本番環境でユーザーに触ってもらい初めたらすぐに有料プランへのアップデートが必要そうな条件です。
+
+しかし、それまでのテスト段階の開発では、プロダクトをテストしながら実際に動作させる分には十分な枠が用意されています。
+
+4. もとはオープンソースなので、Hasura のエコシステムは Github に
+
+じつは、Hasura はオープンソースとして提供されているので、Wen コンソール経由ではなく、[Hasura Engine](https://github.com/hasura/graphql-engine)で自身で Hsaura を構築することも可能です。
+
+そのため、Hsaura のバグや質問は Github に集約されており、普通のクラウドサービスよりバグ FIX がしやすくなっています。
+
+5. データベースレベルでのセキュリティ
+
+Hasura はパーミッション設定もコンソール上で簡単に構築できます。
+
+フロントエンドエンジニアは SQL を操作することに慣れていない事が多いので、SQL を触らずにデータベースの設定ができることは大変嬉しいですね。
 
 ## Firebase の設定
 
