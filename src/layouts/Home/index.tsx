@@ -1,14 +1,30 @@
 import { Outlet } from "react-router-dom";
+import { DashboardHeader } from "../../templates/DashboardHeader";
+import { Sidebar } from "../../templates/Sidebar";
+import useStyles from "./style";
 
 export const HomeLayout = () => {
+  const styles = useStyles();
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <div className={styles.root}>
       {/* 
-        <Outlet />を配置した箇所に、childrenコンポーネントが展開される
-        childrenコンポーネントとは、Route.tsx内でchildren>elementで指定したコンポーネントである
+        DashboardHeaderコンポーネントを表示する
       */}
-      <Outlet />
+      <DashboardHeader />
+
+      {/* 
+        Sidebarコンポーネント
+      */}
+      <div className={styles.sidebar}>
+        <Sidebar />
+      </div>
+
+      {/* 
+        メインコンポーネント
+      */}
+      <div className={styles.main}>
+        <Outlet />
+      </div>
     </div>
   );
 };
