@@ -155,6 +155,49 @@ GraphQL の裏では、昔ながらの RDB である`PostgreSQL`を採用し、�
 
 ## Firebase について
 
+早速、今回使用するインフラのサービスを説明していきます。
+
+それぞれの説明が不要な場合は、[Firebase の設定](#firebase-の設定)から実際の環境の構築を行なっていってください。
+
+- ### Firebase とは
+
+> Google「君らサービス開発する時、毎回似たようなもの用意したり作るでしょ？それもうやっといたから。まとめて Firebase って呼ぶわ。」  
+> Google「サーバを持ってない？必要ならマシン貸すよ。もしサーバを管理したくないならソースコードだけくれたらそれで勝手にホスティングしてオートスケールするよ」  
+> Google「お金？個人の趣味範囲なら要らんよ」
+>
+> 引用：[わかる！Firebase ～全てのサービスをおつまみ紹介～](https://qiita.com/dogwood008/items/fa95b62ad151f823af70)
+
+Firebase とは、Google が提供するアプリケーションのバックエンド処理を一手に引き受けてくれる Cloud サービスです。
+
+アプリケーション開発で必要になってくるバックエンドの処理を全て一つのプラットフォーム上に統合することで、開発者はバックエンドの処理を意識することなくフロントの開発に専念できるようになります。
+
+いわゆる「サーバーレス」と呼ばれるアーキテクチャであり、「Baas」という名前のサービスです。
+
+- ### Firebase により提供されるサービス
+
+Firebase にはたくさんのバックエンド処理が用意されています。
+
+- [Authentication](https://firebase.google.com/docs/auth?authuser=0) : 認証サービス
+  - メールでログインしたり、Google でログインしたり、Github でログインしたりできる
+- [Cloud Firestore](https://firebase.google.com/docs/firestore?authuser=0) : NoSQL ライクな firebase 専用のデータベース
+  - いわゆるデータベースでできることは大体できる
+- [Cloud Storage](https://firebase.google.com/docs/storage?authuser=0) : ストレージ、ファイルの保存ができる
+  - 低コストのファイル置き場。
+- [Hosting](https://firebase.google.com/docs/hosting?authuser=0) : 静的ファイルのホスティング、主に HTML や JS をホスティングする
+  - Web ページのホスティングが可能。もちろん React のアプリもホスティング可能
+- [Cloud Functions](https://firebase.google.com/docs/functions?authuser=0) : サーバーレスでサーバー処理を実行する
+  - AWS でいうところの Lambda。Node.js で処理を書いてデプロイするだけでバックエンド処理が完成
+
+上記以外にも本当にたくさんの機能群が用意されております。
+
+他の機能を確認したい人は[こちら](https://firebase.google.com/docs?authuser=0)から確認できます。
+
+- ### どのくらい便利なのか
+
+
+
+
+
 ## Hasura について
 
 ## GraphQL について
