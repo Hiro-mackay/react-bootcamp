@@ -3607,7 +3607,7 @@ export const VideoSelect = () => {
 コードの説明は、長くなったので分割して説明していきます。
 
 ```TSX
-// src/pages/Watch/VideoPlayerCard/index.tsx
+// src/pages/Upload/VideoSelector/index.tsx
 // コードの説明は、このコードの下に記載
 import { Button } from "@material-ui/core";
 
