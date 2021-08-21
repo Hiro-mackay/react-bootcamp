@@ -1,4 +1,4 @@
-# ReactBootcamp 第一回勉強会後の開発ドキュメント
+# ReactBootcamp 開発ドキュメント
 
 <details>
 <summary>前回までのBootcamp</summary>
