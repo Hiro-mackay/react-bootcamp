@@ -38,8 +38,10 @@
 - [ ] React で Firebase を呼び出す
 - [ ] React で認証を実装
 - [ ] React でアップローダーを実装
-- [ ] Hasura と GraphQL の設定
-- [ ] React で GraphQL(Apollo Client の構築)
+- [ ] Hasura の設定
+- [ ] データベースの設計
+- [ ] Hsaura でデータを作成する
+- [ ] React で GraphQL
 - [ ] GraphQL Code Generator で爆速開発
 - [ ] JWT トークンで GraphQL をセキュアに
 
@@ -49,16 +51,29 @@
   - [構成理由 1:開発工数の削減](#開発工数の削減)
   - [構成理由 2:なるべく本番環境に近い構成](#なるべく本番環境に近い構成)
   - [構成理由 3:枯れた技術を踏襲しつつ、トレンドにもノッていく](#枯れた技術を踏襲しつつトレンドにもノッていく)
-- [Firebase Authentication について](#firebase-authentication-について)
-- [Firebase Storage について](#firebase-storage-について)
+- [Firebase について](#firebase-について)
+  - [Firebase により提供されるサービス](#firebase-により提供されるサービス)
+  - [どのくらい便利なのか](#どのくらい便利なのか)
+  - [驚異の無料枠](#驚異の無料枠)
 - [Hasura について](#hasura-について)
+  - [GraphQL について](#graphQL-について)
+  - [GraphQL と RESTfull API](#graphql-と-restfull-api)
+  - [GraphQL のメリット](#graphql-のメリット)
+  - [そんな GraphQL を簡単に構築できるのが Hasura です](#そんな-graphql-を簡単に構築できるのが-hasura-です)
+  - [Hasura のメリット](#hasura-のメリット)
 - [GraphQL について](#graphql-について)
 - [Firebase の設定](#firebase-の設定)
 - [React で Firebase を呼び出す](#react-で-firebase-を呼び出す)
+  - [firebase パッケージのインストール](#firebase-パッケージのインストール)
+  - [firebase API Key の設定](#firebase-api-key-の設定)
+  - [](#)
 - [React で認証を実装](#react-で認証を実装)
 - [React でアップローダーを実装](#react-でアップローダーを実装)
 - [Hasura の設定](#hasura-の設定)
 - [データベースの設計](#データベースの設計)
+  - [必要なデータの洗い出し](#必要なデータの洗い出し)
+  - [データのリレーションを設計](#データのリレーションを設計)
+  - [データの正規化](#データの正規化)
 - [Hsaura でデータを作成する](#Hsaura-でデータを作成する)
 - [React で GraphQL](#react-で-graphql)
 - [GraphQL Code Generator で爆速開発](#graphql-code-generator-で爆速開発)
