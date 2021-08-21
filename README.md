@@ -4142,6 +4142,7 @@ export default makeStyles({
 スタリングを適用していきます。
 
 ```TSX
+// src/pages/Upload/VideoSelector/index.tsx
 
 import { Button, CardMedia, Grid, Typography } from "@material-ui/core";
 import { useState, useRef, ChangeEvent, useEffect } from "react";
@@ -4158,7 +4159,7 @@ export const VideoSelect = () => {
 
 
   return (
-    {/* スタリング適用 */}
+    // スタリング適用
     <div className={styles.root}>
 
 
