@@ -4112,7 +4112,7 @@ export const VideoSelect = () => {
 
 ![video thumnanil](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/video_thumnanil.png?raw=true)
 
-軽くスタリングを軽く整えていきましょう。
+スタイリングを軽く整えていきましょう。
 
 ```TSX
 // pages/Upload/VideoSelector/style.ts
@@ -4139,7 +4139,7 @@ export default makeStyles({
 
 ```
 
-スタリングを適用していきます。
+スタイリングを適用していきます。
 
 ```TSX
 // src/pages/Upload/VideoSelector/index.tsx
@@ -4159,7 +4159,7 @@ export const VideoSelect = () => {
 
 
   return (
-    // スタリング適用
+    // スタイリング適用
     <div className={styles.root}>
 
 
@@ -4167,10 +4167,10 @@ export const VideoSelect = () => {
         <div className={styles.full}>
           <CardMedia component="video" src={videoURL} controls />
 
-          {/* スタリング適用 */}
+          {/* スタイリング適用 */}
           <Typography className={styles.textPadding}>サムネイル</Typography>
 
-          {/* スタリング適用 */}
+          {/* スタイリング適用 */}
           <Grid container spacing={2} className={styles.thumbnailContent}>
             {thumbnailURLs.map((url) => {
               return (
@@ -4577,7 +4577,7 @@ export const RootRouter = () => {
 
 ```
 
-ここまでで`/logion`URL を画面表示してみます。
+ここまでで`/login`URL を画面表示してみます。
 
 ![simple layout login](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-2/assets/simple_layout_login.png?raw=true)
 
