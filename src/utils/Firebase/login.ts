@@ -7,7 +7,11 @@ export type FireLoginType = {
   passward: string;
 };
 
-// ログイン処理の実態です。
-// firebaseのログイン処理をラップしているだけです。
+/**
+ * ログイン処理の実態です。
+ * firebaseのログイン処理をラップしているだけです。
+ * @param {email, password} ログインに必要な値
+ * @returns Promise<firebase.auth.UserCredential>
+ */
 export const login = ({ email, passward }: FireLoginType) =>
   fireAuth.signInWithEmailAndPassword(email, passward);

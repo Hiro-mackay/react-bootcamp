@@ -477,7 +477,7 @@ firebase パッケージのインストールは`Material-UI`をインストー�
 npm install firebase
 ```
 
-以上です！ww
+以上です！
 
 - ### firebase API Key の設定
 
@@ -561,7 +561,7 @@ export default firebase;
 
 詳しくはこちらの「[Firebase の API キーは公開しても大丈夫だよ](https://shiodaifuku.io/articles/txEgArhm4Z2BOzrd0IKJ#%E3%82%82%E3%81%86%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%AE%89%E5%85%A8%E3%82%92%E7%A2%BA%E4%BF%9D%E3%81%97%E3%81%9F%E3%81%84%E4%BA%BA%E5%90%91%E3%81%91%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84)」をご確認ください。
 
-そもそも、アプリケーションをパブリックにデプロイしている時点で、全ての通信やリソースへのアクセスはどのような形であれ「可能」です。
+そもそも、アプリケーションをパブリックにデプロイしている時点で、どのような形であれ「全ての通信やリソースへのアクセスは可能」です。
 
 そんな中で、API Key を「見えない」ように隠したぐらいでセキュリティが確保されたと思うなよ、と言うことですね。
 
@@ -601,7 +601,7 @@ React で認証機能を使う前に、Firebase で認証機能を使えるよ�
 
 まずはログイン機能から実装していきます。
 
-Firebase の処理は、後から、Firebase 以外のログイン機能に移行すると言う可能性を考えて、アプリケーションのログインロジックから一歩離れた位置で実装します。
+Firebase の処理は、後から、Firebase 以外のログイン機能に移行するという可能性を考えて、アプリケーションのロジックから一歩離れた位置で実装します。
 
 この実装にすることで、アプリケーションのロジック側から「何か知らんけど、メールアドレスとパスワードを渡すと認証が終わる」といった状態にします。
 
@@ -621,10 +621,15 @@ export type FireLoginType = {
   passward: string;
 };
 
-// ログイン処理の実態です。
-// firebaseのログイン処理をラップしているだけです。
+/**
+ * ログイン処理の実態です。
+ * firebaseのログイン処理をラップしているだけです。
+ * @param {email, password} ログインに必要な値
+ * @returns Promise<firebase.auth.UserCredential>
+ */
 export const login = ({ email, passward }: FireLoginType) =>
   fireAuth.signInWithEmailAndPassword(email, passward);
+
 
 ```
 
@@ -650,8 +655,12 @@ export type FireSignupType = {
   passward: string;
 };
 
-// ログイン処理の実態です。
-// firebaseのログイン処理をラップしているだけです。
+/**
+ * サインアップ処理の実態です。
+ * firebaseのサインアップ処理をラップしているだけです。
+ * @param {email, password} ログインに必要な値
+ * @returns Promise<firebase.auth.UserCredential>
+ */
 export const signup = ({ email, passward }: FireSignupType) =>
   fireAuth.createUserWithEmailAndPassword(email, passward);
 
@@ -668,7 +677,7 @@ import { fireAuth } from "./config";
 export const signout = () => fireAuth.signOut();
 ```
 
-ログアウトはさらにシンプルな実装じっそうになっていますね。
+ログアウトはさらにシンプルな実装になっていますね。
 
 一つ処理を忘れていました。
 
@@ -680,7 +689,11 @@ export const signout = () => fireAuth.signOut();
 
 import { fireAuth } from "./config";
 
-// 今回は引数が一つしか無いので、`email`に直接文字型を指定しています。
+/**
+ * パスワードリセット用のメールを送信する関数
+ * @param email メールアドレス
+ * @returns
+ */
 export const forgetPass = (email: string) =>
   fireAuth.sendPasswordResetEmail(email);
 ```
@@ -693,6 +706,146 @@ export const forgetPass = (email: string) =>
 
 ## React でアップローダーを実装
 
+続いて、Firebase のストレージを設定していきます。
+
+Authentication と同じように設定していきます。
+
+「Firebase コンソール」>「構築」>「Storage」からストレージの設定を行います。
+
+![firebase config storage]()
+
+「始める」を押すと、設定が開始されます。
+
+まず初めに出てくる設定項目はストレージのセキュリティについてです。
+
+これは、ストレージのリソースにどのようなユーザーユーザーはアクセスできるかのルールを設定します。
+
+デフォルトでは、認証されたユーザーがストレージへのアップロードとダウンロードが許可されています。
+
+今は設定できないのでまた後ほど設定します。
+
+「次へ」で次に進みます。
+
+![firebase config storage rule]()
+
+次の設定は、リージョンの設定です。
+
+これは、世界中に存在するサーバーのどこを使用するかを設定します。
+
+処理時間い影響が出てくるので、なるべくユーザーの近いところに置くことをお勧めします。
+
+- asia-northeast1 : 東京
+- asia-northeast2 : 大阪
+
+[その他のリージョン情報](https://firebase.google.com/docs/firestore/locations?hl=ja)
+
+今回は東京(asia-northeast1)を選択します。
+
+![firebase storage region]()
+
+「完了」でストレージの構築が開始されます。
+
+終了するとストレージのコンソールが表示されます。
+
+ここに全てのファイルリソースをを格納していきます。
+
+![firebase storage console]()
+
+先に、ストレージのセキュリティを設定しておきましょう。
+
+コンソールの上部に「Rules」という項目があるので、ここからルールを設定していきます。
+
+![firebase storage rurles]()
+
+初めに説明した通り、デフォルトでは認証されたユーザーのみがファイルのアップロードを許可されています。
+
+今回のアプリケーションでユーザーがアップロードするファイルは以下の通りです。
+
+```
+.
+├── videos
+│   └── [videoId].mp4
+└── thumbnails
+    └── [thumbnailId].png
+```
+
+ユーザーは、動画のアップロード/ダウンロードとサムネイル画像のアップロード/ダウンロードができます。
+
+しかし、ここで、「アップロード」処理はログイン済みのユーザーだけに限定したいです。
+
+そこで、ログイン済みのユーザーには、アップロード/ダウンロードを許可し、ログインしていないユーザーにはダウンロードのみを許可したいです。
+
+この条件を Firebase Storage に反映していきます。
+
+結論だけ記載すると以下のようなルールにします。
+
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /videos/{allPaths=**} {
+      allow read;
+      allow write: if request.auth != null
+    }
+
+    match /thumbnails/{allPaths=**} {
+      allow read;
+      allow write: if request.auth != null
+    }
+  }
+}
+```
+
+![firebase storage rules edit]()
+
+`match /b/{bucket}/o `がこのストレージ全体のパスを指定しています。
+
+`match /videos/{allPaths=**} `が、ストレージ内の`/videos`内のディレクトリに存在する全てのファイルとディレクトリを指定しています。
+
+その中で、`allow read`は全てのリクエストを許可しています。
+
+反対に、`allow write: if request.auth != null`はリクエストがログインされたユーザーのみ許可する形にしています
+
+firebase storage では、リソースにアクセスするときに、自動的に request に様々なデータを付与してリクエストを開始します。
+
+例えば、ログイン済みのユーザーからのリクエストであれば、自動的に`request.auth`に認証情報が格納されます。
+
+今回はこの情報の有無を確認して、ログイン済みユーザーであるかを確認して条件分岐しています。
+
+`thumbnails`も同じような条件で記述しています。
+
+これで、ログイン済みのユーザーのみがアップロードが許可され、他の未認証ユーザーは読み込みのみのセキュリティルールを構築できました。
+
+続いて、React でこの Firebase Storage を呼び出します。
+
+```TS
+// src/utils/Firebase/storage.ts
+
+// firebase のstorageをimport
+import { storage } from "./config";
+
+/**
+ * 必要最低限のアップロード用関数
+ * @param ref : アップロードするファイルの参照を指定する。例：'videos/example.mp4'
+ * @param file : アップロードするファイルそのもの
+ * @returns firebase.storage.UploadTask を返す
+ */
+export const uploader = (ref: string, file: File) =>
+  storage.ref().child(ref).put(file);
+
+/**
+ * 必要最低限のダウンロード用関数
+ * downloader()で取得したURLは、<video src={url}>とすることで、ファイルを直接ダウンロードすることなく、メディアを表示できる。
+ * @param ref : ダウンロードするファイルの参照を指定する。例：'videos/example.mp4'
+ * @returns string  ファイルをダウンロードするためのURLを返す。
+ */
+export const downloader = (ref: string) =>
+  storage.ref().child(ref).getDownloadURL();
+
+```
+
+こちらも後ほど、アプリケーションのロジックから呼び出す形で使用します。
+
 ## Hasura と GraphQL の設定
 
 ## React で GraphQL
@@ -700,3 +853,7 @@ export const forgetPass = (email: string) =>
 ## GraphQL Code Generator で爆速開発
 
 ## JWT トークンで GraphQL をセキュアに
+
+```
+
+```
