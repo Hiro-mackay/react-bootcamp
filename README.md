@@ -57,7 +57,9 @@
 - [React で Firebase を呼び出す](#react-で-firebase-を呼び出す)
 - [React で認証を実装](#react-で認証を実装)
 - [React でアップローダーを実装](#react-でアップローダーを実装)
-- [Hasura と GraphQL の設定](#hasura-と-graphql-の設定)
+- [Hasura の設定](#hasura-の設定)
+- [データベースの設計](#データベースの設計)
+- [Hsaura でデータを作成する](#Hsaura-でデータを作成する)
 - [React で GraphQL](#react-で-graphql)
 - [GraphQL Code Generator で爆速開発](#graphql-code-generator-で爆速開発)
 - [JWT トークンで GraphQL をセキュアに](#jwt-トークンで-graphql-をセキュアに)
@@ -712,7 +714,7 @@ Authentication と同じように設定していきます。
 
 「Firebase コンソール」>「構築」>「Storage」からストレージの設定を行います。
 
-![firebase config storage]()
+![firebase config storage](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_config_storage.png?raw=true)
 
 「始める」を押すと、設定が開始されます。
 
@@ -726,7 +728,7 @@ Authentication と同じように設定していきます。
 
 「次へ」で次に進みます。
 
-![firebase config storage rule]()
+![firebase config storage rule](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_config_storage_rule.png?raw=true)
 
 次の設定は、リージョンの設定です。
 
@@ -741,7 +743,7 @@ Authentication と同じように設定していきます。
 
 今回は東京(asia-northeast1)を選択します。
 
-![firebase storage region]()
+![firebase storage region](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_storage_region.png?raw=true)
 
 「完了」でストレージの構築が開始されます。
 
@@ -749,13 +751,13 @@ Authentication と同じように設定していきます。
 
 ここに全てのファイルリソースをを格納していきます。
 
-![firebase storage console]()
+![firebase storage console](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_storage_console.png?raw=true)
 
 先に、ストレージのセキュリティを設定しておきましょう。
 
 コンソールの上部に「Rules」という項目があるので、ここからルールを設定していきます。
 
-![firebase storage rurles]()
+![firebase storage rurles](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_storage_rurles.png?raw=true)
 
 初めに説明した通り、デフォルトでは認証されたユーザーのみがファイルのアップロードを許可されています。
 
@@ -796,7 +798,7 @@ service firebase.storage {
 }
 ```
 
-![firebase storage rules edit]()
+![firebase storage rules edit](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_storage_rules_edit.png?raw=true)
 
 `match /b/{bucket}/o `がこのストレージ全体のパスを指定しています。
 
@@ -846,14 +848,386 @@ export const downloader = (ref: string) =>
 
 こちらも後ほど、アプリケーションのロジックから呼び出す形で使用します。
 
-## Hasura と GraphQL の設定
+## Hasura の設定
+
+続いて、Hasura の設定をいきます。
+
+Hsaura は下記の URL からアクセスできます。
+
+[Hasura](https://hasura.io/)
+
+![hasura lp](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/hasura_lp.png?raw=true)
+
+「Get Started in 30 seconds」からアカウントを作成していきます。
+
+「Google」「Github」のどちらかでアカウントを登録できます。
+
+![hasura login](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/hasura_login.png?raw=true)
+
+HasuraCloud が初期プロジェクトを作成します。
+
+`Your project is ready`になるまで待機して、「Launch Console」をクリックして、ブラウザーで Hasura コンソールを開きます。
+
+![hasura lunch console](https://hasura.io/docs/latest/_images/create-project1.png)
+
+Hasura のコンソールが表示されたら「Data」>「Manage」> 「Connect Database」でデータベースを作成します。
+
+![hasura connect db](https://hasura.io/docs/latest/_images/connect-db-console1.png)
+
+今回は`Heroku`で作成したデータベースを Hasura で使いたいので、「Create Heroku Database」を選択します。
+
+「Create Database」から新しい Heroku データベースを作成していきます。
+
+![hasura create heroku](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/hasura_create_heroku.png?raw=true)
+
+そうすると、Heroku のログイン画面が出ます。
+
+アカウントをお持ちの方はログインを、持っていない方は新規登録でアカウントを作成してください。
+
+![heroku login](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/heroku_login.png?raw=true)
+
+ログインが完了したら、「Connect」ボタンを押して Heroku と Hasura を接続します。
+
+成功すれば Hasura の方で、データベースが作成されます。
+
+![hasura success db](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/hasura_success_db.png?raw=true)
+
+右上の「View Database」でデータベースを確認できます。
+
+![hasura table home](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/hasura_table_home.png?raw=true)
+
+ここまでで Hasura の設定は終了です。
+
+## データベースの設計
+
+続いて、実際にデータベースにテーブルを作成していきます。
+
+[テーブルとは？となっている人はこちら](https://wa3.i-3-i.info/diff528db.html)
+
+テーブルを作っていくためには、アプリケーション全体のデータベースの設計を考えないといけません。
+
+データベースの設計はアプリケーションが停止してユーザーがいなくなるまで永遠と使い続けるものです。
+
+そのため、本番環境にデプロイするようなアプリケーションでは、慎重にデータベースを作成していきます。
+
+データベースの設計の手順は以下のような形で進めていくと考えています。
+
+1. 必要なデータの洗い出し
+2. データのリレーションを設計
+3. データの正規化
+
+データベースの設計手順については、それだけで本が出るほどの概念で、アプリケーションの規模やチームのルールにより変わります。
+
+そうは言っても、上記の 3 つの手順は大体どんなチームで必ずやっていることと思います。
+
+そのため、ここでは必要最低限のデータベース運用ができるようにしていきます。
+
+- ### 必要なデータの洗い出し
+
+まずは、このアプリケーションでどのようなデータを使っていくかいきましょう。
+
+このときに役に立つのが、アプリケーションのデザインです。
+
+デザインを見れば、どこでどんな情報を必要とされているかを見ることができます。
+
+その、どこでどんな情報が必要とされているかを確認するのがデータの洗い出しと言っても過言ではありません。
+
+本来であれば、仕様書からデータ構造を洗い出すようなことをするとは思うのですが、個人開発の域では、デザインからのユーザーのユースケースを観察し、データを構造化していくと言う方法でも問題ないと思っています。
+
+と言うことで早速、どのようなデータを必要としているかを見ていきましょう。
+
+まずは、ログイン画面、サインアップ画面から分かる通り、ユーザー情報は必ず必要そうですね。
+
+![login signup](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/login_signup.png?raw=true)
+
+ユーザー情報で必要そうなデータには何がありそうでしょうか？
+
+- メールアドレス
+- 名前
+
+上記二つはマストで必要でしょう。
+
+他に、
+
+- プロフィール画像
+
+といったデータを持たせることができるでしょうか。
+
+では次を見てみましょう。
+
+これは動画を一覧で表示している画面です。
+
+![applicatio home](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/applicatio_home.png?raw=true)
+
+パッとみた感じでこのようなデータが必要そうです。
+
+- タイトル
+- サムネイル画像
+- 投稿者の名前
+- 投稿者のプロフィール画像
+- 再生回数
+- 再生時間
+- アップロード日
+
+これだけの情報が必要そうです。
+
+また、動画を表示している画面はもう一つあります。
+
+![watch page](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/watch_page.png?raw=true)
+
+上記のデータに合わせてこのような情報が必要そうです。
+
+- 動画
+- 説明
+- ユーザー登録者数
+
+他の画面を見てもこれ以上のデータは必要なさそうなので、これでデータの洗い出しが完了しました。
+
+まとめてみましょう。
+
+#### User
+
+- メールアドレス
+- 名前
+- プロフィール画像
+
+#### Video
+
+- タイトル
+- 説明
+- 動画
+- サムネイル画像
+- 投稿者の名前
+- 投稿者のプロフィール画像
+- 再生回数
+- 再生時間
+- ユーザー登録者数
+- アップロード日
+
+今回はシンプルなデータ構造になりそうですね。
+
+- ### データのリレーションを設計
+
+では次に洗い出したデータのリレーション、つまり関係性を考えていきます。
+
+リレーション設計のポイントは、同じデータソースにアクセスしているかを見るとわかりやすいと思います。
+
+例えば、`Video`のデータは、投稿者の名前や投稿者のプロフィール画像といったデータを持っています。
+
+この投稿者というデータは、名前が違いますが、`User`のことを指していることはなんとなく分かるのではないでしょうか。
+
+つまり、`User`によって`Video`がアップロードされるので、`Video`の投稿者は`User`ということになりますね。
+
+このように[必要なデータの洗い出し](#必要なデータの洗い出し)で抽出したデータ同士の関係性を考えることで、データがどのようにつながり合っているかを設計します。
+
+今回は、データが二つしか無いので、リレーションも 1 つだけとなるため、上記だけで終わります。
+
+- ### データの正規化
+
+最後に正規化についてです。
+
+RDB を考える上で、避けては通れないものであるのに、一番何を言っているかわからない概念です。
+
+そこでここでは、説明の正しさよりも、わかりやすさを重視して、少し強引な説明をさせていただきます。
+
+より深く正規化について理解したい方は、本などで理解を深めて頂ければと思います。
+
+正規化とは、一言で言ってしまえば、「データの整理」だと思っています。
+
+つまり、今まで[必要なデータの洗い出し](#必要なデータの洗い出し)と[データのリレーションを設計](#データのリレーションを設計)で作ったデータ構造を実際にデータベースで使えるように整理することです。
+
+基本は、「繰り返しの排除」と「グルーピング」です。
+
+まずは、「繰り返しの排除」です。
+
+今回のデータ構造で、繰り返し出てくるデータがありそうですね。
+
+#### User
+
+- 名前
+- プロフィール画像
+
+#### Video
+
+- 投稿者の名前
+- 投稿者のプロフィール画像
+
+ぞれぞれのデータで、`User`の名前とプロフィール画像が重複しています。
+
+これは一つにまとめたいですね。
+
+なぜなら、`User`の名前を変更したら、`Video`の投稿者の名前もわざわざ変更しないといけないからです。
+
+`User`の名前を変更したら、`Video`の投稿者の名前も変更されつようにしたいですね。
+
+しかし、今のままでは、このデータ構造を作ることはできません。
+
+`Video`のデータから、自身の投稿者がどの`User`なのかを識別する方法がありません。
+
+名前で`User`を探してみますか？
+
+それでは同姓同名の`User`が見つかってしまいそうですね。
+
+これを解決するために、データに`ID`と呼ばれるそのデータ固有のユニークな情報を付与してみましょう
+
+#### User
+
+- ID ←New!
+- 名前
+- プロフィール画像
+
+#### Video
+
+- ID ←New!
+- 投稿者の名前
+- 投稿者のプロフィール画像
+
+これで、`Video`は`User`の ID がわかれば、誰が投稿者かわかりそうですね。
+
+データ構造を整理しましょう。
+
+#### User
+
+- ID
+- メールアドレス
+- 名前
+- プロフィール画像
+
+#### Video
+
+- ID
+- タイトル
+- 説明
+- 動画
+- サムネイル画像
+- 投稿者の ID
+- 再生回数
+- 再生時間
+- ユーザー登録者数
+- アップロード日
+
+いいですね！
+
+> ちなみに、データベースの設計では、必ずデータには ID をつけるようので洗い出しの段階で ID の情報を入れておいたりします。
+
+他に、整理できそうなデータはあるでしょうか？
+
+1 箇所ありそうですね
+
+#### Video
+
+- ユーザー登録者数
+
+この情報は`User`のデータに持たせた方がいい情報ですね。
+
+動画ごとに、投稿者の登録者数を保存するというのはよくわからないデータ構造になってしまいます。
+
+では最後に、整理が終わったらデータ構造見てみましょう
+
+#### User
+
+- ID
+- メールアドレス
+- 名前
+- プロフィール画像
+- ユーザー登録者数
+
+#### Video
+
+- ID
+- タイトル
+- 説明
+- 動画
+- サムネイル画像
+- 投稿者の ID
+- 再生回数
+- 再生時間
+- アップロード日
+
+<details>
+<summary> ユーザー登録者数について（実際のテーブルには反映しません。）</summary>
+
+`User`にユーザー登録者数という情報を持たせていますが、登録者数のデータを持ちたい場合このようなデータ構造では、登録者数の管理を行うことが難しいです。
+
+そのため、ユーザー登録者数ようのテーブルを作り、そちらで登録者数を管理するのが定石です。
+
+しかし、今回のアプリケーションでは、「チャンネル登録」を実装しないでの、ここのデータ設計をしてしまうと混乱の元になりかねません。
+
+よって、`User`テーブルからは「ユーザー登録者数」の情報を削除します。
+
+もしここの設計をした場合は、[こちらの情報](https://hit.hateblo.jp/entry/2016/05/09/131806)などが参考になります。
+
+</details>
+
+### Hsaura でデータを作成する
+
+では上記で作成したデータ構造を実際に Hasura で作成していきましょう。
+
+とはいえ、難しいことは何もなくブラウザでポイポチしていくだけです。
+
+「Create Table」からテーブルを作成していきます。
+
+> 左側のナビゲーションバーの`public`からこの画面にいくことができます。
+
+![hasura table home](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/hasura_table_home.png?raw=true)
+
+最初は`User`テーブルから作っていきます。
+
+打ち込む内容は以下です。
+
+- Table Name : users
+- Columns
+  id - Text - [x]Unique
+  name - Text
+  profile_photo_url - Text
+  created_at - Timestamp - now()
+  updated_at - Timestamp - now()
+- Primary Key : id
+
+![create user table](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/create_user_table.png?raw=true)
+
+上記データが入力できたら、下部の「Add Table」でテーブルを作成します。
+
+ちなみに、`created_at`と`updated_at`は下記のように「+ Frequently used columns」を押すと、エイリアスが用意されています。
+
+![frequently used columns](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/frequently_used_columns.png?raw=true)
+
+<details>
+<summary> エラーが出て、こんソースに反映されない場合</summary>
+
+作成したデータをコンソールに反映させます。
+
+もう一度`public`に戻って、`users`テーブルを`Track`します。
+
+![users track](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/users_track.png?raw=true)
+
+</details>
+
+コンソールに`users`が登録されたかと思います。
+
+続いて、`Video`テーブル作ってしまいましょう。
+
+同じように`public`から「Create Table」で`videos`テーブルを作成していきます。
+
+- Table Name : videos
+- Columns  
+  id - Text - [x]Unique  
+  title - Text  
+  description - Text  
+  owner_id - Text  
+  video_url - Text  
+  views - Integer  
+  duration - Integer  
+  created_at - Timestamp - now()  
+  updated_at - Timestamp - now()
+- Primary Key : id
+
+![create videos table](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/create_videos_table.png?raw=true)
+
+これでデータベースの作成は完了しました。
 
 ## React で GraphQL
 
 ## GraphQL Code Generator で爆速開発
 
 ## JWT トークンで GraphQL をセキュアに
-
-```
-
-```
