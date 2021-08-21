@@ -208,7 +208,7 @@ Firebase にはたくさんのバックエンド処理が用意されていま�
 
 プロジェクトの作成が完了した後に、この Firebase プロジェクトにアクセスするための API キーを取得する事ができます。
 
-![step2 firebase api key](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/step2_firebase_api_key.png?raw=true)
+![step2 firebase API Key](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/step2_firebase_api_key.png?raw=true)
 
 3. React で Firebase を呼び出す。
 
@@ -374,9 +374,322 @@ Hasura はパーミッション設定もコンソール上で簡単に構築で�
 
 ## Firebase の設定
 
+では早速、Firebase の設定に入っていきたいと思います。
+
+と言いつつも Firebase は説明が不要なほど簡単にプロジェクトの作成が可能です。
+
+手順通りに進めて、Firebase のプロジェクトを作成していきましょう。
+
+まずは、Firebase のコンソールにアクセスしみましょう。
+
+もし初めてアクセスされる方は、ログイン画面が表示されるので、ご自身の Google アカウントでログインしてください。
+
+[Firebase コンソール](https://console.firebase.google.com/u/1/)
+
+![google login](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/google_login.png?raw=true)
+
+![firebase console](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_console.png?raw=true)
+
+「プロジェクトの作成」から作成を開始ましょう。
+
+![firebase create project name](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_create_project_name?raw=true)
+
+プロジェクト名に適当な名前を入力して、規約に同意するをチェックして、「続行」を押します。
+
+次の画面は、アプリケーションに Google アナリティクスの設定になります。
+
+アプリケーションを運用していく上では必須の機能ですが、今回はデモアプリということで設定ぜずに進めて言います。
+
+もちろん設定して頂いても構いません。
+
+![firebase create analytics](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_create_analytics.png?raw=true)
+
+続行でプロジェクトの作成が開始します。
+
+![firebase create pendeing](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_create_pendeing.png?raw=true)
+
+新しいプロジェクトの準備が完了したら、「続行」で Firebase プロジェクトのコンソールが出来上がります。
+
+![firebase project console](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_project_console.png?raw=true)
+
+ここまでで、Firebase の設定が完了しました。
+
+次にやることは、Web アプリケーション用の「アプリ」を作成していくことができます。
+
+Firebase には、Web 以外にも Andorid や iOS からもデータベースなどの機能が使えるようになっています。
+
+そのため、それぞれのプラットフォーム用に「アプリ」を作成して、プラットフォーム用の`API Key`を作成する必要があります。
+
+今回は Web のみの使用なので、Web 用の「アプリ」を作成していきます。
+
+プロジェクトコンソールの歯車マークから「プロジェクトを設定」を選択します。
+
+![firebase config](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_config.png?raw=true)
+
+プロジェクトの様々な情報が表示されたページが表示され、そのページの下部に「アプリ」作成用の場所が用意されています。
+
+![firebase config web app](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_config_web_app.png?raw=true)
+
+まだ「アプリ」が作成されていないので、アプリを作成していきましょう。
+
+「iOS」「Android」「Web」| 「Unity」の順番でそれぞれのプラットフォーム用の「アプリ」作成ボタンが用意されています。
+
+今回は「Web」の`</>`というボタンを選択します。
+
+そうすると「アプリ」作成画面が表示されます。
+
+先ほどと同じように適当な名前を入力して「アプリを登録」でアプリを作成します。
+
+※Firebase Hosting はいつでも作成できるので今は選択しなくても大丈夫です。
+
+![firebase web create](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_web_create.png?raw=true)
+
+アプリの登録が完了すると、「Firebase SDK の追加」という項目が表示されます。
+
+ここに表示されている情報が、React から Firebase を呼び出すために必要な情報になっています。
+
+後からいつでも確認できるので、一旦「コンソールに進む」でコンソールに戻りましょう。
+
+コンソールに戻ると「SDK の設定と構成」に先ほどと同じ情報が記載されています。
+
+![firebase config api key](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_config_api_key.png?raw=true)
+
+「プロジェクトの設定」>「SDK の設定と構成」から SDK 用の API Key などの情報をいつでも確認できます。
+
+ここまでで Firebase のセットアップが完了しました。
+
+次から実際に React のアプリケーションに Firbase を追加していきたいと思います。
+
 ## React で Firebase を呼び出す
 
+React から Firebase を呼び出すためには二つの準備が必要です。
+
+1. firebase パッケージのインストール
+2. API Key の設定
+
+まずは、firebase のパッケージのインストールから初めていきます。
+
+- ### firebase パッケージのインストール
+
+firebase パッケージのインストールは`Material-UI`をインストールした時と全く同じ要領でインストールできます。
+
+```bash
+npm install firebase
+```
+
+以上です！ww
+
+- ### firebase API Key の設定
+
+続いて、Firebase の API Key を React に設定していきます。
+
+API Key は先ほどの Firebase コンソールの「プロジェクトの設定」>「SDK の設定と構成」から取得していきます。
+
+まずは、firebase のセットアップ処理 React のアプリケーションに作成していきます。
+
+React プロジェクトに以下のファイルを作成して処理を書いてください。
+
+```TS
+// src/utils/Firebase/config.tsを作成
+
+// Firebase コンソールの「プロジェクトの設定」>「SDK の設定と構成」から「構成」を選択し、そのままコピペ
+const firebaseConfig = {
+  apiKey: "AIzaSyCm8ZVPFvB4O5YVyNqA-16zWrRpbxd0RVQ",
+  authDomain: "react-bootcamp-78947.firebaseapp.com",
+  projectId: "react-bootcamp-78947",
+  storageBucket: "react-bootcamp-78947.appspot.com",
+  messagingSenderId: "236750478038",
+  appId: "1:236750478038:web:fc2e6a6e2f856cae1c4777",
+};
+```
+
+この API Key を React で読み込んで firebase を React で初期化します。
+
+```TS
+// src/utils/Firebase/config.ts
+
+import firebase from "firebase";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCm8ZVPFvB4O5YVyNqA-16zWrRpbxd0RVQ",
+  authDomain: "react-bootcamp-78947.firebaseapp.com",
+  projectId: "react-bootcamp-78947",
+  storageBucket: "react-bootcamp-78947.appspot.com",
+  messagingSenderId: "236750478038",
+  appId: "1:236750478038:web:fc2e6a6e2f856cae1c4777",
+};
+
+// firebaseパッケージをAPI Keyで初期化
+// Firebaseコンソールでさksウエイ他アプリとReactを紐づける処理
+firebase.initializeApp(firebaseConfig);
+
+// 認証用のfirebaseモジュール
+export const fireAuth = firebase.auth();
+
+// ストレージ用のfirebaseモジュール
+export const storage = firebase.storage();
+
+// 初期化済みのfirebaseパッケージを確実に使用するためのexport defaultでfirebaseパッケージをexport
+export default firebase;
+```
+
+ここまでで、React で firebase を使用する準備ができました。
+
+と、ここで、「API Key をハードコーディングしていいのか！？」と思われた方がいるかもしれません。
+
+結論から言うと、「大丈夫」です。
+
+理由として、Google がこの Firebase の構成を public な状態で運用することを前提として設計しているからです。
+
+それが垣間見えるのが、Firebase の環境構成の Google のドキュメントです。
+
+![firebase public env](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_public_env.png?raw=true)
+
+これは HTML から CDN を通して Firebase を使用する構成例です。
+
+天下の Google 様がドキュメントで公開したらまずい構成を公開で設定するよう指示するでしょうか？
+
+いや、しない！
+
+と言うことで、もう少し詳しく説明すると、Firebase では「パーミッション」を設定することで、どのようなユーザーが Firebase のリソースにアクセスするかを制限することができます。
+
+なので、仮に第三者が API Key を使用しても、許可されていなければリソースにアクセスすることができません。
+
+とは言え、例えば、アカウントの新規作成をされてしまえば、そのアカウントの範囲内であればリソースへのアクセスがされてしまいます。
+
+そういったことを制限するための方法も、Firebase では用意されています。
+
+詳しくはこちらの「[Firebase の API キーは公開しても大丈夫だよ](https://shiodaifuku.io/articles/txEgArhm4Z2BOzrd0IKJ#%E3%82%82%E3%81%86%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%AE%89%E5%85%A8%E3%82%92%E7%A2%BA%E4%BF%9D%E3%81%97%E3%81%9F%E3%81%84%E4%BA%BA%E5%90%91%E3%81%91%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84)」をご確認ください。
+
+そもそも、アプリケーションをパブリックにデプロイしている時点で、全ての通信やリソースへのアクセスはどのような形であれ「可能」です。
+
+そんな中で、API Key を「見えない」ように隠したぐらいでセキュリティが確保されたと思うなよ、と言うことですね。
+
+本当にセキュリティを確保したい場合は、「そもそもバレても大丈夫だよね」と言う構成にして、バレてもリソースにアクセスされない構成にすることが大事です。
+
+> とはいえ全てのサービスがそのような構成にしているわけでは無いので、ドキュメントをよく読み、公開しても大丈夫な情報かを確認する必要があります。
+
 ## React で認証を実装
+
+React で認証機能を使う前に、Firebase で認証機能を使えるように設定しなければなりません。
+
+また、Firebase のプロジェクトコンソールから「Authentication」のコンソールに移動します。
+
+「構築」>「Authentication」
+
+![firebase authentication](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_authentication.png?raw=true)
+
+「始める」を押すとログインに使用するプロバイダーを選択する画面になります。
+
+このプロバイダとは、例えばアプリケーション内に Google によるログインや、Github ログインができるようにするための設定です。
+
+一覧に載っているプロバイダであれば、認証に使用することができます。
+
+とりあえず今回は、メールアドレスによる認証ができるようにします。
+
+「メール/パスワード」の横にあるペンマークを押して、メールアドレス認証を有効にします。
+
+![enable email auth](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/enable_email_auth.png?raw=true)
+
+保存を押すとメールアドレスによる認証を有効にします。
+
+これで React からメールアドレス認証ができるようになりました。
+
+では早速、ログイン、サインアップ、ログアウトなどの機能を実装していきましょう。
+
+ここでは、ログインなどのコアの機能を実装し、実際にユーザーからの入力に合わせてログインするといったことは、次週以降実装していきます。
+
+まずはログイン機能から実装していきます。
+
+Firebase の処理は、後から、Firebase 以外のログイン機能に移行すると言う可能性を考えて、アプリケーションのログインロジックから一歩離れた位置で実装します。
+
+この実装にすることで、アプリケーションのロジック側から「何か知らんけど、メールアドレスとパスワードを渡すと認証が終わる」といった状態にします。
+
+→ つまり、アプリケーションのロジックから Firebase の処理を隠しています。
+
+```TS
+// src/utils/Firebase/login.tsを作成
+// loginのコード
+
+// firebaseのauthをimport
+import { fireAuth } from "./config";
+
+// ログインに必要な引数の型を定義しています。
+// login()関数では、引数にFireLoginTypeの型、つまり文字型の`email`と`passward`が必要になります。
+export type FireLoginType = {
+  email: string;
+  passward: string;
+};
+
+// ログイン処理の実態です。
+// firebaseのログイン処理をラップしているだけです。
+export const login = ({ email, passward }: FireLoginType) =>
+  fireAuth.signInWithEmailAndPassword(email, passward);
+
+```
+
+以上で、ログインの実態は完成しました。
+
+あとはロジック側からこの処理を呼び出すだけで、全てのログイン処理が完了します。
+
+ロジックからは、firebase の初期化や呼び出しを意識することなくログイン処理を実行できます。
+
+合わせて、サインアップ処理とログアウト処理を書いていきましょう。
+
+```TS
+// src/utils/Firebase/signup.tsを作成
+// signupのコード
+
+// firebaseのauthをimport
+import { fireAuth } from "./config";
+
+// サインアップに必要な引数の型を定義しています。
+// signup()関数では、引数にFireSignupTypeの型、つまり文字型の`email`と`passward`が必要になります。
+export type FireSignupType = {
+  email: string;
+  passward: string;
+};
+
+// ログイン処理の実態です。
+// firebaseのログイン処理をラップしているだけです。
+export const signup = ({ email, passward }: FireSignupType) =>
+  fireAuth.createUserWithEmailAndPassword(email, passward);
+
+```
+
+続いて、ログアウトです。
+
+```TS
+// src/utils/Firebase/signout.tsを作成
+// signoutのコード
+
+import { fireAuth } from "./config";
+
+export const signout = () => fireAuth.signOut();
+```
+
+ログアウトはさらにシンプルな実装じっそうになっていますね。
+
+一つ処理を忘れていました。
+
+ユーザーがパスワードを忘れた場合にパスワードをリセットする用のメールを送信する処理です。
+
+```TS
+// src/utils/Firebase/forgetPass.tsを作成
+// forgetPassのコード
+
+import { fireAuth } from "./config";
+
+// 今回は引数が一つしか無いので、`email`に直接文字型を指定しています。
+export const forgetPass = (email: string) =>
+  fireAuth.sendPasswordResetEmail(email);
+```
+
+ここまでで、認証に必要な全てのコア処理の実装が完了しました。
+
+あとは、アプリケーションのロジックからこれらの処理を呼び出し、成功時の処理や失敗時のエラーハンドリングを行うことで、認証機能が完成します。
+
+具体的なロジック処理は次週以降実装していきます。
 
 ## React でアップローダーを実装
 
