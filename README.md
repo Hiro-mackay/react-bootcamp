@@ -409,7 +409,7 @@ Hasura はパーミッション設定もコンソール上で簡単に構築で�
 
 「プロジェクトの作成」から作成を開始ましょう。
 
-![firebase create project name](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_create_project_name?raw=true)
+![firebase create project name](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/firebase_create_project_name.png?raw=true)
 
 プロジェクト名に適当な名前を入力して、規約に同意するをチェックして、「続行」を押します。
 
@@ -1123,7 +1123,7 @@ RDB を考える上で、避けては通れないものであるのに、一番�
 
 いいですね！
 
-> ちなみに、データベースの設計では、必ずデータには ID をつけるようので洗い出しの段階で ID の情報を入れておいたりします。
+> ちなみに、データベースの設計では、必ずデータには ID をつけるので洗い出しの段階で ID の情報を入れておいたりします。
 
 他に、整理できそうなデータはあるでしょうか？
 
@@ -1191,11 +1191,11 @@ RDB を考える上で、避けては通れないものであるのに、一番�
 打ち込む内容は以下です。
 
 - Table Name : users
-- Columns
-  id - Text - [x]Unique
-  name - Text
-  profile_photo_url - Text
-  created_at - Timestamp - now()
+- Columns  
+  id - Text - [x]Unique  
+  name - Text  
+  profile_photo_url - Text  
+  created_at - Timestamp - now()  
   updated_at - Timestamp - now()
 - Primary Key : id
 
@@ -1208,7 +1208,7 @@ RDB を考える上で、避けては通れないものであるのに、一番�
 ![frequently used columns](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/frequently_used_columns.png?raw=true)
 
 <details>
-<summary> エラーが出て、こんソースに反映されない場合</summary>
+<summary> エラーが出て、コンソールに反映されない場合</summary>
 
 作成したデータをコンソールに反映させます。
 
