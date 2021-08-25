@@ -8,5 +8,9 @@ module.exports = {
     },
   },
   documents: "",
-  generates: {},
+  generates: {
+    "src/utils/graphql/generated.ts": {
+      plugins: ["typescript", "typescript-operations"],
+    },
+  },
 };

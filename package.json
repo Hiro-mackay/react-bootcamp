@@ -27,7 +27,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "codegen": "graphql-codegen --require dotenv/config --config script/codegen.js dotenv_config_path=.env"
   },
   "eslintConfig": {
     "extends": [
