@@ -6,16 +6,19 @@ module.exports = {
       },
     },
   },
-  documents: "",
+  // Queryを記述したファイルへのパス。
+  // 絶対パス指定
+  documents: [
+    "graphql/query/users.graphql",
+    "graphql/mutation/InsertUser.graphql",
+  ],
   generates: {
     "src/utils/graphql/generated.ts": {
-      // typescript-react-apolloを追記
       plugins: [
         "typescript",
         "typescript-operations",
         "typescript-react-apollo",
       ],
-      // 生成するコードの設定
       config: {
         withHooks: true,
       },
