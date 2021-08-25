@@ -109,7 +109,7 @@
 
 ![bootcamp infra architecture](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/bootcamp_infra_architecture.jpg?raw=true)
 
-データの保存場所としての Hasura と Heroku、ユーザーの認証のための Firebase Authentication、動画を保存する外レージとしての Firebase Storage と言う形で、それぞれを必要に応じて呼び出し分ける形にしています。
+データの保存場所としての Hasura と Heroku、ユーザーの認証のための Firebase Authentication、動画を保存する外部レージとしての Firebase Storage と言う形で、それぞれを必要に応じて呼び出し分ける形にしています。
 
 今回、このような構成にした理由が 3 つあります。
 
@@ -379,7 +379,7 @@ Firebase と比べると、本番環境でユーザーに触ってもらい初�
 
 4. もとはオープンソースなので、Hasura のエコシステムは Github に
 
-じつは、Hasura はオープンソースとして提供されているので、Wen コンソール経由ではなく、[Hasura Engine](https://github.com/hasura/graphql-engine)で自身で Hsaura を構築することも可能です。
+じつは、Hasura はオープンソースとして提供されているので、Web コンソール経由ではなく、[Hasura Engine](https://github.com/hasura/graphql-engine)で自身で Hsaura を構築することも可能です。
 
 そのため、Hsaura のバグや質問は Github に集約されており、普通のクラウドサービスよりバグ FIX がしやすくなっています。
 
@@ -431,7 +431,7 @@ Hasura はパーミッション設定もコンソール上で簡単に構築で�
 
 ここまでで、Firebase の設定が完了しました。
 
-次にやることは、Web アプリケーション用の「アプリ」を作成していくことができます。
+次にやることは、Web アプリケーション用の「アプリ」を作成していくことです。
 
 Firebase には、Web 以外にも Andorid や iOS からもデータベースなどの機能が使えるようになっています。
 
@@ -632,10 +632,10 @@ Firebase の処理は、後から、Firebase 以外のログイン機能に移�
 import { fireAuth } from "./config";
 
 // ログインに必要な引数の型を定義しています。
-// login()関数では、引数にFireLoginTypeの型、つまり文字型の`email`と`passward`が必要になります。
+// login()関数では、引数にFireLoginTypeの型、つまり文字型の`email`と`password`が必要になります。
 export type FireLoginType = {
   email: string;
-  passward: string;
+  password: string;
 };
 
 /**
@@ -644,8 +644,8 @@ export type FireLoginType = {
  * @param {email, password} ログインに必要な値
  * @returns Promise<firebase.auth.UserCredential>
  */
-export const login = ({ email, passward }: FireLoginType) =>
-  fireAuth.signInWithEmailAndPassword(email, passward);
+export const login = ({ email, password }: FireLoginType) =>
+  fireAuth.signInWithEmailAndPassword(email, password);
 
 
 ```
@@ -666,10 +666,10 @@ export const login = ({ email, passward }: FireLoginType) =>
 import { fireAuth } from "./config";
 
 // サインアップに必要な引数の型を定義しています。
-// signup()関数では、引数にFireSignupTypeの型、つまり文字型の`email`と`passward`が必要になります。
+// signup()関数では、引数にFireSignupTypeの型、つまり文字型の`email`と`password`が必要になります。
 export type FireSignupType = {
   email: string;
-  passward: string;
+  password: string;
 };
 
 /**
@@ -678,8 +678,8 @@ export type FireSignupType = {
  * @param {email, password} ログインに必要な値
  * @returns Promise<firebase.auth.UserCredential>
  */
-export const signup = ({ email, passward }: FireSignupType) =>
-  fireAuth.createUserWithEmailAndPassword(email, passward);
+export const signup = ({ email, password }: FireSignupType) =>
+  fireAuth.createUserWithEmailAndPassword(email, password);
 
 ```
 
@@ -833,6 +833,8 @@ firebase storage では、リソースにアクセスするときに、自動的
 
 これで、ログイン済みのユーザーのみがアップロードが許可され、他の未認証ユーザーは読み込みのみのセキュリティルールを構築できました。
 
+これまでの設定を保存するために、「公開」をクリックして設定を反映させます。
+
 続いて、React でこの Firebase Storage を呼び出します。
 
 ```TS
@@ -865,7 +867,7 @@ export const downloader = (ref: string) =>
 
 ## Hasura の設定
 
-続いて、Hasura の設定をいきます。
+続いて、Hasura の設定をしていきます。
 
 Hsaura は下記の URL からアクセスできます。
 
@@ -939,7 +941,7 @@ Hasura のコンソールが表示されたら「Data」>「Manage」> 「Connec
 
 - ### 必要なデータの洗い出し
 
-まずは、このアプリケーションでどのようなデータを使っていくかいきましょう。
+まずは、このアプリケーションでどのようなデータを使っていくか見ていきましょう。
 
 このときに役に立つのが、アプリケーションのデザインです。
 
@@ -1164,7 +1166,7 @@ RDB を考える上で、避けては通れないものであるのに、一番�
 
 `User`にユーザー登録者数という情報を持たせていますが、登録者数のデータを持ちたい場合このようなデータ構造では、登録者数の管理を行うことが難しいです。
 
-そのため、ユーザー登録者数ようのテーブルを作り、そちらで登録者数を管理するのが定石です。
+そのため、ユーザー登録者数用のテーブルを作り、そちらで登録者数を管理するのが定石です。
 
 しかし、今回のアプリケーションでは、「チャンネル登録」を実装しないでの、ここのデータ設計をしてしまうと混乱の元になりかねません。
 
