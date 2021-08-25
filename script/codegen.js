@@ -1,5 +1,4 @@
 module.exports = {
-  // 追記
   schema: {
     [process.env.REACT_APP_GRAPHQL_END_POINT_ORIGIN]: {
       headers: {
@@ -10,7 +9,16 @@ module.exports = {
   documents: "",
   generates: {
     "src/utils/graphql/generated.ts": {
-      plugins: ["typescript", "typescript-operations"],
+      // typescript-react-apolloを追記
+      plugins: [
+        "typescript",
+        "typescript-operations",
+        "typescript-react-apollo",
+      ],
+      // 生成するコードの設定
+      config: {
+        withHooks: true,
+      },
     },
   },
 };
