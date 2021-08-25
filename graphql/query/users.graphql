@@ -1,0 +1,9 @@
+query UserById($id: String!) {
+  users_by_pk(id: $id) {
+    id
+    name
+    profile_photo_url
+    updated_at
+    created_at
+  }
+}

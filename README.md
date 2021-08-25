@@ -66,7 +66,6 @@
 - [React で Firebase を呼び出す](#react-で-firebase-を呼び出す)
   - [firebase パッケージのインストール](#firebase-パッケージのインストール)
   - [firebase API Key の設定](#firebase-api-key-の設定)
-  - [](#)
 - [React で認証を実装](#react-で認証を実装)
 - [React でアップローダーを実装](#react-でアップローダーを実装)
 - [Hasura の設定](#hasura-の設定)
@@ -77,7 +76,8 @@
 - [Hsaura でデータを作成する](#Hsaura-でデータを作成する)
 - [React で GraphQL](#react-で-graphql)
 - [GraphQL Code Generator で爆速開発](#graphql-code-generator-で爆速開発)
-- [JWT トークンで GraphQL をセキュアに](#jwt-トークンで-graphql-をセキュアに)
+  - [GraphQL Code Generator](#graphql-code-generator)
+  - [Apollo Client](#apollo-client)
 
 # ReactBootcamp 第三回目勉強会ドキュメント
 
@@ -1267,17 +1267,15 @@ Hasura のコンソール画面から、「Data」>「users」>「Insert Row」�
 - created_at : (空白)
 - updated_at : (空白)
 
-![insert users data]()
+![insert users data](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/insert users data?raw=true)
 
 「Save」でデータを保存します。
 
 `users`のテーブルに今作成したデータが入っています。
 
-![users test column]()
+![users test column](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/users_test_column.png?raw=true)
 
 ではこの`users`データを React で読み込んでみたいと思います。
-
-![users test column]()
 
 どのコンポーネントでも構いませんが、とりあえず、`Home`コンポーネントで Hasura のデータを読み込んでみましょう。
 
@@ -1288,6 +1286,765 @@ Hasura のコンソール画面から、「Data」>「users」>「Insert Row」�
 > コードをコピペしてドキュメントに転載する方法はミスが多発しているので、今回からこのような形で、Github の昨日を最大限使って行こうと思います。
 > Diff コードは実際にどこのソースを変更したのかを確認できます。
 
-## GraphQL Code Generator で爆速開発
+![hasura fetch user](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/hasura_fetch_user.png?raw=true)
 
-## JWT トークンで GraphQL をセキュアに
+先程、Hasura で作った`users`データが取得できています！
+
+世の中には GraphQL を扱う上で便利なツールが揃っていますが、実は GraphQL は一切のライブラリーを使うことなく、シンプルにデータフェッチを行うことができます。
+
+やっていることはとてもシンプルです。
+
+ただ必要な情報をリクエストに載せて投げているだけです。
+
+たったこれだけで、GraphQL 入門が終わりました！
+
+## GraphQL の便利ツールで爆速開発
+
+では GraphQL がどんなもので、どのくらい便利かを体感して頂いたところで、この GraphQL を更に便利にするツールを２つご紹介します。
+
+先に、何を使うかをお伝えすると、
+
+- GraphQL Code Generator
+- Apollo Client
+
+の２つです。
+
+では早速、GraphQL Code Generator から見ていきましょう。
+
+- ### GraphQL Code Generator
+
+GraphQL Code Generator は呼んで字のごとく、GraphQL 開発に必要なコードを自動で作ってくれるツールチェーンです。
+
+GraphQL Codegen と訳されることが多く、その威力は折り紙付きです。
+
+実際に手を動かす前に、GraphQL Codegen が何を作成するの。
+
+そして、Hasura と組み合わせることでどのような科学反応が起こるかを見ていきます。
+
+まずは、GraphQL Codegen が生成するコードは以下のとおりです。
+
+- GraphQL サーバーで使用される型を定義
+- データベースのテーブルカラムの型定義  
+  → Schema に対応した TypeScript の型を生成する
+- エンジニアが書いた`Query`から型を生成する
+
+基本的なところだけでこれだけのことをしくれます。
+
+これをベースに、GraphQL Codegen 用のプラグインを入れること機能を拡張して更に便利にすることができます。
+
+GraphQL Codegen だけでも、型定義を自動生成してくれるので、かなり便利になります。
+
+この GraphQL Codegen は、CLI ツールになっています。
+
+なので、アプリケーションの中でコードを書くのではなく、`script`としてアプリケーションのビルド時やデプロイ時にこの`script`を実行してソースコードを自動で生成します。
+
+では早速、GraphQL Codegen をインストールして実際にスクリプトを記述してみます。
+
+まずは、GraphQL Codegen に必要なライブラリをインストールしていきます。
+
+```
+install --save graphql @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations
+```
+
+or
+
+```
+yarn add -D graphql @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations
+```
+
+- @graphql-codegen/cli : GraphQL Codegen の本体
+- @graphql-codegen/typescript : TypeScript の型生成する場合に必用なプラグイン
+- @graphql-codegen/typescript-operations : GraphQL のクエリとスキーマを元に TypeScript の型を自動生成するプラグイン
+
+Typescript で GraphQL Codegen を使用する際は、以上が最低限のライブラリ郡になります。
+
+では続いて、GraphQl Codegen のスクリプトを記述していきます。
+
+GraphQL は、スクリプトを記述する際に`yml`,`json`,`js`といった様々なファイルタイプをサポートしています。
+
+今回は`js`ファイルでスクリプトを記述する方法をご紹介します。
+
+`yml`や`json`で記述したい方は、[公式ドキュメント](https://www.graphql-code-generator.com/docs/getting-started/codegen-config)を見ながら適宜書き換えてファイルを作成してください。
+
+では、早速スクリプトを記述していきます。
+
+`script/codegen.js`を作成します。
+
+[Diff コード]()
+
+[全体コード]()
+
+- schema : `Schema`の参照先。大抵 GraphQL サーバーが提供する schema を参照する。今回は Hasura を参照するように記述する。
+- documents : 実際にリクエストを発行するときに使用する`Query`を記述したファイルへのパスを指定。
+- generates : 自動生成したコードを格納するファイルのパス。その他どんなファイルを生成するかの設定もここに記述する。
+
+まずは、Hasura から`Schema`を読み取れるようにスクリプトを書き換えます。
+
+Hasura から`Schema`を取得するためには、Hasura の API エンドポインとのシークレットキーが必要です。
+
+Hasura の API とシークレットは、Hasura のコンソールから取得することができます。
+
+![hasura api secretpoint](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/hasura_api_secretpoint.png?raw=true)
+
+画面上部の`POST`が API エンドポイントで、中段の`x-hasura-admin-secret`の伏せ字になっている箇所がシークレットキーになっています。
+
+こちらをコピペしてスクリプトに記述していきます。
+
+と言いつつも、シークレットキーをスクリプトに記述するのは非常に危険です。
+
+こういった場合は環境変数という概念を用いて、シークレットキーをスクリプトに直接記述することなく、使用できるようにします。
+
+ルートディレクトリに`.env`という名前のファイルを生成します。
+
+Javascript では、よくこの`.env`に環境変数を格納して、知られたくない値を隠蔽して使用します。
+
+`.env`を作成したら必ず、`.gitignore`ファイルに`.env`のファイルを除外するように記述します。
+
+```bash
+# .gitignore
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+
+# ----------------------
+#追加！！！
+.env
+
+.env.local
+.env.development.localo
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+```
+
+この`.gitignore`ファイルが何をしているかと言うと、git の追跡対象からファイルを除外する設定になります。
+
+`.env`の記述を追加したので、git でファイル管理する際に`.env`がファイル管理されなくなります。
+
+例えば、Github にソースコードを`push`するような場合、`.env`ファイルは git の追跡対象外なので Github にはアップロードされません。
+
+これで思わぬシークレットキーに流出を防ぐことができます。
+
+では、`.env`ファイルに Hasura から取得したシークレットキーと、ついでに API エンドポイントも追加しましょう。
+
+> 環境変数に API エンドポイントを追加すすることで、エンドポイントを変更した場合も`.env`ファイルの記述を変更をするだけで済みます。  
+> もちろんソースコード全体で API エンドポイントの参照を`.env`ファイルからインポートしているときに限りますが。
+
+```bash
+# .env
+# 適宜書き換えてください。
+
+REACT_APP_GRAPHQL_END_POINT_ORIGIN="API エンドポイント"
+REACT_APP_HASURA_SECRET_KEY="シークレットキー"
+```
+
+続いて、`.env`の値を使って`codegen.js`のスクリプトを完成させます。
+
+[Diff コード]()
+
+```JS
+// script/codegen.js
+
+module.exports = {
+  // 追記
+  schema: {
+    [process.env.REACT_APP_GRAPHQL_END_POINT_ORIGIN]: {
+      headers: {
+        "x-hasura-admin-secret": process.env.REACT_APP_HASURA_SECRET_KEY,
+      },
+    },
+  },
+  documents: "",
+  generates: {},
+};
+
+```
+
+JavaScript で環境変数の値にアクセするためには、`process.env`から、`.env`ファイルに記述した変数名でアクセスすることができます。
+
+`schema`に対して、Hasura のエンドポイントと`headers`にシークレットキーをを指定しています。
+
+これで Hasura のリソースにフルアクセスできるようになりました。
+
+次は、実際にコードを自動生成するスクリプトを記載します。
+
+[Diff]()
+
+```JS
+// script/codegen.js
+
+module.exports = {
+  schema: {
+    [process.env.REACT_APP_GRAPHQL_END_POINT_ORIGIN]: {
+      headers: {
+        "x-hasura-admin-secret": process.env.REACT_APP_HASURA_SECRET_KEY,
+      },
+    },
+  },
+  documents: "",
+
+  // 追記
+  generates: {
+    "src/utils/graphql/generated.ts": {
+      plugins: ["typescript", "typescript-operations"],
+    },
+  },
+};
+```
+
+`generates`の項目に設定を追加していくことで、自動生成されるコードを柔軟に変更できます。
+
+今回の記述では、Hasura から取得する`Schema`に対して、Typescript の方を生成するシンプルなスクリプトになっています。
+
+これで、GraphQL Codegen を動かすための最低限のスクリプトができました。
+
+ではこのスクリプトを実行してみましょう。
+
+このスクリプトを実行する方法はいくつかありますが、ここでは、アプリケーションのビルド時に毎回この GraphQL Codegen のスクリプトが実行できるように`npm scripts`から実行します。
+
+GraphQL Codegen を実行するためのコマンドを`package.json`の`scripts`項目にコマンドを追記します。
+
+追記するコマンドは以下です。
+
+```bash
+graphql-codegen --require dotenv/config --config script/codegen.js dotenv_config_path=.env
+```
+
+上記のコマンドを、`package.json`の`scripts`に追加します。
+
+[Diff]()
+
+```JSON
+{
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    // 追記
+    "codegen": "graphql-codegen --require dotenv/config --config script/codegen.js dotenv_config_path=.env"
+  }
+}
+```
+
+これで、`npm run codegen`と言うコマンドをターミナルやコマンドプロンプトで実行する Codegen のスクリプトを実行できます。
+
+```bash
+# ターミナル / コマンドプロンプト
+npm run codegen
+```
+
+or
+
+```bash
+yarn codegen
+```
+
+![run codegen scripts](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/run_codegen_scripts.gif?raw=true)
+
+スクリプトの実行に成功すると`src/utils/graphql/generated.ts`に Hasura から取得した`Schema`の情報のもと GraphQL で使用できる Typescript の型が生成されます。
+
+以上で、Hasura から`Schema`を取得して、GraphQL Codegen で型を自動で生成しました。
+
+しかし、型だけあっても GraphQL を使用できるわけではありません。
+
+次項で、この GraphQL Codegen を使用してさらに便利な機能を追加していきます。
+
+- ### Apollo Client
+
+Apollo Client とは、React で GraphQL を簡単に使用できるにするライブラリ群です。
+
+最近では、React だけでなく Vue やネイティブアプリでの使用を見据えたライブラリも作成しています。
+
+しかし、元々は GraphQL を React で使いやすくするために生まれたライブラリなため、React での使いやすさは群を抜いています。
+
+この Apollo Client と GraphQL Codegen を組み合わせることで、Apollo Client で使用するコード群も自動生成できます。
+
+つまり、Hasura + GraphQL Codegen + Apollo Client の組み合わせで、エンジニアはコードを書くことなく、GraphQL 用の React コードを自動で生成してくれます。
+
+どのくらいすごいことかを今からご説明していきます。
+
+Apollo Client のコードを自動生成するためには、「Apollo Client 用の codegen のスクリプトを追記」と「Apollo Client 用の`Query`の記述」の二つのステップが必要です。
+
+まずは「Apollo Client 用の codegen のスクリプトを追記」から行います。
+
+codegen で Apollo Client のコードを生成するために、codegen 用のプラグインが必要です。
+
+なので、インストールしましょう。
+
+```bash
+# ターミナル / コマンドプロンプト
+npm install --save @graphql-codegen/typescript-react-apollo
+# or
+
+yarn add -D @graphql-codegen/typescript-react-apollo
+```
+
+続いて、`codegen.js`に Apollo Client 用の設定を追記します。
+
+[Diff]
+
+```js
+// script/codegen.js
+
+module.exports = {
+  schema: {
+    [process.env.REACT_APP_GRAPHQL_END_POINT_ORIGIN]: {
+      headers: {
+        "x-hasura-admin-secret": process.env.REACT_APP_HASURA_SECRET_KEY,
+      },
+    },
+  },
+  documents: "",
+  generates: {
+    "src/utils/graphql/generated.ts": {
+      // typescript-react-apolloを追記
+      plugins: [
+        "typescript",
+        "typescript-operations",
+        "typescript-react-apollo",
+      ],
+      // 生成するコードの設定
+      config: {
+        withHooks: true,
+      },
+    },
+  },
+};
+```
+
+これだけで、Apollo Client 用のソースコードを生成することができます。
+
+しかし、今のままでは Apollo Client のコードは生成されません。
+
+Apollo Client 用のコードを生成するためには、`Query`を記述しなければなりません。
+
+`Query`は自身で記述しても構いませんが、せっかく Hasura を使用しているので、Hasura の機能を使って`Query`を作成します。
+
+Hasura から`Query`を生成するためには、Hasura のコンソールから`API`のタブを選択して、画面下部の`Explorer`を使用します。
+
+初めに、`users`からユーザー情報を取得する`query`と、`users`にデータを作成する`mutation`の`Query`を作成します。
+
+![users query explorer](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/user_query_explorer.png?raw=true)
+
+まだデータがないと思うので、まずは`mutation`を実行して、データの生成と`Query`のテストをしてみます。
+
+`mutation`を実行する場合は、コンソールの右下の「Query」と記述してあるセレクターを「Mutation」に変更すると`mutation`の`Query`が表示されます。
+
+![hasura select mutation](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/hasura_select_mutation.png?raw=true)
+
+`Mutation`を選択して、右側の「＋」をクリックすると`Query`が表示されます。
+
+では、`users`のデータ作成する`Query`を作成してみます。
+
+サイドバーから`insert_users_one`を選択すると、Exlorer に`Query`が反映されます。
+
+データを生成するために、データの値を指定する必要があります。
+
+`object*`という項目から値を指定することができます。
+
+`id`に`testid`を、`name`に`test`を、`profile_photo_url`に``（空文字）を入力します。
+
+入力が成功したら`return`値として生成されたデータ全ての値を返すように指定します。
+
+![user mutation insert](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/user_mutation_insert.png?raw=true)
+
+ここまでで、Explorer の上部の再生ボタンを押すと`Query`を実行してくれます。
+
+成功すれば、左側に生成した user のデータが表示されます。
+
+![execute user mutation](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/execute_user_mutation.png?raw=true)
+
+これで、Explorer の左側に記載されている`Query`は正しく動作するものであることがわかりました。
+
+では、この`Query`をコピペ、する前に少し`Query`に加工が必要です。
+
+このままでは、`testid`である`test`という名前の user しか作成できません。
+
+変数となるようにこれらの値を変更。
+
+その変数を引数とした場合は、`$`をクリックすると、引数として外部からデータを入れることができます。
+
+変数を引数化して、引数のデフォルト値を`$id: String = "testid"`から、`id: String!`に変更して必ず引数を指定しなければならない形にします（`name`も同様に）
+
+![user insert query](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/user_insert_query.png?raw=true)
+
+これで、自由に値を渡してデータを作成できるようになりました。
+
+作成した`Query`をコピペして、`graphql/mutation`以下に`Query`を記述します。
+
+[Diff]()
+
+```graphql
+# graphql/mutation/InsertUser.graphqlを作成する
+
+# codegenで生成された時にわかりやすいように、UserをInsertする`Query`であることを命名する
+mutation InsertUser($id: String!, $name: String!) {
+  insert_users_one(object: { id: $id, name: $name, profile_photo_url: "" }) {
+    id
+    name
+    profile_photo_url
+    created_at
+    updated_at
+  }
+}
+```
+
+合わせて、`users`データを取得する`Query`も作ってみましょう。
+
+同じく、Hasura 上で`Query`を作成してコピペしましょう。
+
+![user query explorer](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/user_query_explorer.png?raw=true)
+
+[diff]()
+
+```graphql
+# graphql/query/users.graphql
+
+# Userを取得するする`Query`であることを命名する
+query UserById($id: String!) {
+  users_by_pk(id: $id) {
+    id
+    name
+    profile_photo_url
+    updated_at
+    created_at
+  }
+}
+```
+
+ここまでで、`user`を作成して、取得する最低限の`Query`を作成しました。
+
+一度作成した`Query`を codegen で読み込んでソースコードを作成してみましょう。
+
+作成した`Query`を codegen で読み込むためには、`codegen.js`を以下のように変更します。
+
+[diff]()
+
+```js
+// script/codegen.js
+
+module.exports = {
+  schema: {
+    [process.env.REACT_APP_GRAPHQL_END_POINT_ORIGIN]: {
+      headers: {
+        "x-hasura-admin-secret": process.env.REACT_APP_HASURA_SECRET_KEY,
+      },
+    },
+  },
+  // Queryを記述したファイルへのパス。
+  // 絶対パス指定
+  documents: [
+    "graphql/query/users.graphql",
+    "graphql/mutation/InsertUser.graphql",
+  ],
+  generates: {
+    "src/utils/graphql/generated.ts": {
+      plugins: [
+        "typescript",
+        "typescript-operations",
+        "typescript-react-apollo",
+      ],
+      config: {
+        withHooks: true,
+      },
+    },
+  },
+};
+```
+
+スクリプトを実行して、ソースコードを生成します。
+
+```bash
+npm run codegen
+```
+
+生成された`src/utils/graphql/generated.ts`を確認してみましょう。
+
+生成されたコードを全てコピペすると大変な量になるので、特に新しく生成されたコードを見ていきます。
+
+```TS
+// src/utils/graphql/generated.ts
+
+// |
+// |
+// 色々な型定義コード
+
+export function useInsertUserMutation(baseOptions?: Apollo.MutationHookOptions<InsertUserMutation, InsertUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<InsertUserMutation, InsertUserMutationVariables>(InsertUserDocument, options);
+      }
+export type InsertUserMutationHookResult = ReturnType<typeof useInsertUserMutation>;
+export type InsertUserMutationResult = Apollo.MutationResult<InsertUserMutation>;
+export type InsertUserMutationOptions = Apollo.BaseMutationOptions<InsertUserMutation, InsertUserMutationVariables>;
+export const UserByIdDocument = gql`
+    query UserById($id: String!) {
+  users_by_pk(id: $id) {
+    id
+    name
+    profile_photo_url
+    updated_at
+    created_at
+  }
+}
+    `;
+
+
+export function useUserByIdQuery(baseOptions: Apollo.QueryHookOptions<UserByIdQuery, UserByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserByIdQuery, UserByIdQueryVariables>(UserByIdDocument, options);
+      }
+export function useUserByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserByIdQuery, UserByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserByIdQuery, UserByIdQueryVariables>(UserByIdDocument, options);
+        }
+export type UserByIdQueryHookResult = ReturnType<typeof useUserByIdQuery>;
+export type UserByIdLazyQueryHookResult = ReturnType<typeof useUserByIdLazyQuery>;
+export type UserByIdQueryResult = Apollo.QueryResult<UserByIdQuery, UserByIdQueryVariables>;
+```
+
+ファイルの一番下から数十行が今回新しく追加されたコードです。
+
+これらのコードは先ほど作成した`**.graphql`という`Query`を記述したファイルから自動で生成されたコード群です。
+
+これらが、今回の項で最終的に作成したかった`Apollo Clieent`用の GraphQL のコードです。
+
+実際のアプリケーション開発では、ここで作成された`useInsertUserMutation`や`useUserByIdQuery`を使用して Hasura からデータを取得します。
+
+また、お気づき位の方もいらっしゃると思いますが、`**.graphql`で命名した名前がここで実際に反映されています。
+
+なので、`**.graphql`で`Query`を作成するときは、その`Query`が何をしているものなのかをわかりやすく命名する必要があります。
+
+では、せっかく`Apollo Client`用のコードができたので実際に`Apollo Client`をセットアップして、データを取得してみましょう。
+
+React で`Apollo Client`のライブラリーをインストールして、セットアップをしていきます。
+
+```bash
+npm install @apollo/client
+
+# or
+
+yarn add @apollo/client
+```
+
+あとは、アプリケーション全体で`Apollo Client`を使用できるように、設定用のコンポーネントを作成して、セットアップします。
+
+やることは、`Material-UI`の時と同じように、`Provider`コンポーネントを作成して、`src/index.tsx`で読み込ませます。
+
+コードは以下の通りです。
+
+[Diff]()
+
+```TSX
+// src/index.tsx
+
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
+import { RootRouter } from "./Route";
+import { createTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
+import GlobalStyle from "./GlobalStyle";
+import {
+  ApolloProvider,
+  ApolloClient,
+  createHttpLink,
+  InMemoryCache,
+} from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+
+// Material-UIの「テーマ」を作成する。
+// Material-UIをカスタマイズする際には、createThemeの引数にカスタマイズ項目を渡す。
+const theme = createTheme();
+
+// GraphQl APIのエンドポイントを指定する
+const httpLink = createHttpLink({
+  uri: process.env.REACT_APP_GRAPHQL_END_POINT_ORIGIN,
+});
+
+// GraphQLのリクエストりくえすとお送信する際に付与するRequest Headersなどをここで指定する
+// 本来であれば認証情報などをここで取得し、トークンをHeadersに付与する。
+const authLink = setContext(async () => {
+  return {
+    headers: {
+      // 本来であれば、シークレットキーを直接Request Headersに乗せてリクエストを行うことはご法度です。
+      // 今回は例外的に手っ取り早くApolloを使うために直接指定しています。
+      "x-hasura-admin-secret": process.env.REACT_APP_HASURA_SECRET_KEY,
+    },
+  };
+});
+
+// Apollo Clientのインスタンスをここで作成している。
+const apolloClient = new ApolloClient({
+  link: authLink.concat(httpLink),
+
+  // Apollo Clientには強力なキャッシュ機能が搭載されています。
+  // Apollo Clientを使う理由にこのキャッシュ機能のために使うと言っても過言ではありません。
+  cache: new InMemoryCache(),
+});
+
+
+ReactDOM.render(
+  <React.StrictMode>
+    <ThemeProvider theme={theme}>
+      {/*
+        Apollo Clientを初期化して、アプリケーション全体でApollo Clientを使えるようにする
+      */}
+      <ApolloProvider client={apolloClient}>
+        <BrowserRouter>
+          <CssBaseline />
+          <GlobalStyle />
+          <RootRouter />
+        </BrowserRouter>
+      </ApolloProvider>
+    </ThemeProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
+);
+```
+
+`Apollo Client`のセットアップが完了しました。
+
+これで、codegen で生成した`Apollo Client`用の関数を心置きなく使用することができます。
+
+テストとして、user データを取得して、アプリケーションのヘッダーにデータを表示する処理を書いてみます。
+
+[Diff]()
+
+```TSX
+
+import {
+  AppBar,
+  Avatar,
+  IconButton,
+  Toolbar,
+  Typography,
+} from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import VideoCallIcon from "@material-ui/icons/VideoCall";
+import { Logo } from "../../components/Logo";
+import { SearchBar } from "./SearchBar";
+import useStyles from "./style";
+// codegenで生成したコードをimportします。
+import { useUserByIdQuery } from "../../utils/graphql/generated";
+
+
+export const DashboardHeader = () => {
+  const styles = useStyles();
+
+ //GraphQLの`Query`を発行して、Hasuraのエンドポイントにリクエストを飛ばし、返り値を取得するまでが、この3行に詰まっています。
+  const { data } = useUserByIdQuery({
+    variables: { id: "testid" },
+  });
+
+  return (
+
+    <AppBar elevation={0} color="inherit">
+      <Toolbar className={styles.between}>
+        <div className={styles.flex}>
+          <IconButton>
+            <MenuIcon />
+          </IconButton>
+          <div className={styles.logo}>
+            <Logo />
+          </div>
+        </div>
+        <SearchBar />
+        <div className={styles.flex}>
+
+         {/*
+            データが取得されたら、`data`内に`Schema`と同じ名前のオブジェクトの中にデータが格納されます。
+            データがないときは表示されません。
+          */}
+          <IconButton>
+            <Typography>{data?.users_by_pk?.name}</Typography>
+          </IconButton>
+          <IconButton>
+            <VideoCallIcon />
+          </IconButton>
+          <IconButton className={styles.profileIcon}>
+            <Avatar />
+          </IconButton>
+        </div>
+      </Toolbar>
+    </AppBar>
+  );
+};
+```
+
+アプリケーション画面を見てみると、初期画面表示からしばらくたって右上に`test`という名前が取得できているのがわかります。
+
+![get header username](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/get_header_username.gif?raw=true)
+
+記述していただいた通り、codegen と`Apollo Client`を併用することで、一切の GraphQL 処理を記述することなく、たったの 3 行でデータフェッチを行うことができます。
+
+これが、codegen と`Apollo Client`の威力です！！
+
+`Apollo Client`でのデータフェッチが完成したので、`Home`ディレクトリで作成した GraphQL 用の fetch 関数の処理を元に戻しておきましょう。
+
+```TSX
+// src/pages/Home/index.tsx
+
+import { Container, Grid } from "@material-ui/core";
+import { VideoCard } from "../../components/VideoCard";
+
+export const Home = () => {
+  return (
+    <Container>
+      {/* 取得したデータを表示してみる */}
+      <Grid container spacing={2}>
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+      </Grid>
+    </Container>
+  );
+};
+
+```
+
+以上で、`GraphQL Code Generator`と`Apollo Client`の使い方から実装レベルまでのコードを生成することができました。
+
+あとは必要な箇所で、必要な GraphQL Query を実行することでアプリケーション全体としての動きが完成します。
+
+インフラの構築が第三回目勉強会のドキュメントなっているので、本格的な GraphQl コードの記述その他、ロジック部分は次週以降の課題とさせていただきます。
+
+ここまでこられた方は、もうインフラもベースラインができた状態のアプリケーションが完成されました。
+
+あとは、ひたすらにコードを書いてロジックを詰めていくフェーズとなります。
+
+また次週以降、ドキュメントを読みながら、ロジックの実装をしていただければと思います。
+
+それでは、第三回目勉強会のコンテンツは以上とさせて頂きます。
+
+今週もお疲れ様でした！
+
+それではまた来週。
