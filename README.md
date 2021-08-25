@@ -1267,7 +1267,7 @@ Hasura のコンソール画面から、「Data」>「users」>「Insert Row」�
 - created_at : (空白)
 - updated_at : (空白)
 
-![insert users data](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/insert users data?raw=true)
+![insert users data](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/insert_users_data.png?raw=true)
 
 「Save」でデータを保存します。
 
@@ -1279,12 +1279,113 @@ Hasura のコンソール画面から、「Data」>「users」>「Insert Row」�
 
 どのコンポーネントでも構いませんが、とりあえず、`Home`コンポーネントで Hasura のデータを読み込んでみましょう。
 
-[Diff コード]()
-
-[完成コード]()
+[Diff - Hasura の users データを fetch で取得する](https://github.com/Hiro-mackay/react-bootcamp/commit/c226f261fa3d635115025f18a5f4dcd3923e5a72)
 
 > コードをコピペしてドキュメントに転載する方法はミスが多発しているので、今回からこのような形で、Github の昨日を最大限使って行こうと思います。
 > Diff コードは実際にどこのソースを変更したのかを確認できます。
+
+```TSX
+// src/pages/Home/index.tsx
+
+import { Container, Grid } from "@material-ui/core";
+import { useEffect } from "react";
+import { useState } from "react";
+import { VideoCard } from "../../components/VideoCard";
+
+// GraphQLのコア
+// QueryやSchemaを書くことで、GraphQLにどのようなデータを取得させるのか、更新させるのかを指示する
+const query = `
+query User {
+  users {
+    id
+    name
+    profile_photo_url
+    created_at
+    updated_at
+  }
+}
+`;
+
+let called = false;
+
+export const Home = () => {
+  const [user, setUser] = useState<any>();
+
+  useEffect(() => {
+    // ステートが更新されると、コンポーネントも更新されるためuseEffect内の関数も呼び出される。
+    // 無限ループを防ぐために、一度関数を呼んだら複数呼ばないようにする。
+    if (!called) {
+      // Hasuraのコンソールに記載されているGraphQLエンドポイント
+      fetch("https://sacred-lioness-92.hasura.app/v1/graphql", {
+        // GraphQLは必ずPOSTリクエストを投げる
+        method: "post",
+
+        // 認証のためのリクエストヘッダー
+        // Hasuraはheadersに記載されている認証情報で、リクエストが許可されているかを判断する
+        // 今回はAdminのsecret keyを記載しているのでHasura内の全てのリソースにアクセスできる。
+        headers: {
+          "Content-Type": "application/json",
+          "x-hasura-admin-secret":
+            "BLze2Sz1OBdZeDFhIHgmoxrk67cdMA8EpId1KK86Y39QiHVAV7VJBe30vTVo5Ea7",
+        },
+
+        // GraphQLのリクエスト内容の本体
+        // bodyに`query`や値を格納して、GraphQLにどのような処理をしてほしいか指示を出す
+        body: JSON.stringify({ query }),
+      }).then(async (res) => {
+        called = true;
+
+        // `fecth`関数の定型文
+        // レスポンスを`json()`えフォーマットすることでJavaScriptで扱えるオブジェクトにする
+        const json = await res.json();
+
+        // GraphQLは、Responseに`errors`を含んだ状態でエラーを返す。
+        // なので、通常のPromiseでエラーハンドリングで`catch`しようとすると、GraphQLではErrorを特定するができない。
+        if (json?.errors) {
+          console.error(json.errors);
+        }
+
+        // Graphqlは必ず、`data`という名前のメソッドの中にデータを格納してくる
+        if (json?.data?.users.length) {
+          // リクエストで送った、Queryに対応した形でデータが返される。
+          // 今回は全ての`users`を取得するqueryを生成したので、配列でデータが格納されている。
+          const user = json.data.users[0];
+
+          // `fetch`したデータをステートに保存
+          setUser(user);
+        }
+      });
+    }
+  });
+
+  return (
+    // 全ての要素をContainerで囲むことで、デザインが「整う」
+    <Container>
+      {/* 取得したデータを表示してみる */}
+      {user?.name}
+      <Grid container spacing={2}>
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+        <Grid item xs={3}>
+          <VideoCard />
+        </Grid>
+      </Grid>
+    </Container>
+  );
+};
+
+```
 
 ![hasura fetch user](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/hasura_fetch_user.png?raw=true)
 
@@ -1302,14 +1403,10 @@ Hasura のコンソール画面から、「Data」>「users」>「Insert Row」�
 
 では GraphQL がどんなもので、どのくらい便利かを体感して頂いたところで、この GraphQL を更に便利にするツールを２つご紹介します。
 
-先に、何を使うかをお伝えすると、
-
 - GraphQL Code Generator
 - Apollo Client
 
-の２つです。
-
-では早速、GraphQL Code Generator から見ていきましょう。
+早速、GraphQL Code Generator から見ていきましょう。
 
 - ### GraphQL Code Generator
 
@@ -1317,7 +1414,7 @@ GraphQL Code Generator は呼んで字のごとく、GraphQL 開発に必要な�
 
 GraphQL Codegen と訳されることが多く、その威力は折り紙付きです。
 
-実際に手を動かす前に、GraphQL Codegen が何を作成するの。
+実際に手を動かす前に、GraphQL Codegen が何をするのかをご説明します
 
 そして、Hasura と組み合わせることでどのような科学反応が起こるかを見ていきます。
 
@@ -1332,7 +1429,7 @@ GraphQL Codegen と訳されることが多く、その威力は折り紙付き�
 
 これをベースに、GraphQL Codegen 用のプラグインを入れること機能を拡張して更に便利にすることができます。
 
-GraphQL Codegen だけでも、型定義を自動生成してくれるので、かなり便利になります。
+GraphQL Codegen だけでも、型定義を自動生成してくれるのでかなり便利になります。
 
 この GraphQL Codegen は、CLI ツールになっています。
 
@@ -1352,6 +1449,7 @@ or
 yarn add -D graphql @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations
 ```
 
+- graphql : GraphQL のコアライブラリー
 - @graphql-codegen/cli : GraphQL Codegen の本体
 - @graphql-codegen/typescript : TypeScript の型生成する場合に必用なプラグイン
 - @graphql-codegen/typescript-operations : GraphQL のクエリとスキーマを元に TypeScript の型を自動生成するプラグイン
@@ -1370,9 +1468,18 @@ GraphQL は、スクリプトを記述する際に`yml`,`json`,`js`といった�
 
 `script/codegen.js`を作成します。
 
-[Diff コード]()
+[Diff - codegen.js ファイルを作成する](https://github.com/Hiro-mackay/react-bootcamp/commit/e781d2e0b496b374db5ea6c0cec4982e72c299c3)
 
-[全体コード]()
+```JS
+// script/codegen.js
+
+module.exports = {
+  schema: {},
+  documents: "",
+  generates: {},
+};
+
+```
 
 - schema : `Schema`の参照先。大抵 GraphQL サーバーが提供する schema を参照する。今回は Hasura を参照するように記述する。
 - documents : 実際にリクエストを発行するときに使用する`Query`を記述したファイルへのパスを指定。
@@ -1454,9 +1561,12 @@ REACT_APP_GRAPHQL_END_POINT_ORIGIN="API エンドポイント"
 REACT_APP_HASURA_SECRET_KEY="シークレットキー"
 ```
 
+> 今回、この環境変数は React からも使用する想定です。
+> React で環境変数にアクセスするためには、接頭語に`REACT_APP_`を付与する必要があります。
+
 続いて、`.env`の値を使って`codegen.js`のスクリプトを完成させます。
 
-[Diff コード]()
+[Diff - codegen に schema を追加](https://github.com/Hiro-mackay/react-bootcamp/commit/4bd549fa5363b592f62bd98307c751befc62e5c9)
 
 ```JS
 // script/codegen.js
@@ -1483,8 +1593,6 @@ JavaScript で環境変数の値にアクセするためには、`process.env`�
 これで Hasura のリソースにフルアクセスできるようになりました。
 
 次は、実際にコードを自動生成するスクリプトを記載します。
-
-[Diff]()
 
 ```JS
 // script/codegen.js
@@ -1528,7 +1636,7 @@ graphql-codegen --require dotenv/config --config script/codegen.js dotenv_config
 
 上記のコマンドを、`package.json`の`scripts`に追加します。
 
-[Diff]()
+[Diff - codegen のスクリプトを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/69f849ffdee5a0fa087c670d4013c3222d1c92c8)
 
 ```JSON
 {
@@ -1598,7 +1706,7 @@ yarn add -D @graphql-codegen/typescript-react-apollo
 
 続いて、`codegen.js`に Apollo Client 用の設定を追記します。
 
-[Diff]
+[Diff - codegen に Typescript のプラグインを追加]()
 
 ```js
 // script/codegen.js
@@ -1689,7 +1797,7 @@ Hasura から`Query`を生成するためには、Hasura のコンソールか�
 
 作成した`Query`をコピペして、`graphql/mutation`以下に`Query`を記述します。
 
-[Diff]()
+[Diff - InsertUser の Query ファイルを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/5d364c7f59060d7920173819b7acc7d14da80893)
 
 ```graphql
 # graphql/mutation/InsertUser.graphqlを作成する
@@ -1712,7 +1820,7 @@ mutation InsertUser($id: String!, $name: String!) {
 
 ![user query explorer](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-3/assets/user_query_explorer.png?raw=true)
 
-[diff]()
+[Diff - UserById の Qurty ファイルを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/034916124487c8a1b1925ad335022a4e260362f3)
 
 ```graphql
 # graphql/query/users.graphql
@@ -1735,7 +1843,7 @@ query UserById($id: String!) {
 
 作成した`Query`を codegen で読み込むためには、`codegen.js`を以下のように変更します。
 
-[diff]()
+[Diff - codegen に documents パスを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/274a35ed4a977784c15f3662483bf4e520edeb79)
 
 ```js
 // script/codegen.js
@@ -1849,7 +1957,7 @@ yarn add @apollo/client
 
 コードは以下の通りです。
 
-[Diff]()
+[Diff - ApolloProvider コンポーネントを作成し、Apollo をセットアップ](https://github.com/Hiro-mackay/react-bootcamp/commit/b554c2af5fbb598ae03c94f27b81c25ac2d150b0)
 
 ```TSX
 // src/index.tsx
@@ -1924,9 +2032,10 @@ ReactDOM.render(
 
 テストとして、user データを取得して、アプリケーションのヘッダーにデータを表示する処理を書いてみます。
 
-[Diff]()
+[Diff - Apollo Client でデータフェッチ](https://github.com/Hiro-mackay/react-bootcamp/commit/557c12c4c98d0379aa90b48480f02544004b79b2)
 
 ```TSX
+// src/templates/DashboardHeader/index.tsx
 
 import {
   AppBar,
