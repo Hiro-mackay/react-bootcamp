@@ -1,4 +1,10 @@
-import { AppBar, Avatar, Grid, IconButton, Toolbar } from "@material-ui/core";
+import {
+  AppBar,
+  Avatar,
+  IconButton,
+  Toolbar,
+  Typography,
+} from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import VideoCallIcon from "@material-ui/icons/VideoCall";
 import { Logo } from "../../components/Logo";
@@ -7,10 +13,16 @@ import { SearchBar } from "./SearchBar";
 // export defaultしているので、import側でuseStylesと命名します。
 // 命名はなんでも構いませんが、一貫して全て同じ名前にすることで、カスタム用のCSSを使用していることを明示します。
 import useStyles from "./style";
+import { useUserByIdQuery } from "../../utils/graphql/generated";
 
 export const DashboardHeader = () => {
   // 一度、useStylesを実行して、CSSを生成します。
   const styles = useStyles();
+
+  //GraphQLの`Query`を発行して、Hasuraのエンドポイントにリクエストを飛ばし、返り値を取得するまでが、この3行に詰まっています。
+  const { data } = useUserByIdQuery({
+    variables: { id: "testid" },
+  });
 
   return (
     // color="inherit" : 背景を白色に
@@ -45,6 +57,12 @@ export const DashboardHeader = () => {
           2つの<IconButton>を<div>で囲み、<div>にflexを付与
         */}
         <div className={styles.flex}>
+          {/* 
+            データが取得されたら、`data`内に`Schema`と同じ名前のオブジェクトの中にデータが格納されます。
+          */}
+          <IconButton>
+            <Typography>{data?.users_by_pk?.name}</Typography>
+          </IconButton>
           {/* 
           新規動画作成のアイコンボタンを追加
         */}

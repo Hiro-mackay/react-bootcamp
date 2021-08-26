@@ -3,9 +3,8 @@ import { VideoCard } from "../../components/VideoCard";
 
 export const Home = () => {
   return (
-    // 全ての要素をContainerで囲むことで、デザインが「整う」 
     <Container>
-
+      {/* 取得したデータを表示してみる */}
       <Grid container spacing={2}>
         <Grid item xs={3}>
           <VideoCard />

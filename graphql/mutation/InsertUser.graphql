@@ -1,0 +1,9 @@
+mutation InsertUser($id: String!, $name: String!) {
+  insert_users_one(object: { id: $id, name: $name, profile_photo_url: "" }) {
+    id
+    name
+    profile_photo_url
+    created_at
+    updated_at
+  }
+}
