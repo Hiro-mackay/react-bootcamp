@@ -1442,7 +1442,7 @@ GraphQL Codegen だけでも、型定義を自動生成してくれるのでか�
 まずは、GraphQL Codegen に必要なライブラリをインストールしていきます。
 
 ```
-install --save graphql @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations
+npm install --save graphql @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations
 ```
 
 or
