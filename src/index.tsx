@@ -11,6 +11,9 @@ import {
   InMemoryCache,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { RecoilRoot } from "recoil";
+import { AuthStateListener } from "./providers/AuthStateListener";
+import { GlobalAccout } from "./providers/GlobalAccount";
 
 // Material-UIの「テーマ」を作成する。
 // Material-UIをカスタマイズする際には、createThemeの引数にカスタマイズ項目を渡す。
@@ -45,31 +48,46 @@ const apolloClient = new ApolloClient({
 ReactDOM.render(
   <React.StrictMode>
     {/* 
-      Material-UI用を初期化し、アプリケーション全体でMaterial-UIを使用できるようにする
+      Recoilを初期化し、アプリケーション全体でRecoilを使用できるようにする
     */}
-    <ThemeProvider theme={theme}>
+    <RecoilRoot>
       {/* 
+      Material-UIを初期化し、アプリケーション全体でMaterial-UIを使用できるようにする
+    */}
+      <ThemeProvider theme={theme}>
+        {/* 
         Apollo Clientを初期化して、アプリケーション全体でApollo Clientを使えるようにする
       */}
-      <ApolloProvider client={apolloClient}>
-        <BrowserRouter>
+        <ApolloProvider client={apolloClient}>
           {/* 
-          ブラウザの違いを吸収し、どのデバイスでは同じように表示する用のCSSを使用する
-        */}
-          <CssBaseline />
+            ユーザーの認証情報を読む込み
+          */}
+          <AuthStateListener>
+            {/* 
+            ユーザー情報を読む込み
+          */}
+            <GlobalAccout>
+              <BrowserRouter>
+                {/* 
+              ブラウザの違いを吸収し、どのデバイスでは同じように表示する用のCSSを使用する
+              */}
+                <CssBaseline />
 
-          {/* 
-          アプリ全体の特殊なグローバルスタリング
-        */}
-          <GlobalStyle />
+                {/* 
+                アプリ全体の特殊なグローバルスタリング
+              */}
+                <GlobalStyle />
 
-          {/* 
-          ルーティング用のメインコンポーネント
-        */}
-          <RootRouter />
-        </BrowserRouter>
-      </ApolloProvider>
-    </ThemeProvider>
+                {/* 
+                ルーティング用のメインコンポーネント
+              */}
+                <RootRouter />
+              </BrowserRouter>
+            </GlobalAccout>
+          </AuthStateListener>
+        </ApolloProvider>
+      </ThemeProvider>
+    </RecoilRoot>
   </React.StrictMode>,
   document.getElementById("root")
 );

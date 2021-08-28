@@ -10,6 +10,7 @@ import { Signup } from "./pages/Signup";
 
 // <ForgetPassForm>import
 import { ForgetPassForm } from "./pages/ForgetPassForm";
+import { Signout } from "./pages/Signout";
 
 export const RootRouter = () => {
   return useRoutes([
@@ -34,7 +35,9 @@ export const RootRouter = () => {
       children: [
         { path: "login", element: <Login /> },
         { path: "signup", element: <Signup /> },
-        // <ForgetPassForm>コンポーネントを'/forget'を表示
+
+        // 追加！！
+        { path: "signout", element: <Signout /> },
         { path: "forget", element: <ForgetPassForm /> },
         { path: "404", element: <div>Not Found</div> },
         { path: "*", element: <Navigate to="/404" /> },

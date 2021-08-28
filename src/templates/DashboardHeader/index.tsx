@@ -1,28 +1,19 @@
-import {
-  AppBar,
-  Avatar,
-  IconButton,
-  Toolbar,
-  Typography,
-} from "@material-ui/core";
+import { AppBar, Avatar, Button, IconButton, Toolbar } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import VideoCallIcon from "@material-ui/icons/VideoCall";
 import { Logo } from "../../components/Logo";
 import { SearchBar } from "./SearchBar";
-
-// export defaultしているので、import側でuseStylesと命名します。
-// 命名はなんでも構いませんが、一貫して全て同じ名前にすることで、カスタム用のCSSを使用していることを明示します。
 import useStyles from "./style";
-import { useUserByIdQuery } from "../../utils/graphql/generated";
+import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { GlobalUser } from "../../stores/User";
 
 export const DashboardHeader = () => {
   // 一度、useStylesを実行して、CSSを生成します。
   const styles = useStyles();
 
-  //GraphQLの`Query`を発行して、Hasuraのエンドポイントにリクエストを飛ばし、返り値を取得するまでが、この3行に詰まっています。
-  const { data } = useUserByIdQuery({
-    variables: { id: "testid" },
-  });
+  // ユーザー情報Atom
+  const globalUser = useRecoilValue(GlobalUser);
 
   return (
     // color="inherit" : 背景を白色に
@@ -40,12 +31,12 @@ export const DashboardHeader = () => {
             <MenuIcon />
           </IconButton>
           {/* 
-          "useStyles"の値は、CSSモジュールと全く同じような使い方で、使用すすることができます。
-          例えば、仮に、後になって"Material-UI"をやめて独自のデザインを取り入れた時も、CSSモジュールでリプレイスしやすいような形にしています。
-        */}
-          <div className={styles.logo}>
+            <Link>コンポーネントで、ホームにルーティングするリンクを追加
+            `to`にルーティングの相対パスを指定します。
+          */}
+          <Link to="/" className={styles.logo}>
             <Logo />
-          </div>
+          </Link>
         </div>
 
         {/* 
@@ -58,24 +49,29 @@ export const DashboardHeader = () => {
         */}
         <div className={styles.flex}>
           {/* 
-            データが取得されたら、`data`内に`Schema`と同じ名前のオブジェクトの中にデータが格納されます。
+            ユーザーがログインしていれば、ユーザー用のデザインを表示
+            未ログインであれば「ログインボタン」を表示
           */}
-          <IconButton>
-            <Typography>{data?.users_by_pk?.name}</Typography>
-          </IconButton>
-          {/* 
-          新規動画作成のアイコンボタンを追加
-        */}
-          <IconButton>
-            <VideoCallIcon />
-          </IconButton>
-
-          {/* 
-          プロフィールアイコンを追加
-        */}
-          <IconButton className={styles.profileIcon}>
-            <Avatar />
-          </IconButton>
+          {globalUser ? (
+            <>
+              {/* 
+                新規動画作成のアイコンボタンを追加
+              */}
+              <IconButton>
+                <VideoCallIcon />
+              </IconButton>
+              {/* 
+                プロフィールアイコンを追加
+              */}
+              <IconButton className={styles.profileIcon}>
+                <Avatar />
+              </IconButton>
+            </>
+          ) : (
+            <Button variant="outlined" color="primary" href="/login">
+              ログイン
+            </Button>
+          )}
         </div>
       </Toolbar>
     </AppBar>

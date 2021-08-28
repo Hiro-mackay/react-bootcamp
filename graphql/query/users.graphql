@@ -2,6 +2,7 @@ query UserById($id: String!) {
   users_by_pk(id: $id) {
     id
     name
+    email
     profile_photo_url
     updated_at
     created_at
