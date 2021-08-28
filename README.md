@@ -631,7 +631,7 @@ export const Sidebar = () => {
 
 Hasura のプロジェクトコンソールから、`users`テーブルから`Modify`タブを選択していただき、`Columns`に新しく`email`と言うテキストカラムを追加します。
 
-![add email columns]()
+![add email columns](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/add_email_columns.png?raw=true)
 
 合わせて、`Query`に`email`カラムを追加します。
 
@@ -680,7 +680,7 @@ yarn codegen
 
 もしエラーで追加できない時は、一度、`users`に追加されているデータを削除して、下記のように何も表示されなくなってから、再度`email`カラムを作成してみてください。
 
-![empty users rows]()
+![empty users rows](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/empty_users_rows.png?raw=true)
 
 追加しなくてもアプリケーションは動きますが、これからは`email`カラムがある前提がコードを書いていくので、適宜読み替えて実装してください。
 
@@ -1215,11 +1215,11 @@ usRef を用いるだけで、これらの課題を解決することができ�
 
 ちなみに、うまく処理が実行できていれば、何も入力しない状態のフォームは赤色にエラー文が表示されます。
 
-![signup validation process]()
+![signup validation process](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/?raw=true)
 
 また、全ての処理が不具合なく動くとこのように、サインアップが成功し、ユーザーが作成され、`/`にリダイレクトされます。
 
-![success signup]()
+![success signup](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/?raw=true)
 
 あっという間にアカウント作成が完成しました。
 
@@ -1419,11 +1419,11 @@ export const Login = () => {
 
 エラーメッセージの表示
 
-![login validation process]()
+![login validation process](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/?raw=true)
 
 ログイン処理
 
-![success login]()
+![success login](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/?raw=true)
 
 いい感じですね！
 
@@ -1594,9 +1594,7 @@ export const Signout = () => {
 
 ```
 
-いい感じですね。
 
-![success signout]()
 
 - ### パスワード忘れの処理実装
 
@@ -1737,7 +1735,7 @@ Firebase は再発行用のページをデフォルトで作成しており、�
 
 こちらのページをカスタマイズすることも可能なのでぜひ、興味のあるかたは触ってみてください。
 
-![success forget pass]()
+![success forget pass](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/success_forget_pass.pngop?raw=true)
 
 - ### 自動認証機能の実装
 
@@ -1789,7 +1787,7 @@ export const AuthStateListener = ({ children }: PropsWithChildren<{}>) => {
 
 あとは、この`AuthStateListener`を`src/index.tsx`で読み込ませていきます。
 
-[Diff -]()
+[Diff - ]()
 
 ```TSX
 // src/index.tsx
@@ -2203,7 +2201,7 @@ export const DashboardHeader = () => {
 
 ここまでで、ユーザーの認証ができました。
 
-![success login redirect]()
+![success login redirect](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/?raw=true)
 
 ここで二つバグがあります。
 
@@ -2393,13 +2391,353 @@ export const GlobalAccout = ({ children }: PropsWithChildren<{}>) => {
 
 ## JWT トークンで Hsaura のリクエストをセキュアに
 
-ここまでで、
+ここまでで、認証のロジックが完了して、ユーザーアカウントの管理ができるようになりました。
+
+ここで、一つ、Hasura を含む、サーバー周りをセキュアな構成にして情報の流出や不審なアクセスがされないようにするための機能をご紹介します。
+
+何をするかと言うと、クライアント側で行ったユーザー認証を、Hsaura にわたすことによって、データへのアクセス権などを Hasura 側で制限することができます。
+
+例えば、今回のアプリケーションですと、動画のアップロードはログインしたユーザーのみに制限しています。
+
+Hasura 側でこの認証情報を識別する方法を実装しないと、どれだけクライアント側で操作ができないようにしても、Hasura に直接リクエストを投げるとデータの作成ができてしまいます。
+
+更に今の Bootcamp のアプリケーションには、Header に直接 Hasura のシークレットキーを載せてリクエストを飛ばしています。
+
+これは、もう本当に非常に危険な状態で、リクエストの中身が見えてしまうと、一瞬でシークレットキーが盗まれてしまいます。
+
+これを防ぐために、ユーザーの認証情報をシークレットキーの代わりに Header の付与することで、セキュアなリクエストを飛ばすことができます。
+
+インフラレベルでリクエストを制限を設けることは、アプリケーション開発には大事なことです。
+
+そこで、なかなか勉強コンテンツやチュートリアルでは教えられないセキュリティ周りの話もしていきたいと思います。
+
+注意！！！
+
+[JWT トークンで Hsaura のリクエストをセキュアに](#jwt-トークンで-hsaura-のリクエストをセキュアに)の章では、Firebase を従量課金プランにプランを変更する必要があります。
+
+これは Firebase Functions というサービス使用する条件が、従量課金プランのプロジェクトであることが理由です。
+
+とはいえ、課金されるのは 1 円に満たなく、本当にどれだけ使用しても 2~3 円を超えることはありません。
+
+それでも、サーバーを有料プランにするのに抵抗がある方は、[この章を飛ばしてアプリケーション開発を続けてください。](#firebase-storage-に動画をアップロード)
 
 - ### JWT トークンとは
+
+では、Hasura にユーザーの認証情報をリクエストに含めるためにはどうすればいいのでしょうか。
+
+この認証情報をリクエストに載せて送信するための技術が JWT と呼ばれるものです。
+
+JWT は、JSON Web Token の略称であり、ユーザーの認証情報であったり、属性情報（Claim:クレーム）を JSON データ構造で表現した`トークン`です。
+
+JWT のすごいところは、JSON データ構造として情報を持ちつつも、暗号化により電子署名付きの URL-safe（URL として利用出来る文字列）な JSON として使用できます。
+
+電子署名を行っているため、JSON データの改竄チェックを行うことができます。
+
+つまり認証トークンとして用いる場合は、そのユーザーが本当に信頼できるリソース源から認証を受けた個体か、そして、途中でトークンが改竄を受けていないかを確認することもできる優れものです。
+
+この JWT、実際にどういったものかをお見せしていきます。
+
+いきなりですが、JWT とはこれです。
+
+`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c`
+
+この長い文字列の中に、ユーザーの認証情報や属性情報が格納されています。
+
+JWT が実際にどのような JSON の値なのかを確認するためには、こちらの[jwt.io](https://jwt.io/)というサイトで確認する事ができます。
+
+サイトでは、左側に JWT トークンを入力すると正しい JWT の構造を持っていれば、右側に実際の JSON データが表示されます。
+
+見てお分かりの通り、JWT は簡単にエンコード、デコードができてしまいます。
+
+なので、JWT 自体には秘匿性を担保する機構はなく、あくまで、信頼できるリソースから作られたという証明とトークンが改竄されていないかの確認しかできません。
+
+JWT にしたから安心だ、ということはなく、JWT が漏れればもちろん、その認証ユーザーの権限が許す限りデータリソースへのアクセスは可能です。
+
+これを防ぐために、JWT では有効期限を設けて、有効期限内でしか使用できない JWT を作成するような運用を取ります。
+
+この時、有効期限を 1 時間にすれば、JWT の再生成頻度は下がり、ユーザーの UX は向上しますが、流出した時のリスクが高くなります。（１時間を長いととるか短いと取るかによりますが）
+
+反対に、5 分などにすると、JWT は頻繁に再生成する必要がありますが、流出したときのリスクは上記より小さくなります。（それでも、5 分なればデータを抜け取れそうですが）
+
+このようなトレードオフの元、JWT の有効期限を厳密に操作することで、セキュリティの高低をつけることができます。
+
+ちなみに、JWT はジョットと発音するみたいです。
+
 - ### Hasura で JWT トークンを認証できるように設定
+
+では JWT の概要がわかったところで、実際に Hasura ではどのように JWT を使っていけばいいのかをご説明していきます。
+
+Hasura の JWT のアーキテクチャを端的に表すとこのような画像になります。
+
+![hasura jwt architecture](https://hasura.io/docs/latest/_images/jwt-auth1.png)
+
+画像右側に認証サーバー、今回の場合ですと Firebase Authentication から JWT を生成してもらい、その JWT を GraphQL のリクエストの Header に乗せて、Hasura にリクエストを飛ばすことで Hasura が勝手に JWT を認証してくれ、有効な JWT か無効な JWT かを識別します。
+
+なので私達が行うこととしては、、Hasura で JWT 用の設定を行うこと、Hasura の JWT 識別ルールに則った JWT データを Firebase Authentication で生成できるようにすること GraphQl のリクエストに JWT を乗せること、の３つです。
+
+Hasura 特有の JWT ルールさえ理解できてしまえば、難しいことはありません。
+
+一個づつ設定していきましょう。
+
+Hasura の JWT は、ハマリポイントが多くあるので、そちらも確認しながら設定を行っていきます。
+
+Hasura で JWT の設定するために、Heroku のコンソール画面から設定を行っていきます。
+
+ご自身が Hasura のデータベースを作成した時に`connect`した Heroku アカウントで Heroku にログインします。
+
+Hasura と Heroku のどのプロジェクトが紐付いているかを確認するためには、[Hasura の最初のプロジェクトコンソール](https://cloud.hasura.io/projects)から`⚙歯車マーク`から設定画面を開き、`Env vars`から`HEROKU_DATABASE_URL`と書かれているところをクリックすると Heroku のどのプロジェクト ID と紐付いているかを確認できます。
+
+![hasura heroku projectid](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/hasura_heroku_projectid.png?raw=true)
+
+Heroku で同じプロジェクト ID のコンソール画面をから、`Settings`から`Config Vars`を設定する。
+
+- HASURA_GRAPHQL_JWT_SECRET  
+  {
+  "type":"RS256",
+  "jwk_url": "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com",
+  "audience": "firebase-project-id",
+  "issuer": "https://securetoken.google.com/firebase-project-id"
+  }
+
+`firebase-project-id`をあなたの Firebase のプロジェクト ID に変更してください。
+
+- HASURA_GRAPHQL_UNAUTHORIZED_ROLE  
+  anonymous
+
+- HASURA_GRAPHQL_ADMIN_SECRET  
+  YOUR_HASURA_GRAPHQL_ADMIN_SECRET
+
+![heroku jwt settings](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/heroku_jwt_settings.png?raw=true)
+
+以上で Hasura 側での JWT の設定が完了しました。
+
 - ### Hasura でパーミッションを設定してセキュアなデータベースを設定
+
+Hasura にパーミッションを設定して、適切なユーザーが適切な権限を付与できるように設定していきます。
+
+パーミッションは、データベースにあまり馴染みがない人は聞いたことがないかもしれません。
+
+パーミッションは、「あなたはこれしていいけど、あなたはこれしたらだめ」というものを設定するものです。
+
+パーミッションの設定は、`Role`に対して、`Permission`を付与するといった感じで使われます。
+
+`Role`が「あなた」で、`Permission`が「これしていい/だめ」を設定します。
+
+今回`Role`は「user(ログイン済みユーザー)」と「anonymous(未ログインユーザー)」を設定します。
+
+それぞれの`Role`に、データベースのある操作（読み取り、作成、更新、削除）ができるかを設定するのが`Permission`です。
+
+では早速、Hasura で生成済みのテーブルに対して、`Permission`を設定していきましょう。
+
+- #### users テーブルのパーミッションを設定
+
+まずは`users`テーブルから`Permission`を設定します。
+
+Hasura のプロジェクトコンソールから`users`テーブルを表示します。
+
+上部タブの`Permission`を選択します。
+
+![hasura table permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/hasura_table_permission.png?raw=true)
+
+insert : データの挿入を行う操作  
+select : データを読み取る操作  
+update : データをアップデートする操作  
+delete : データを削除する操作
+
+横軸を`Role`としてそれぞれのデータベース操作の`Permission`を設定します。
+
+`user`ロールを作成して、`insert`にパーミッションを設定してみましょう。
+
+「Enter new role」に「user」と入力して、`insert`の × をクリックすると設定を行い、`Save Permissions`で保存します。
+
+- insert
+  - [x] With custom check:
+        {
+        id : {
+        \_eq : X-Hasura-User-Id
+        }
+        }
+  - Column select permissions (Toggle All)  
+     [x] email  
+     [x] id  
+     [x] name  
+     [x] profile_photo_url  
+     [x] created_at  
+     [x] updated_at
+
+![users user insert permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/users_user_insert_permission.png?raw=true)
+
+合わせて`select`、`update`、`delete`も設定します
+
+- select
+  - Row select permissions  
+     [x] Without any checks
+  - Column select permissions (Toggle All)  
+     [x] email  
+     [x] id  
+     [x] name  
+     [x] profile_photo_url  
+     [x] created_at  
+     [x] updated_at
+
+![users user select permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/users_user_select_permission.png?raw=true)
+
+- update
+  - Row select permissions
+    - Pre-update check
+      [x] With same custom check as insert
+    - Post-update check
+      [x] With same custom check as insert, pre update
+  - Column select permissions (Toggle All)  
+     [x] email  
+     [ ] id  
+     [x] name  
+     [x] profile_photo_url  
+     [ ] created_at  
+     [ ] updated_at
+
+![users user update permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/users_user_update_permission.png?raw=true)
+
+`delete`のパーミッションは設定しません。
+
+user を削除してしまうと、動画に紐付いている`owner_id`が行方不明になってしまうため、削除はできないようにします。
+
+続いて、同じく`users`テーブルの`anonymous`ロールのパーミッションを設定していきます。
+
+`anonymous`に付与するパーミッションは`select`のみです。
+
+- select
+  - Row select permissions  
+     [x] Without any checks
+  - Column select permissions (Toggle All)  
+     [x] email  
+     [x] id  
+     [x] name  
+     [x] profile_photo_url  
+     [x] created_at  
+     [x] updated_at
+
+![users anonymous select permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/users_anonymous_select_permission.png?raw=true)
+
+これで`users`テーブルのパーミッションの設定は完了です。
+
+- #### videos テーブルのパーミッションを設定
+
+続いて、`videos`テーブルのパーミッションの設定を行います。
+
+- insert
+  - [x] With custom check:
+        {
+        owner_id : {
+        \_eq : X-Hasura-User-Id
+        }
+        }
+  - Column select permissions (Toggle All)  
+     [x] duration  
+     [x] views  
+     [x] description  
+     [x] id  
+     [x] owner_id  
+     [x] thumbnail_url  
+     [x] title  
+     [x] video_url  
+     [ ] created_at  
+     [ ] updated_at
+
+![videos user insert permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_user_insert_permission.png?raw=true)
+
+
+- select
+  - Row select permissions  
+     [x] Without any checks
+  - Column select permissions (Toggle All)  
+     [x] duration  
+     [x] views  
+     [x] description  
+     [x] id  
+     [x] owner_id  
+     [x] thumbnail_url  
+     [x] title  
+     [x] video_url  
+     [x] created_at  
+     [x] updated_at
+
+![videos user select permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_user_select_permission.png?raw=true)
+
+- update
+  - Row select permissions
+    - Pre-update check
+      [x] With same custom check as insert
+    - Post-update check
+      [x] With same custom check as insert, pre update
+  - Column select permissions (Toggle All)  
+     [x] duration  
+     [x] views  
+     [x] description  
+     [ ] id  
+     [ ] owner_id  
+     [x] thumbnail_url  
+     [x] title  
+     [ ] video_url  
+     [ ] created_at  
+     [ ] updated_at
+
+![videos user update permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_user_update_permission.png?raw=true)
+
+
+- delete
+  - Row select permissions  
+     [x] Without any checks
+
+![videos user delete permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_user_delete_permission.png?raw=true)
+
+続いて、`anonymous`にパーミッションを設定して行きます。
+
+`videos`では、`select`と`update`をパーミッションを設定します。
+
+
+- select
+  - Row select permissions  
+     [x] Without any checks
+  - Column select permissions (Toggle All)  
+     [x] duration  
+     [x] views  
+     [x] description  
+     [x] id  
+     [x] owner_id  
+     [x] thumbnail_url  
+     [x] title  
+     [x] video_url  
+     [x] created_at  
+     [x] updated_at
+
+![videos anonymous select permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_anonymous_select_permission.png?raw=true)
+
+- update
+  - Row select permissions
+    - Pre-update check
+      [x] With same custom check as insert
+    - Post-update check
+      [x] With same custom check as insert, pre update
+  - Column select permissions (Toggle All)  
+     [ ] duration  
+     [x] views  
+     [ ] description  
+     [ ] id  
+     [ ] owner_id  
+     [ ] thumbnail_url  
+     [ ] title  
+     [ ] video_url  
+     [ ] created_at  
+     [ ] updated_at
+
+![videos anonymous update permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_anonymous_update_permission.png?raw=true)
+
+これで全てのパーミッションの設定ができました。
+
 - ### Firebase Authentication から JWT トークンを取得
 - ### Hasura の GraphQL ヘッダーに JWT を実装
+- ### Hasura のハマリポイント
 
 ## Firebase Storage に動画をアップロード
 
