@@ -1215,11 +1215,11 @@ usRef を用いるだけで、これらの課題を解決することができ�
 
 ちなみに、うまく処理が実行できていれば、何も入力しない状態のフォームは赤色にエラー文が表示されます。
 
-![signup validation process](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/?raw=true)
+![signup validation process](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/signup_validation_process.gif?raw=true)
 
 また、全ての処理が不具合なく動くとこのように、サインアップが成功し、ユーザーが作成され、`/`にリダイレクトされます。
 
-![success signup](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/?raw=true)
+![success signup](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/success_signup.gif?raw=true)
 
 あっという間にアカウント作成が完成しました。
 
@@ -1419,11 +1419,11 @@ export const Login = () => {
 
 エラーメッセージの表示
 
-![login validation process](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/?raw=true)
+![login validation process](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/login_validation_process.gif?raw=true)
 
 ログイン処理
 
-![success login](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/?raw=true)
+![success login](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/success_login.gif?raw=true)
 
 いい感じですね！
 
