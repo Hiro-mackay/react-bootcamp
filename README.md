@@ -2551,19 +2551,15 @@ delete : データを削除する操作
 「Enter new role」に「user」と入力して、`insert`の × をクリックすると設定を行い、`Save Permissions`で保存します。
 
 - insert
-  - [x] With custom check:
-        {
-        id : {
-        \_eq : X-Hasura-User-Id
-        }
-        }
+  - [x] With custom check:  
+    { id : {  _eq : X-Hasura-User-Id  } }
   - Column select permissions (Toggle All)  
-     [x] email  
-     [x] id  
-     [x] name  
-     [x] profile_photo_url  
-     [x] created_at  
-     [x] updated_at
+    - [x] email  
+    - [x] id  
+    - [x] name  
+    - [x] profile_photo_url  
+    - [x] created_at  
+    - [x] updated_at
 
 ![users user insert permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/users_user_insert_permission.png?raw=true)
 
@@ -2571,30 +2567,30 @@ delete : データを削除する操作
 
 - select
   - Row select permissions  
-     [x] Without any checks
+    - [x] Without any checks
   - Column select permissions (Toggle All)  
-     [x] email  
-     [x] id  
-     [x] name  
-     [x] profile_photo_url  
-     [x] created_at  
-     [x] updated_at
+    - [x] email  
+    - [x] id  
+    - [x] name  
+    - [x] profile_photo_url  
+    - [x] created_at  
+    - [x] updated_at
 
 ![users user select permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/users_user_select_permission.png?raw=true)
 
 - update
   - Row select permissions
     - Pre-update check
-      [x] With same custom check as insert
+    - [x] With same custom check as insert
     - Post-update check
-      [x] With same custom check as insert, pre update
+    - [x] With same custom check as insert, pre update
   - Column select permissions (Toggle All)  
-     [x] email  
-     [ ] id  
-     [x] name  
-     [x] profile_photo_url  
-     [ ] created_at  
-     [ ] updated_at
+    - [x] email  
+    - [ ] id  
+    - [x] name  
+    - [x] profile_photo_url  
+    - [ ] created_at  
+    - [ ] updated_at
 
 ![users user update permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/users_user_update_permission.png?raw=true)
 
@@ -2608,14 +2604,14 @@ user を削除してしまうと、動画に紐付いている`owner_id`が行�
 
 - select
   - Row select permissions  
-     [x] Without any checks
+    - [x] Without any checks
   - Column select permissions (Toggle All)  
-     [x] email  
-     [x] id  
-     [x] name  
-     [x] profile_photo_url  
-     [x] created_at  
-     [x] updated_at
+    - [x] email  
+    - [x] id  
+    - [x] name  
+    - [x] profile_photo_url  
+    - [x] created_at  
+    - [x] updated_at
 
 ![users anonymous select permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/users_anonymous_select_permission.png?raw=true)
 
@@ -2626,66 +2622,62 @@ user を削除してしまうと、動画に紐付いている`owner_id`が行�
 続いて、`videos`テーブルのパーミッションの設定を行います。
 
 - insert
-  - [x] With custom check:
-        {
-        owner_id : {
-        \_eq : X-Hasura-User-Id
-        }
-        }
+  - [x] With custom check:  
+    { owner_id : { _eq : X-Hasura-User-Id }}
   - Column select permissions (Toggle All)  
-     [x] duration  
-     [x] views  
-     [x] description  
-     [x] id  
-     [x] owner_id  
-     [x] thumbnail_url  
-     [x] title  
-     [x] video_url  
-     [ ] created_at  
-     [ ] updated_at
+    - [x] duration  
+    - [x] views  
+    - [x] description  
+    - [x] id  
+    - [x] owner_id  
+    - [x] thumbnail_url  
+    - [x] title  
+    - [x] video_url  
+    - [ ] created_at  
+    - [ ] updated_at
 
 ![videos user insert permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_user_insert_permission.png?raw=true)
 
 - select
   - Row select permissions  
-     [x] Without any checks
-  - Column select permissions (Toggle All)  
-     [x] duration  
-     [x] views  
-     [x] description  
-     [x] id  
-     [x] owner_id  
-     [x] thumbnail_url  
-     [x] title  
-     [x] video_url  
-     [x] created_at  
-     [x] updated_at
+    - [x] Without any checks
+  - Column select permissions (Toggle All)
+    - [x] duration  
+    - [x] views  
+    - [x] description  
+    - [x] id  
+    - [x] owner_id  
+    - [x] thumbnail_url  
+    - [x] title  
+    - [x] video_url  
+    - [x] created_at  
+    - [x] updated_at
 
 ![videos user select permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_user_select_permission.png?raw=true)
 
 - update
   - Row select permissions
     - Pre-update check
-      [x] With same custom check as insert
+      - [x] With same custom check as insert
     - Post-update check
-      [x] With same custom check as insert, pre update
-  - Column select permissions (Toggle All)  
-     [x] duration  
-     [x] views  
-     [x] description  
-     [ ] id  
-     [ ] owner_id  
-     [x] thumbnail_url  
-     [x] title  
-     [ ] video_url  
-     [ ] created_at  
-     [ ] updated_at
+      - [x] With same custom check as insert, pre update
+  - Column select permissions (Toggle All)
+    - [x] duration  
+    - [x] views  
+    - [x] description  
+    - [ ] id  
+    - [ ] owner_id  
+    - [x] thumbnail_url  
+    - [x] title  
+    - [ ] video_url  
+    - [ ] created_at  
+    - [ ] updated_at
 
 ![videos user update permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_user_update_permission.png?raw=true)
 
 - delete
   - Row select permissions  
-     [x] Without any checks
+    - [x] Without any checks
 
 ![videos user delete permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_user_delete_permission.png?raw=true)
 
@@ -2695,38 +2687,38 @@ user を削除してしまうと、動画に紐付いている`owner_id`が行�
 
 - select
   - Row select permissions  
-     [x] Without any checks
-  - Column select permissions (Toggle All)  
-     [x] duration  
-     [x] views  
-     [x] description  
-     [x] id  
-     [x] owner_id  
-     [x] thumbnail_url  
-     [x] title  
-     [x] video_url  
-     [x] created_at  
-     [x] updated_at
+    - [x] Without any checks
+  - Column select permissions (Toggle All)
+    - [x] duration  
+    - [x] views  
+    - [x] description  
+    - [x] id  
+    - [x] owner_id  
+    - [x] thumbnail_url  
+    - [x] title  
+    - [x] video_url  
+    - [x] created_at  
+    - [x] updated_at
 
 ![videos anonymous select permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_anonymous_select_permission.png?raw=true)
 
 - update
   - Row select permissions
     - Pre-update check
-      [x] With same custom check as insert
+      - [x] With same custom check as insert
     - Post-update check
-      [x] With same custom check as insert, pre update
-  - Column select permissions (Toggle All)  
-     [ ] duration  
-     [x] views  
-     [ ] description  
-     [ ] id  
-     [ ] owner_id  
-     [ ] thumbnail_url  
-     [ ] title  
-     [ ] video_url  
-     [ ] created_at  
-     [ ] updated_at
+      - [x] With same custom check as insert, pre update
+  - Column select permissions (Toggle All)
+    - [ ] duration  
+    - [x] views  
+    - [ ] description  
+    - [ ] id  
+    - [ ] owner_id  
+    - [ ] thumbnail_url  
+    - [ ] title  
+    - [ ] video_url  
+    - [ ] created_at  
+    - [ ] updated_at
 
 ![videos anonymous update permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_anonymous_update_permission.png?raw=true)
 
