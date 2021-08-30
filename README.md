@@ -2552,7 +2552,7 @@ delete : データを削除する操作
 
 - insert
   - [x] With custom check:  
-        { id : { \_eq : X-Hasura-User-Id } }
+         { id : { \_eq : X-Hasura-User-Id } }
   - Column select permissions (Toggle All)
     - [x] email
     - [x] id
@@ -2623,7 +2623,7 @@ user を削除してしまうと、動画に紐付いている`owner_id`が行�
 
 - insert
   - [x] With custom check:  
-        { owner_id : { \_eq : X-Hasura-User-Id }}
+         { owner_id : { \_eq : X-Hasura-User-Id }}
   - Column select permissions (Toggle All)
     - [x] duration
     - [x] views
@@ -2769,9 +2769,9 @@ Firebase Functions を使用するためには、Firebase の利用プランを�
 
 なので、従量課金と言いつつ、今回は知らない間に課金されていることは無いのでご安心ください。
 
-では早速、Functionsの設定を行っていきましょう。
+では早速、Functions の設定を行っていきましょう。
 
-FirebaseのコンソールからFirebase Functionsを選択します。
+Firebase のコンソールから Firebase Functions を選択します。
 
 ![firebase functions console]()
 
@@ -2779,27 +2779,77 @@ FirebaseのコンソールからFirebase Functionsを選択します。
 
 ![firebase functions upgrade]()
 
-GCPの設定画面が開くので、必要な情報を入力して、「購入を確定」します。
+GCP の設定画面が開くので、必要な情報を入力して、「購入を確定」します。
 
-確定後、Firebase Functionsのコンソールを選択すると予算アラートの設定画面が出るので、心配な方は、課金が一定金額以上になった時にメールに通知が来るようにアラートを設定しておきましょう。
+確定後、Firebase Functions のコンソールを選択すると予算アラートの設定画面が出るので、心配な方は、課金が一定金額以上になった時にメールに通知が来るようにアラートを設定しておきましょう。
 
-全てが完了したら、Firebase Functionsの画面から「使ってみる」からFirebase Functionsの開発コンソール画面に移動します。
+全てが完了したら、Firebase Functions の画面から「使ってみる」から Firebase Functions の開発コンソール画面に移動します。
 
-これで、Firebase Functionsの開発からデプロイまでができるようになりました。
+これで、Firebase Functions の開発からデプロイまでができるようになりました。
 
-それでは、実際にソースコードを記述して、Firebase Functionsにデプロイしてみましょう。
+それでは、実際にソースコードを記述して、Firebase Functions にデプロイしてみましょう。
 
-Firebaseには、CLIツールが用意されておりFirebase Functionsのデプロイは、`firebase-tools`というCLIツールを用いてデプロイします。
+Firebase には、CLI ツールが用意されており Firebase Functions のデプロイは、`firebase-tools`という CLI ツールを用いてデプロイします。
 
 `firebase-tools`をインストールします。
 
-
-``` bash
+```bash
 # ターミナル（コマンドプロンプト）
 
-npm 
+npm install --save-dev firebase-tools
+
+# or
+
+yarn add --dev firebase-tools
 
 ```
+
+`firebase-tools`は CLI ツールなので、`package.json`にスクリプトを記述して、`npm`から`firebase-tools`を実行できるようにします。
+
+```json
+// package.json
+
+{
+  // ...
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "codegen": "graphql-codegen --require dotenv/config --config script/codegen.js dotenv_config_path=.env",
+    // 追加
+    "firebase": "firebase"
+  }
+  // ...
+}
+```
+
+これで、`npm run firebase`で`firebase-tools`を呼び出せます。
+
+次に、ターミナル（コマンドプロンプト）上で Firebase にログインします。
+
+ここでログインすることで、Firebase 上で作成しているプロジェクトと、`firebase-tools`をコネクトし、特定のプロジェクトにデプロイを行えるようにします。
+
+```bash
+# ターミナル(コマンドプロンプト)
+npm run firebase login
+
+Allow Firebase to collect CLI usage and error reporting information? (Y/n) Y
+
+# or
+
+yarn firebase login
+
+Allow Firebase to collect CLI usage and error reporting information? (Y/n) Y
+
+```
+
+コマンド実行後、ブラウザが開かれるので、Firebaseでプロジェクトを作成したアカウントでログインします。
+
+Firebase Toolへのアクセスを「許可」して、FirebaseプロジェクトをCLIで使えるようにします。
+
+次に、Reactアプリケーションのディレクトリに、`firebase-tools`のセットアップを行い、Firebaseのバックエンド開発を行えるようにします。
+
 
 
 - ### Hasura の GraphQL ヘッダーに JWT を実装
