@@ -2552,13 +2552,13 @@ delete : データを削除する操作
 
 - insert
   - [x] With custom check:  
-    { id : {  _eq : X-Hasura-User-Id  } }
-  - Column select permissions (Toggle All)  
-    - [x] email  
-    - [x] id  
-    - [x] name  
-    - [x] profile_photo_url  
-    - [x] created_at  
+        { id : { \_eq : X-Hasura-User-Id } }
+  - Column select permissions (Toggle All)
+    - [x] email
+    - [x] id
+    - [x] name
+    - [x] profile_photo_url
+    - [x] created_at
     - [x] updated_at
 
 ![users user insert permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/users_user_insert_permission.png?raw=true)
@@ -2566,14 +2566,14 @@ delete : データを削除する操作
 合わせて`select`、`update`、`delete`も設定します
 
 - select
-  - Row select permissions  
+  - Row select permissions
     - [x] Without any checks
-  - Column select permissions (Toggle All)  
-    - [x] email  
-    - [x] id  
-    - [x] name  
-    - [x] profile_photo_url  
-    - [x] created_at  
+  - Column select permissions (Toggle All)
+    - [x] email
+    - [x] id
+    - [x] name
+    - [x] profile_photo_url
+    - [x] created_at
     - [x] updated_at
 
 ![users user select permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/users_user_select_permission.png?raw=true)
@@ -2584,12 +2584,12 @@ delete : データを削除する操作
     - [x] With same custom check as insert
     - Post-update check
     - [x] With same custom check as insert, pre update
-  - Column select permissions (Toggle All)  
-    - [x] email  
-    - [ ] id  
-    - [x] name  
-    - [x] profile_photo_url  
-    - [ ] created_at  
+  - Column select permissions (Toggle All)
+    - [x] email
+    - [ ] id
+    - [x] name
+    - [x] profile_photo_url
+    - [ ] created_at
     - [ ] updated_at
 
 ![users user update permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/users_user_update_permission.png?raw=true)
@@ -2603,14 +2603,14 @@ user を削除してしまうと、動画に紐付いている`owner_id`が行�
 `anonymous`に付与するパーミッションは`select`のみです。
 
 - select
-  - Row select permissions  
+  - Row select permissions
     - [x] Without any checks
-  - Column select permissions (Toggle All)  
-    - [x] email  
-    - [x] id  
-    - [x] name  
-    - [x] profile_photo_url  
-    - [x] created_at  
+  - Column select permissions (Toggle All)
+    - [x] email
+    - [x] id
+    - [x] name
+    - [x] profile_photo_url
+    - [x] created_at
     - [x] updated_at
 
 ![users anonymous select permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/users_anonymous_select_permission.png?raw=true)
@@ -2623,34 +2623,34 @@ user を削除してしまうと、動画に紐付いている`owner_id`が行�
 
 - insert
   - [x] With custom check:  
-    { owner_id : { _eq : X-Hasura-User-Id }}
-  - Column select permissions (Toggle All)  
-    - [x] duration  
-    - [x] views  
-    - [x] description  
-    - [x] id  
-    - [x] owner_id  
-    - [x] thumbnail_url  
-    - [x] title  
-    - [x] video_url  
-    - [ ] created_at  
+        { owner_id : { \_eq : X-Hasura-User-Id }}
+  - Column select permissions (Toggle All)
+    - [x] duration
+    - [x] views
+    - [x] description
+    - [x] id
+    - [x] owner_id
+    - [x] thumbnail_url
+    - [x] title
+    - [x] video_url
+    - [ ] created_at
     - [ ] updated_at
 
 ![videos user insert permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_user_insert_permission.png?raw=true)
 
 - select
-  - Row select permissions  
+  - Row select permissions
     - [x] Without any checks
   - Column select permissions (Toggle All)
-    - [x] duration  
-    - [x] views  
-    - [x] description  
-    - [x] id  
-    - [x] owner_id  
-    - [x] thumbnail_url  
-    - [x] title  
-    - [x] video_url  
-    - [x] created_at  
+    - [x] duration
+    - [x] views
+    - [x] description
+    - [x] id
+    - [x] owner_id
+    - [x] thumbnail_url
+    - [x] title
+    - [x] video_url
+    - [x] created_at
     - [x] updated_at
 
 ![videos user select permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_user_select_permission.png?raw=true)
@@ -2662,21 +2662,21 @@ user を削除してしまうと、動画に紐付いている`owner_id`が行�
     - Post-update check
       - [x] With same custom check as insert, pre update
   - Column select permissions (Toggle All)
-    - [x] duration  
-    - [x] views  
-    - [x] description  
-    - [ ] id  
-    - [ ] owner_id  
-    - [x] thumbnail_url  
-    - [x] title  
-    - [ ] video_url  
-    - [ ] created_at  
+    - [x] duration
+    - [x] views
+    - [x] description
+    - [ ] id
+    - [ ] owner_id
+    - [x] thumbnail_url
+    - [x] title
+    - [ ] video_url
+    - [ ] created_at
     - [ ] updated_at
 
 ![videos user update permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_user_update_permission.png?raw=true)
 
 - delete
-  - Row select permissions  
+  - Row select permissions
     - [x] Without any checks
 
 ![videos user delete permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_user_delete_permission.png?raw=true)
@@ -2686,18 +2686,18 @@ user を削除してしまうと、動画に紐付いている`owner_id`が行�
 `videos`では、`select`と`update`をパーミッションを設定します。
 
 - select
-  - Row select permissions  
+  - Row select permissions
     - [x] Without any checks
   - Column select permissions (Toggle All)
-    - [x] duration  
-    - [x] views  
-    - [x] description  
-    - [x] id  
-    - [x] owner_id  
-    - [x] thumbnail_url  
-    - [x] title  
-    - [x] video_url  
-    - [x] created_at  
+    - [x] duration
+    - [x] views
+    - [x] description
+    - [x] id
+    - [x] owner_id
+    - [x] thumbnail_url
+    - [x] title
+    - [x] video_url
+    - [x] created_at
     - [x] updated_at
 
 ![videos anonymous select permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_anonymous_select_permission.png?raw=true)
@@ -2709,15 +2709,15 @@ user を削除してしまうと、動画に紐付いている`owner_id`が行�
     - Post-update check
       - [x] With same custom check as insert, pre update
   - Column select permissions (Toggle All)
-    - [ ] duration  
-    - [x] views  
-    - [ ] description  
-    - [ ] id  
-    - [ ] owner_id  
-    - [ ] thumbnail_url  
-    - [ ] title  
-    - [ ] video_url  
-    - [ ] created_at  
+    - [ ] duration
+    - [x] views
+    - [ ] description
+    - [ ] id
+    - [ ] owner_id
+    - [ ] thumbnail_url
+    - [ ] title
+    - [ ] video_url
+    - [ ] created_at
     - [ ] updated_at
 
 ![videos anonymous update permission](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/videos_anonymous_update_permission.png?raw=true)
@@ -2725,6 +2725,83 @@ user を削除してしまうと、動画に紐付いている`owner_id`が行�
 これで全てのパーミッションの設定ができました。
 
 - ### Firebase Authentication から JWT トークンを取得
+
+Hasura の設定が完了したところで、Firebase で JWT トークンを使用できるようにしていきます。
+
+Firebase では、特段設定しなくとも、JWT トークンを自動で設定してくれます。
+
+しかし、Firebase が自動で設定してくれる JWT トークンの情報だけでは、Hasura でのトークン認証ができません。
+
+Hasura で JWT トークンによる認証を行うためには、Hasura 用の JWT トークンの設定を Firebase に追加する必要があります。
+
+JWT トークンには、必ず必要なトークン情報と任意で追加できる情報（カスタムクレーム）があります。
+
+このカスタムクレームに対して、Hasura 用の認証トークン情報を埋め込みます。
+
+しかし、クライアント側からでは、カスタムクレームの埋め込みができません。
+
+そこで、Firebase Functions という Firebase のサービスを使用して、いわゆるサーバーサイド処理としてこのカスタムクレームの埋め込みを行います。
+
+ここからは、Firebase Functions の設定を行い、カスタムクレームの設定用の処理を記述していきます。
+
+- #### Firebase Functions の設定
+
+Firebase Functions を使用するためには、Firebase の利用プランを「フリープラン」から「従量課金プラン」に変更する必要があります。
+
+従量課金プランと書いていますが、従量課金プランにしてもフリープランの際に確保されているリソースが無くなるわけではありません。
+
+つまり、フリーラプン内でのリソースの使用は今まで通り無料で使用することができ、そのフリープラン内でのリソース使用量を超えた分にだけ課金される方式になっています。
+
+もちろん Firebase Function にも無料使用枠がせってされています。
+
+英語ですが、公式のドキュメントにどのくらいの無料枠が設定されているかが確認できます。
+
+[Firebase 料金表](https://firebase.google.com/pricing?hl=ja#cloud-functions)
+
+- Firebase Functions の無料枠
+  - 関数の呼び出し : 最初の 200 万回/月
+  - コンピューティング時間 : 400,000 GB 秒/月 または 200,000 GHz 秒/月
+  - 送信データ（上り）: 5 GB / 月
+
+上記の詳しい情報は[Cloud Functions の料金](https://cloud.google.com/functions/pricing?hl=ja)からそれぞれのリソースがどのようなものなのかの情報があります。
+
+上記の無料枠を見てわかる通り、個人開発やチュートリアルレベルのアプリケーションでは十分に事足りるリソースが割り当ててあります。
+
+なので、従量課金と言いつつ、今回は知らない間に課金されていることは無いのでご安心ください。
+
+では早速、Functionsの設定を行っていきましょう。
+
+FirebaseのコンソールからFirebase Functionsを選択します。
+
+![firebase functions console]()
+
+「プロジェクトのアップグレード」という項目があるので、プロジェクトを従量課金プランに変更します。
+
+![firebase functions upgrade]()
+
+GCPの設定画面が開くので、必要な情報を入力して、「購入を確定」します。
+
+確定後、Firebase Functionsのコンソールを選択すると予算アラートの設定画面が出るので、心配な方は、課金が一定金額以上になった時にメールに通知が来るようにアラートを設定しておきましょう。
+
+全てが完了したら、Firebase Functionsの画面から「使ってみる」からFirebase Functionsの開発コンソール画面に移動します。
+
+これで、Firebase Functionsの開発からデプロイまでができるようになりました。
+
+それでは、実際にソースコードを記述して、Firebase Functionsにデプロイしてみましょう。
+
+Firebaseには、CLIツールが用意されておりFirebase Functionsのデプロイは、`firebase-tools`というCLIツールを用いてデプロイします。
+
+`firebase-tools`をインストールします。
+
+
+``` bash
+# ターミナル（コマンドプロンプト）
+
+npm 
+
+```
+
+
 - ### Hasura の GraphQL ヘッダーに JWT を実装
 - ### Hasura のハマリポイント
 
