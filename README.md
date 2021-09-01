@@ -53,6 +53,7 @@
     - [ ] users テーブルのパーミッションを設定
     - [ ] videos テーブルのパーミッションを設定
   - [ ] Firebase Authentication から JWT トークンを取得
+    - [ ] Firestore を確認して user のドキュメントが作成されるまで待機
   - [ ] Hasura の GraphQL ヘッダーに JWT を実装
 - [ ] Firebase Storage に動画をアップロード
 - [ ] GraphQL リクエストを実装
@@ -82,8 +83,21 @@
   - [Hasura でパーミッションを設定してセキュアなデータベースを設定](#hasura-でパーミッションを設定してセキュアなデータベースを設定)
     - [users テーブルのパーミッションを設定](#users-テーブルのパーミッションを設定)
     - [videos テーブルのパーミッションを設定](#videos-テーブルのパーミッションを設定)
-  - [Firebase Authentication から JWT トークンを取得]
-  - [Hasura の GraphQL ヘッダーに JWT を実装]
+  - [Firebase Authentication から JWT トークンを取得](#firebase-authentication-から-jwt-トークンを取得)
+    - [Firestore を確認して user のドキュメントが作成されるまで待機](#firestore-を確認して-user-のドキュメントが作成されるまで待機)
+    - [トークンに Hasura カスタムクレームが追加されたら、GraphQL でユーザー情報を insert](#トークンに-hasura-カスタムクレームが追加されたら、graphql-でユーザー情報を-insert)
+    - [GraphQL のヘッダーに JWT トークンを追加](#graphql-のヘッダーに-jwt-トークンを追加)
+  - [Hasura の GraphQL ヘッダーに JWT を実装](#hasura-の-graphql-ヘッダーに-jwt-を実装)
+    - [Firestore を確認して user のドキュメントが作成されるまで待機](#firestore-を確認して-user-のドキュメントが作成されるまで待機)
+    - [トークンに Hasura カスタムクレームが追加されたらGraphQL でユーザー情報を insert](#トークンに-hasura-カスタムクレームが追加されたらgraphql-でユーザー情報を-insert)
+    - [GraphQL のヘッダーに JWT トークンを追加](#graphql-のヘッダーに-jwt-トークンを追加)
+  - [Hasura のハマリポイント](#hasura-のハマリポイント)
+    - [Hasura で JWT を使用するためには、Hasura のエンドポイントを保護する必要があります。](#hasura-で-jwt-を使用するためには、hasura-のエンドポイントを保護する必要があります。)
+    - [`headers`に`X-Hasura-Admin-Secret`が含まれる場合は、`JWT`認証はスキップされます。](#`headers`に`X-Hasura-Admin-Secret`が含まれる場合は、`JWT`認証はスキップされます。)
+    - [Hasura で JWT を送信する際にはカスタムクレームを`https://hasura.io/jwt/claims`で設定する必要があります。](#Hasura-で-JWT-を送信する際にはカスタムクレームを`https://hasura.io/jwt/claims`で設定する必要があります。)
+    - [JWT のカスタムクレームには`x-hasura-default-role`, `x-hasura-allowed-roles`が含まれている必要があります。](#JWT-のカスタムクレームには`x-hasura-default-role`,-`x-hasura-allowed-roles`が含まれている必要があります。)
+    - [ユーザーのロールをクライアント側で指定するには。](#ユーザーのロールをクライアント側で指定するには。)
+    - [JWT には Hasura で認識可能な独自のカスタムクレーム値を設定できます。](#JWT-には-Hasura-で認識可能な独自のカスタムクレーム値を設定できます。)
 - [Firebase Storage に動画をアップロード]
 - [GraphQL リクエストを実装]
   - [user データの作成と取得]
@@ -2507,6 +2521,8 @@ Heroku で同じプロジェクト ID のコンソール画面をから、`Setti
 - HASURA_GRAPHQL_ADMIN_SECRET  
   YOUR_HASURA_GRAPHQL_ADMIN_SECRET
 
+`YOUR_HASURA_GRAPHQL_ADMIN_SECRET`をあなたの Hasura シークレットキーに置き換えてください。
+
 ![heroku jwt settings](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/heroku_jwt_settings.png?raw=true)
 
 以上で Hasura 側での JWT の設定が完了しました。
@@ -2705,9 +2721,9 @@ user を削除してしまうと、動画に紐付いている`owner_id`が行�
 - update
   - Row select permissions
     - Pre-update check
-      - [x] With same custom check as insert
+      - [x] Without any checks (Same as select)
     - Post-update check
-      - [x] With same custom check as insert, pre update
+      - [x] Without any checks (Same as select, pre update)
   - Column select permissions (Toggle All)
     - [ ] duration
     - [x] views
@@ -2773,11 +2789,11 @@ Firebase Functions を使用するためには、Firebase の利用プランを�
 
 Firebase のコンソールから Firebase Functions を選択します。
 
-![firebase functions console]()
+![firebase functions console](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/firebase_functions_console.png?raw=true)
 
 「プロジェクトのアップグレード」という項目があるので、プロジェクトを従量課金プランに変更します。
 
-![firebase functions upgrade]()
+![firebase functions upgrade](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/firebase_functions_upgrade.png?raw=true)
 
 GCP の設定画面が開くので、必要な情報を入力して、「購入を確定」します。
 
@@ -2796,35 +2812,19 @@ Firebase には、CLI ツールが用意されており Firebase Functions の�
 ```bash
 # ターミナル（コマンドプロンプト）
 
-npm install --save-dev firebase-tools
+npm install -g firebase-tools
 
 # or
 
-yarn add --dev firebase-tools
+yarn global add firebase-tools
 
 ```
 
-`firebase-tools`は CLI ツールなので、`package.json`にスクリプトを記述して、`npm`から`firebase-tools`を実行できるようにします。
+`npm`の場合は`-g`オプションを、`yarn`の場合は`global`オプションをつけることで、グローバルなパッケージを操作します。
 
-```json
-// package.json
+グローバルなパッケージをインストールすると、ターミナル全体でそのパッケージを使用することができます。
 
-{
-  // ...
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "codegen": "graphql-codegen --require dotenv/config --config script/codegen.js dotenv_config_path=.env",
-    // 追加
-    "firebase": "firebase"
-  }
-  // ...
-}
-```
-
-これで、`npm run firebase`で`firebase-tools`を呼び出せます。
+これで、`firebase`コマンドをターミナルで打つことで、`firebase-tools`を呼び出せます。
 
 次に、ターミナル（コマンドプロンプト）上で Firebase にログインします。
 
@@ -2832,28 +2832,855 @@ yarn add --dev firebase-tools
 
 ```bash
 # ターミナル(コマンドプロンプト)
-npm run firebase login
-
-Allow Firebase to collect CLI usage and error reporting information? (Y/n) Y
-
-# or
-
-yarn firebase login
+firebase login
 
 Allow Firebase to collect CLI usage and error reporting information? (Y/n) Y
 
 ```
 
-コマンド実行後、ブラウザが開かれるので、Firebaseでプロジェクトを作成したアカウントでログインします。
+コマンド実行後、ブラウザが開かれるので、Firebase でプロジェクトを作成したアカウントでログインします。
 
-Firebase Toolへのアクセスを「許可」して、FirebaseプロジェクトをCLIで使えるようにします。
+Firebase Tool へのアクセスを「許可」して、Firebase プロジェクトを CLI で使えるようにします。
 
-次に、Reactアプリケーションのディレクトリに、`firebase-tools`のセットアップを行い、Firebaseのバックエンド開発を行えるようにします。
+次に、React アプリケーションのディレクトリに、`firebase-tools`のセットアップを行い、Firebase のバックエンド開発を行えるようにします。
+
+```bash
+# ターミナル（コマンドプロンプト）
+
+firebase init
+
+? Which Firebase features do you want to set up for this directory? Press Space to select features, t
+hen Enter to confirm your choices.
+ ◯ Realtime Database: Configure a security rules file for Realtime Database and (optionally) provisio
+n default instance
+ ◯ Firestore: Configure security rules and indexes files for Firestore
+❯◉ Functions: Configure a Cloud Functions directory and its files
+ ◯ Hosting: Configure files for Firebase Hosting and (optionally) set up GitHub Action deploys
+ ◯ Hosting: Set up GitHub Action deploys
+ ◯ Storage: Configure a security rules file for Cloud Storage
+(Move up and down to reveal more choices)
 
 
+? Please select an option: (Use arrow keys)
+❯ Use an existing project
+  Create a new project
+  Add Firebase to an existing Google Cloud Platform project
+  Dont set up a default project
+
+
+? Select a default Firebase project for this directory: (Use arrow keys)
+❯ react-bootcamp-78947 (react-bootcamp)
+
+? What language would you like to use to write Cloud Functions?
+  JavaScript
+❯ TypeScript
+
+? Do you want to use ESLint to catch probable bugs and enforce style? (Y/n) Y
+
+? Do you want to install dependencies with npm now? (Y/n) Y
+
+.
+.
+.
+
+added 404 packages, and audited 405 packages in 25s
+
+58 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+i  Writing configuration info to firebase.json...
+i  Writing project information to .firebaserc...
+
+✔  Firebase initialization complete!
+
+```
+
+上記のように、`firebase init`で firebase のセットアップを行うと、CLI で対話的にプロジェクトのセットアップを行います。
+
+先頭から、
+
+- `Functions`の選択
+- 作成済みのプロジェクトの選択
+- firebase のプロジェクトを確認
+- Typescript でコードを作成する
+- ESLint によるリンターを設定
+- パッケージのインストールをすぐに実行する
+
+と言う設定になっています。
+
+選択を行いたいときは、キーボードの矢印キーで操作し、任意の場所でキーボードのスペースを押すと選択できます。
+
+自動で`firebase`のセットアップが完了し、プロジェクトに`firebase`用のファイルとディレクトリ（./functions）が生成されます。
+
+`./functions`の中には Firebase Functions の開発に必要なコードが揃っています。
+
+それでは早速、`./functions`ディレクトリにソースコードを記述していきましょう。
+
+今回、`functions`に作成していくコードは「アカウントが作成されたら、トークンに Hasura 用のカスタムクレームを追加する」というコードです。
+
+```TS
+// functions/src/index.ts
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
+
+// firebaseの初期化
+admin.initializeApp(functions.config().firebase);
+
+/**
+ * Firebase FunctionsにprocessSignUpと言う名前の関数を作成
+ * `functions.auth.user().onCreate`で、Authenticationでuserが作成された時に実行される関数を定義
+ */
+exports.processSignUp = functions.auth.user().onCreate((user) => {
+  // Hasura用のカスタムクレームの作成
+  const customClaims = {
+    "https://hasura.io/jwt/claims": {
+      "x-hasura-default-role": "user",
+      "x-hasura-allowed-roles": ["user"],
+      "x-hasura-user-id": user.uid,
+    },
+  };
+
+  // userのトークンにカスタムクレームを追加する
+  return admin.auth().setCustomUserClaims(user.uid, customClaims);
+});
+
+```
+
+上記が、トークンにカスタムクレームを追加するためのコアコードです。
+
+とここで、VS Code 等を使用している際には、ファイル内にエラーが発生していると思われます。
+
+![firebase vscode eslinter error](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/firebase_vscode_eslinter_error.png?raw=true)
+
+このエラーは、ESlint によるエラーです。
+
+ESlint は、JavaScript のための静的検証ツールです。
+
+コードを実行する前にバグやエラーをチェックしてくれたり、フォーマットのスタイルを統一してくれたりします。
+
+この ESLint ですが、今回のように`create react app`で作成した React アプリと Firebase のプロジェクトを同じ階層に作成すると、それぞれのリンターが競合して今回のようエラーが発生します。
+
+これを解決するには簡単で、`functions/.eslintrc.js`のファイル内の最初の行の`module.`を削除するだけで解決します。
+
+```js
+// functions/.eslintrc.js
+
+// 「module.」を削除する
+exports = {
+  root: true,
+  env: {
+    es6: true,
+    node: true,
+  },
+  extends: [
+    "eslint:recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript",
+    "google",
+    "plugin:@typescript-eslint/recommended",
+  ],
+  parser: "@typescript-eslint/parser",
+  parserOptions: {
+    project: ["tsconfig.json", "tsconfig.dev.json"],
+    sourceType: "module",
+  },
+  ignorePatterns: [
+    "/lib/**/*", // Ignore built files.
+  ],
+  plugins: ["@typescript-eslint", "import"],
+  rules: {
+    quotes: ["error", "double"],
+    "import/no-unresolved": 0,
+  },
+};
+```
+
+これで、無意味なエラーで悩まされることは無くなりました。
+
+それでは、先ほど作成した`functions`のコードを見ていきましょう。
+
+特に難しいことをしているコードでなく、コメントに記載してある処理を記述しています。
+
+`functions`の開発も Firebase が便利なライブラリーを用意してくれているおかげで簡単にコードを書くことができます。
+
+では、このコードをデプロイして使えるように...の前に、実はこのコードはまだ完成ではありません。
+
+カスタムクレームの作成は以上で完了なのですが、「カスタムクレームの追加が完了したことをクライアントに伝える機構」がありません。
+
+この`processSignUp`関数は完全に非同期で処理が実行され、クライアント側からはこの処理が終了したかどうかを知る術がありません。
+
+そのため、クライアントには関数が実行される前の認証情報、つまり「Hsaura のカスタムクレームがつかされていない状態のトークン」が返されます。
+
+Firebase の使用により、トークンが変更されても、そのトークンが有効になるのは、次にユーザー認証が実行された時になります。
+
+そのため、クライアント側ではこの関数が実行し終わったどうかを随時確認して、終了していたら再度認証を行いカスタムクレームが追加された状態のトークンを取得する必要があります。
+
+これを実現するためには、`functions`が終了したら、サーバーサイド側からデータベースを作成・更新を行い、クライアント側はデータベースが作成されているかどうかで処理が終了したかを判断します。
+
+![functions add claims re-auth](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/functions_add_claims_re-auth.png?raw=true)
+
+まずは、`functions`側の処理を完成させます。
+
+`functions`側では、カスタムクレームの追加が完了したら、`firestore`という Firebase に用意されているドキュメント指向のデータベースにデータを保存します。
+
+`firestore`は、オブジェクト型のデータ構造を持っており、柔軟にデータ構造を変えてデータを保存できます。
+
+今回のアプリケーションでは、さらりとしか使わないので、詳細は割愛します。
+
+```TS
+// functions/src/index.ts
+
+
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
+
+// firebaseの初期化
+admin.initializeApp(functions.config().firebase);
+
+/**
+ * Firebase FunctionsにprocessSignUpと言う名前の関数を作成
+ * `functions.auth.user().onCreate`で、Authenticationでuserが作成された時に実行される関数を定義
+ */
+exports.processSignUp = functions.auth.user().onCreate((user) => {
+  // Hasura用のカスタムクレームの作成
+  const customClaims = {
+    "https://hasura.io/jwt/claims": {
+      "x-hasura-default-role": "user",
+      "x-hasura-allowed-roles": ["user"],
+      "x-hasura-user-id": user.uid,
+    },
+  };
+
+  // userのトークンにカスタムクレームを追加する
+  return admin
+    .auth()
+    .setCustomUserClaims(user.uid, customClaims)
+    .then(() => {
+      // カスタムクレームの追加が完了したら
+
+      // firestoreに"user.uid"に`refreshTime`という名前のタイムスタンプを作成します。
+      // クライアントは、このデータが作成されるまで待ちます。
+      // firestoreは、`coolection`の名前と、`doc`の文字列が判別すれば同じデータにアクセスできる
+     return admin
+        .firestore()
+        .collection("users")
+        .doc(user.uid)
+        .set({ refreshTime: admin.firestore.FieldValue.serverTimestamp() });
+    });
+});
+```
+
+以上で`functions`の処理は完成です。
+
+- #### Cloud Firestore の設定
+
+合わせて、Firestore の設定もしてしまいましょう。
+
+Firebase のコンソール画面から、`Firestore Database`の項目を選択し、「データベースの作成」から Firestore を開始します。
+
+![firestore console init](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/firestore_console_init.png?raw=true)
+
+「本番環境」で開始します。
+
+> テストモードで開始すると、特定の期間内を過ぎると全てのアクセスを拒否する設定がデフォルトになっています。  
+> また後ほどルールを変更しないといけないため、本番環境で一気通貫で設定してしまいます。
+
+![firestore enviroment mode](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/firestore_enviroment_mode.png?raw=true)
+
+ロケーションは、`asia-northeast1`を選択します。
+
+> デフォルトで選択されている場合はそのままで
+
+![firestore location select](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/firestore_location_select.png?raw=true)
+
+ここまで設定したら、Firestore のコンソール画面が表示されます。
+
+現在、「本番環境モード」になっているため、デフォルトで全てのリクエストを拒否する設定になっています。
+
+「ルール」の「書き込み権限」を`functions`にのみ許可し、「読み込み権限」を認証済みユーザーにのみ許可します。
+
+```JS
+// Firestore ルール
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      // readは、認証が済んでいるユーザーにのみ許可します。
+      allow read : if request.auth != null && request.auth.uid == userId;
+      // `functions`では、Firebase AdminSDKを使用してstoreにアクセスします。Admin SDKではルールを`false`にしても、アクセスを明示的に許可または拒否することはできません。
+      allow create, update: if false;
+    }
+  }
+}
+```
+
+![firestore rules](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/firestore_rules.png?raw=true)
+
+「公開」でルールをデプロイします。
+
+以上で Firebase 側の設定は完了です。
+
+後はローカルの`functions`のコードを`build`して、リモートに`deploy`します。
+
+まずは`build`から始めますが、このまま`build`すると、Typescript の設定が React の Typscript と競合してエラーを吐きます。
+
+そこで、`functions`の`tsconfig.json`を変更します。
+
+```json
+// functions/tsconfig.json
+
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "outDir": "lib",
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2017",
+    // 追加
+    "typeRoots": ["node_modules/@types"]
+  },
+  "compileOnSave": true,
+  "include": ["src"]
+}
+```
+
+これで、エラーを出すことなくコードを`build`することができます。
+
+```bash
+# ターミナル（コマンドプロンプト）
+
+cd functions && npm run build && cd ../
+
+# or
+
+cd functions && yarn build && cd ../
+
+```
+
+`build`したコードを`deploy`します。
+
+```bash
+# ターミナル（コマンドプロンプト）
+
+cd functions && npm run deploy && cd ../
+
+# or
+
+cd functions && yarn deploy && cd ../
+
+```
+
+> おそらくこの React Bootcamp で環境構築をされた方は、`node`のバージョンを`v16.6.1`でインストールされていると思います。
+> しかし、`firebase-tools`を使用する際には`node`のバージョンが`v14`にする必要があります。
+> 今のままでは、上記のコマンドはエラーを吐きます。
+> そこで m、node を`v14.17.5 `のバージョンでインストールします。
+> インストール方法は、[bootcamp-1](#https://github.com/Hiro-mackay/react-bootcamp/tree/bootcamp-1#pc-%E3%81%AB-react-%E3%81%AE%E7%92%B0%E5%A2%83%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B)をご確認ください。
+
+`deploy`には時間がかかります。
+
+`✔ Deploy complete!`と表示されれば完了です。
+
+ちなみに、`functions`が正しくデプロイされているか確認するためには、Firebase Functions コンソールで、`deploy`した関数と一致するか確認します。
+
+![firebase functions deploy](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/firebase_functions_deploy.png?raw=true)
 
 - ### Hasura の GraphQL ヘッダーに JWT を実装
+
+続いて、JWT トークンのクライアント側の実装を行います。
+
+クライアントの処理の概観は、「Firestore を確認して user のドキュメントが作成されるまで待機」「トークンに Hasura カスタムクレームが追加されたら、GraphQL でユーザー情報を insert」「GraphQL のヘッダーに JWT トークンを追加」します。
+
+大きく 3 つの処理に分けることができます。
+
+- ### Firestore を確認して user のドキュメントが作成されるまで待機
+
+`signup`の処理が終わった直後に、トークンの生成が終了すまで待機するコードを新しく作ります。
+
+```TS
+// src/hooks/Authentication/useSignup/checkAuthToken.tsを作成
+
+import { firestore, fireAuth } from "../../../utils/Firebase/config";
+
+export const checkAuthToken = (userId: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    // `userId`のドキュメントをリッスンします。
+    // onSnapshotでリッスンすると、返り値としてリッスンをリセットする関数が返される。
+    // unsubscribeを実行することで、ドキュメントのリッスンを取りやめます。
+    const unsubscribe = firestore
+      .collection("users")
+      .doc(userId)
+      // onSnapshotでドキュメントの変更をリッスンします。
+      .onSnapshot(
+        // データの中身が変更されたことを検出するためには、`includeMetadataChanges`オプションを有効にします。
+        { includeMetadataChanges: true },
+        async (doc) => {
+          if (!doc.exists) return;
+          // トークンを取得
+          const idToken = await fireAuth.currentUser?.getIdTokenResult();
+
+          // トークンがあり、Hasuraカスタムクレームが追加されているか
+          if (
+            idToken?.token &&
+            idToken?.claims["https://hasura.io/jwt/claims"]
+          ) {
+            // 追加されていれば、リッスンをしセットし、
+            // トークンを返します。
+            unsubscribe();
+            resolve(idToken?.token);
+          }
+        },
+        reject
+      );
+  });
+};
+
+```
+
+と、ここで`Firebase/config`には、`firestore`を用意してないので、作成しましょう。
+
+```TS
+// src/utils/Firebase/config.ts
+
+import firebase from "firebase";
+const firebaseConfig = {
+  apiKey: "AIzaSyCm8ZVPFvB4O5YVyNqA-16zWrRpbxd0RVQ",
+  authDomain: "react-bootcamp-78947.firebaseapp.com",
+  projectId: "react-bootcamp-78947",
+  storageBucket: "react-bootcamp-78947.appspot.com",
+  messagingSenderId: "236750478038",
+  appId: "1:236750478038:web:fc2e6a6e2f856cae1c4777",
+};
+firebase.initializeApp(firebaseConfig);
+export const fireAuth = firebase.auth();
+export const storage = firebase.storage();
+
+// firestoreのfirebaseモジュール
+export const firestore = firebase.firestore();
+
+export default firebase;
+```
+
+`firestore`用のライブラリを使用できるように変更しました。
+
+これで、「Firestore を確認して user のドキュメントが作成されるまで待機」という処理を記述しました。
+
+- #### トークンに Hasura カスタムクレームが追加されたらGraphQL でユーザー情報を insert
+
+続いて、「トークンに Hasura カスタムクレームが追加されたら、GraphQL でユーザー情報を insert」の処理を記述します。
+
+ここでは、先ほど作った関数`checkAuthToken`を`sognup`内で`await`するだけで実現できます。
+
+```TS
+// src/hooks/Authentication/useSignup/index.ts
+
+import { useEffect } from "react";
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { GlobalUser } from "../../../stores/User";
+import { FireSignupType } from "../../../utils/Firebase/signup";
+import { signup as fireSignup } from "../../../utils/Firebase/signup";
+import { useInsertUserMutation } from "../../../utils/graphql/generated";
+import { SetErrorFn, useAuthHelper } from "../useAuthHelper";
+import { checkAuthToken } from "./checkAuthToken";
+
+export type SignupPropsType = {
+  name: string;
+} & FireSignupType;
+
+export const useSignup = () => {
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+  const setGlobalUser = useSetRecoilState(GlobalUser);
+  const [insertMutation, { error: apolloError }] = useInsertUserMutation();
+
+  const formValidation = (setError: SetErrorFn) => {
+    let invalidValidation = false;
+    if (!nameRef.current?.value) {
+      setError("name", "名前が入力されていません。");
+      invalidValidation = true;
+    }
+    if (!emailRef.current?.value) {
+      setError("email", "メールアドレスを入力してください。");
+      invalidValidation = true;
+    }
+    if (!passwordRef.current?.value) {
+      setError("password", "パスワードを入力してください。");
+      invalidValidation = true;
+
+    return invalidValidation;
+  };
+
+  const signup = async () => {
+
+    const { user } = await fireSignup({
+      email: emailRef.current?.value || "",
+      password: passwordRef.current?.value || "",
+    });
+
+    if (!user?.uid) {
+      throw new Error("ユーザーの登録に失敗しました。");
+    }
+
+    // 追加
+    // アカウントにトークンが設定されるまで待機
+    await checkAuthToken(user.uid);
+
+    const apolloResponse = await insertMutation({
+      variables: {
+        id: user.uid,
+        name: nameRef.current?.value || "",
+        email: emailRef.current?.value || "",
+      },
+    });
+
+    if (apolloResponse.data?.insert_users_one?.id) {
+      setGlobalUser(apolloResponse.data?.insert_users_one);
+      navigate("/");
+    } else {
+      throw new Error("ユーザーの登録に失敗しました。");
+    }
+  };
+
+  const { authExecute, error, setErrorHandler, loading } = useAuthHelper(
+    signup,
+    formValidation
+  );
+
+  useEffect(() => {
+    if (apolloError?.message) {
+      setErrorHandler("main", apolloError.message);
+    }
+  }, [apolloError]);
+
+  return {
+    ref: {
+      nameRef,
+      emailRef,
+      passwordRef,
+    },
+    signup: authExecute,
+    error,
+    loading,
+  };
+};
+
+```
+
+GraphQL での`mutation`手前で、`await checkAuthToken(user.uid)`してトークンの生成を待機します。
+
+- #### GraphQL のヘッダーに JWT トークンを追加
+
+最後に、トークンを GraphQL のリクエストヘッダー、つまり Apollo Client でトークンが使用できるようにします。
+
+Apollo Provider のコードを編集したいのですが、`index.tsx`内で`Provider`が乱立しており、非常に見通しが悪いコードになっています。
+
+そこで、`index.tsx`から Apollo Client の`Provider`を抜き出し、コードを分割します。
+
+```TSX
+// src/providers/ApolloClient/index.tsxを作成
+
+// src/index.tsからApollo Clientのコードをに抜き出す
+import {
+  ApolloProvider as Provider,
+  ApolloClient,
+  createHttpLink,
+  InMemoryCache,
+} from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+import { PropsWithChildren } from "react";
+
+const httpLink = createHttpLink({
+  uri: process.env.REACT_APP_GRAPHQL_END_POINT_ORIGIN,
+});
+
+const authLink = setContext(() => {
+  return {
+    headers: {
+      "x-hasura-admin-secret": process.env.REACT_APP_HASURA_SECRET_KEY,
+    },
+  };
+});
+
+const apolloClient = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache()
+});
+
+export const ApolloProvider = ({ children }: PropsWithChildren<{}>) => {
+  return <Provider client={apolloClient}>{children}</Provider>;
+};
+
+```
+
+移転した Apollo Client を`src/index.tsx`から呼び出します。
+
+```TSX
+// src/index.tsx
+
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
+import { RootRouter } from "./Route";
+import { createTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
+import GlobalStyle from "./GlobalStyle";
+import { RecoilRoot } from "recoil";
+import { AuthStateListener } from "./providers/AuthStateListener";
+import { GlobalAccout } from "./providers/GlobalAccount";
+
+// 追加
+import { ApolloProvider } from "./providers/ApolloClient";
+
+
+const theme = createTheme();
+
+ReactDOM.render(
+  <React.StrictMode>
+    <RecoilRoot>
+      <ThemeProvider theme={theme}>
+        {/*
+        追加・変更
+      */}
+        <ApolloProvider>
+          <AuthStateListener>
+            <GlobalAccout>
+              <BrowserRouter>
+                <CssBaseline />
+                <GlobalStyle />
+                <RootRouter />
+              </BrowserRouter>
+            </GlobalAccout>
+          </AuthStateListener>
+        </ApolloProvider>
+      </ThemeProvider>
+    </RecoilRoot>
+  </React.StrictMode>,
+  document.getElementById("root")
+);
+
+```
+
+これまでの ApolloClient では、`header`に hasura のシークレットキーを直接設定していました。
+
+このシークレットキーを、JWT トークンで置き換えることで、シークレットキーを使用することなく、Hasura からデータを取得できるようになります。
+
+`<ApolloProvider>`のコードを変更して、`header`にトークンを格納する処理を追加します。
+
+```TSX
+// src/providers/ApolloClient/index.tsx
+
+import {
+  ApolloProvider as Provider,
+  ApolloClient,
+  createHttpLink,
+  InMemoryCache,
+} from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+import { PropsWithChildren } from "react";
+
+// 追加
+import { fireAuth } from "../../utils/Firebase/config";
+
+const httpLink = createHttpLink({
+  uri: process.env.REACT_APP_GRAPHQL_END_POINT_ORIGIN,
+});
+
+const authLink = setContext(async () => {
+  const token = await fireAuth.currentUser?.getIdToken(true);
+
+  return {
+    headers: {
+      // Bearerトークンでトークンを送信する
+      // headerのプロパティは`Authorization`
+      Authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
+
+const apolloClient = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache(),
+});
+
+
+
+export const ApolloProvider = ({ children }: PropsWithChildren<{}>) => {
+  return <Provider client={apolloClient}>{children}</Provider>;
+};
+```
+
+`setContext`にて、`headers`の`Authorization`に Bearer トークンとして JWT の認証情報を付与してリクエストを送信します。
+
+`setContext`に、`headers`に、`Authorization`に、` Bearer トークン`に、`jwt`に、とたくさんの横文字が出てきました。
+
+それぞれの技術仕様を説明しようとすると、それこそまた 1 ページドキュメントが出来上がるので、それぞれ何をするモノかを軽くご説明します。
+
+- `setContext` : ApolloLink を生成。server にリクエストを送信する前に、リクエストを改造できるやつ（ざっくり)
+- `headers` : HTTP リクエストのヘッダー。ヘッダーは、リクエストに情報を付与できるデータ
+- `Authorization` : HTTP 認証要求ヘッダー。HTTP ヘッダーの中で、認証情報を格納するためのプロパティ
+- `Bearerトークン` : OAuth 2.0 の認可機構。認証情報がどのような形で送られてくるかを明示するための「規格」。[ RFC 6750 ](http://tools.ietf.org/html/rfc6750)で定義される。
+
+`setContext`は Apollo Client 特有の関数で、主にリクエストの`headers`を変更するときに使用します。
+
+`Authorization`と`Bearerトークン`の関係は、`Authorization`の方がより大きな概念です。
+
+`Authorization`はサーバー側で認証とアクセス制御（つまり認可）を行うための規格です。
+
+その`Authorization`で送る認証情報の「方法」としての`Bearerトークン`があります。
+
+トークンの認証方式は様々なものがあるため、[Basic 認証、Digest 認証、Bearer 認証、OAuth 認証方式について](https://architecting.hateblo.jp/entry/2020/03/27/130535)などを確認すると理解が深まるかもしれません。
+
+今回のアプリケーションでは、Firebase で認証した情報を JWT で「トークン化」して、リクエストの`headers`に`Bearerトークン`の規格で認証情報をサーバーに送信し、サーバーは認証情報から認可を行います。
+
+認可の実態は、前の項で皆さんが設定したパーミッションそのものです。
+
+Hasura は、リクエストの中に含まれている`Bearerトークン`を識別し、実際にその認証のアクセス制御をパーミッションを見ながら制御します。
+
+ソースコードと、背景にあるフローを確認することで、ここまでやってきたことがなんとなく繋がってきたのではないでしょうか。
+
+以上で、アプリケーションをセキュアに開発できるようになる方法が分かりました。
+
 - ### Hasura のハマリポイント
+
+ここまででも、Apollo Client と Hasura の認証・認可の方法を見てきました。
+
+コードを見るだけでも、だいぶ複雑です。
+
+しかし、それ以上に、Hasura で暗黙的に決定されている項目設定が多いため、こここまで学んだ方法を別のコードに展開したときに沼にハマる可能性が高いです。
+
+そこで、Hasura の認証・認可を実装する際にハマりやすいポイントと、解決方法を以下にご紹介します。
+
+ぜひ、今後の Hasura 開発にお役立ていただければと思います。
+
+> 設定自体は、Hasura 特有なものですが、その背景にある技術仕様は広く使われている技術です。  
+> 今回と違う構成で構築したアプリケーションでも、似たような技術が使用されると思われますので、ぜひご参考にしてください。
+
+- #### Hasura で JWT を使用するためには、Hasura のエンドポイントを保護する必要があります。
+
+[公式ドキュメント](https://hasura.io/docs/latest/graphql/core/deployment/securing-graphql-endpoint.html)
+
+設定するデータベースや環境によっては保護する方法が異なりますが、今回の Heroku の構成では、[Heroku の`Env Vars`を設定します](#hasura-で-jwt-トークンを認証できるように設定)
+
+- #### `headers`に`X-Hasura-Admin-Secret`が含まれる場合は、`JWT`認証はスキップされます。
+
+[公式ドキュメント](https://hasura.io/docs/latest/graphql/core/auth/authentication/jwt.html#introduction)
+
+前の項で`headers`に`Authorization`を設定しましたが、この時に、`x-hasura-admin-secret`を削除しないままアプリケーションを動かすと、`x-hasura-admin-secret`が優先されます。
+
+つまり、せっかく`Authorization`による認証を追加されても実際は`x-hasura-admin-secret`で認証を行なっているので、セキュアなリクエストができなくなります。
+
+- #### Hasura で JWT を送信する際にはカスタムクレームを`https://hasura.io/jwt/claims`で設定する必要があります。
+
+[公式ドキュメント](#https://hasura.io/docs/latest/graphql/core/auth/authentication/jwt.html#the-spec)
+
+Hasura に送信される JWT には`https://hasura.io/jwt/claims`という名前のカスタムクレーム値を設定する必要が上がります。
+
+`https://hasura.io/jwt/claims`が無い JWT は、Hasura で無効な認証として拒否されます。
+
+- #### JWT のカスタムクレームには`x-hasura-default-role`, `x-hasura-allowed-roles`が含まれている必要があります。
+
+[公式ドキュメント](https://hasura.io/docs/latest/graphql/core/auth/authentication/jwt.html#tl-dr)
+
+[Firebase Functions の設定](#firebase-functions-の設定)で設定したカスタムクレームの設定を確認してみてください。
+
+```TS
+// Hasura用のカスタムクレームの作成
+const customClaims = {
+  "https://hasura.io/jwt/claims": {
+    "x-hasura-default-role": "user",
+    "x-hasura-allowed-roles": ["user"],
+    "x-hasura-user-id": user.uid,
+  },
+};
+```
+
+ここで、「x-hasura-default-role」と「x-hasura-allowed-roles」を設定しています。
+
+これは任意の値ではなく、必ず設定しなければいけない値になります。
+
+- `x-hasura-default-role` : ユーザーのデフォルトのロール
+- `x-hasura-allowed-roles` : ユーザーに許可されるロールのリスト
+
+`x-hasura-default-role`は、最初に設定されるロール、つまり`user`ロールを設定します。
+
+`x-hasura-default-role`は、`x-hasura-allowed-roles`内に含まれる値である必要があります。
+
+`x-hasura-allowed-roles`は、Hasura のパーミッション設定で設定した`Role`の種類と同じです。
+
+- #### ユーザーのロールをクライアント側で指定するには。
+
+上記で、デフォルトのロールと、許可されるロールのリストの設定はできましたが、アプリケーションで必要なロールは指定できていません。
+
+Hasura では、リクエストの`headers`に、`x-hasura-role`を付与することでロールを指定できます。
+
+例えば以下のようなカスタムクレーム設定があるとします。
+
+```TS
+const customClaims = {
+  "https://hasura.io/jwt/claims": {
+    "x-hasura-default-role": "user",
+    "x-hasura-allowed-roles": ["user","admin"],
+    "x-hasura-user-id": user.uid,
+  },
+};
+```
+
+アプリケーション側の設定で、以下のようにリクエストヘッダーを設定するとします。
+
+```TS
+const authLink = setContext(async () => {
+  const token = await fireAuth.currentUser?.getIdToken(true);
+
+  return {
+    headers: {
+      Authorization: token ? `Bearer ${token}` : "",
+      // ロールを指定する
+      "x-hasura-role": "admin",
+    },
+  };
+});
+```
+
+`Authorization`を指定した`headers`と同じ場所で、"x-hasura-role"を指定することで、そのユーザーにはそのロールがしてされます。
+
+ここでは、`admin`、つまり管理者ロールが付与されます。
+
+このリクエストは、Hasura 側で`admin`として構成されるロールのパーミッションのもと認可が行われます。
+
+もちろん、`x-hasura-role`のロールは、`x-hasura-allowed-roles`に含まれている必要があります。
+
+- #### JWT には Hasura で認識可能な独自のカスタムクレーム値を設定できます。
+
+上記までは、必ず JWT に含まれていなければいけない構成値です。
+
+その他に、オプション値として任意の値を設定し、Hasura の認可ロジックで使用できる構成を作成できます。
+
+今回のカスタムクレームの構成では、`x-hasura-user-id`がオプションのクレーム値になります。
+
+```TS
+// Hasura用のカスタムクレームの作成
+const customClaims = {
+  "https://hasura.io/jwt/claims": {
+    "x-hasura-default-role": "user",
+    "x-hasura-allowed-roles": ["user"],
+    "x-hasura-user-id": user.uid,
+  },
+};
+```
+
+この値は、実際に Hasura でパーミッションを設定する際に使用しました。
+
+他にも、所属企業 ID として`x-hasura-org-id`としてユーザーのパーミッション設定をすることができます。
+
+その他、Hasura で JWT 認証を行う際の構成やユースケースは[公式のドキュメント](https://hasura.io/docs/latest/graphql/core/auth/authentication/jwt.html)にまとまっています。
 
 ## Firebase Storage に動画をアップロード
 

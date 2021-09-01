@@ -20,5 +20,8 @@ export const fireAuth = firebase.auth();
 // ストレージ用のfirebaseモジュール
 export const storage = firebase.storage();
 
+// firestoreのfirebaseモジュール
+export const firestore = firebase.firestore();
+
 // 初期化済みのfirebaseパッケージを確実に使用するためのexport defaultでfirebaseパッケージをexport
 export default firebase;
