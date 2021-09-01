@@ -85,19 +85,19 @@
     - [videos テーブルのパーミッションを設定](#videos-テーブルのパーミッションを設定)
   - [Firebase Authentication から JWT トークンを取得](#firebase-authentication-から-jwt-トークンを取得)
     - [Firestore を確認して user のドキュメントが作成されるまで待機](#firestore-を確認して-user-のドキュメントが作成されるまで待機)
-    - [トークンに Hasura カスタムクレームが追加されたら、GraphQL でユーザー情報を insert](#トークンに-hasura-カスタムクレームが追加されたら、graphql-でユーザー情報を-insert)
+    - [トークンに Hasura カスタムクレームが追加されたら、GraphQL でユーザー情報を insert](#トークンに-hasura-カスタムクレームが追加されたらgraphql-でユーザー情報を-insert)
     - [GraphQL のヘッダーに JWT トークンを追加](#graphql-のヘッダーに-jwt-トークンを追加)
   - [Hasura の GraphQL ヘッダーに JWT を実装](#hasura-の-graphql-ヘッダーに-jwt-を実装)
     - [Firestore を確認して user のドキュメントが作成されるまで待機](#firestore-を確認して-user-のドキュメントが作成されるまで待機)
-    - [トークンに Hasura カスタムクレームが追加されたらGraphQL でユーザー情報を insert](#トークンに-hasura-カスタムクレームが追加されたらgraphql-でユーザー情報を-insert)
+    - [トークンに Hasura カスタムクレームが追加されたら GraphQL でユーザー情報を insert](#トークンに-hasura-カスタムクレームが追加されたらgraphql-でユーザー情報を-insert)
     - [GraphQL のヘッダーに JWT トークンを追加](#graphql-のヘッダーに-jwt-トークンを追加)
   - [Hasura のハマリポイント](#hasura-のハマリポイント)
-    - [Hasura で JWT を使用するためには、Hasura のエンドポイントを保護する必要があります。](#hasura-で-jwt-を使用するためには、hasura-のエンドポイントを保護する必要があります。)
-    - [`headers`に`X-Hasura-Admin-Secret`が含まれる場合は、`JWT`認証はスキップされます。](#`headers`に`X-Hasura-Admin-Secret`が含まれる場合は、`JWT`認証はスキップされます。)
-    - [Hasura で JWT を送信する際にはカスタムクレームを`https://hasura.io/jwt/claims`で設定する必要があります。](#Hasura-で-JWT-を送信する際にはカスタムクレームを`https://hasura.io/jwt/claims`で設定する必要があります。)
-    - [JWT のカスタムクレームには`x-hasura-default-role`, `x-hasura-allowed-roles`が含まれている必要があります。](#JWT-のカスタムクレームには`x-hasura-default-role`,-`x-hasura-allowed-roles`が含まれている必要があります。)
-    - [ユーザーのロールをクライアント側で指定するには。](#ユーザーのロールをクライアント側で指定するには。)
-    - [JWT には Hasura で認識可能な独自のカスタムクレーム値を設定できます。](#JWT-には-Hasura-で認識可能な独自のカスタムクレーム値を設定できます。)
+    - [Hasura で JWT を使用するためには、Hasura のエンドポイントを保護する必要があります。](#hasura-で-jwt-を使用するためにはhasura-のエンドポイントを保護する必要があります)
+    - [`headers`に`X-Hasura-Admin-Secret`が含まれる場合は、`JWT`認証はスキップされます。](#headersにx-hasura-admin-secretが含まれる場合はjwt認証はスキップされます)
+    - [Hasura で JWT を送信する際にはカスタムクレームを`https://hasura.io/jwt/claims`で設定する必要があります。](#hasura-で-jwt-を送信する際にはカスタムクレームをhttpshasuraiojwtclaimsで設定する必要があります)
+    - [JWT のカスタムクレームには`x-hasura-default-role`, `x-hasura-allowed-roles`が含まれている必要があります。](#jwt-のカスタムクレームにはx-hasura-default-role-x-hasura-allowed-rolesが含まれている必要があります)
+    - [ユーザーのロールをクライアント側で指定するには。](#ユーザーのロールをクライアント側で指定するには)
+    - [JWT には Hasura で認識可能な独自のカスタムクレーム値を設定できます。](#jwt-には-hasura-で認識可能な独自のカスタムクレーム値を設定できます)
 - [Firebase Storage に動画をアップロード]
 - [GraphQL リクエストを実装]
   - [user データの作成と取得]
@@ -3270,7 +3270,7 @@ export default firebase;
 
 これで、「Firestore を確認して user のドキュメントが作成されるまで待機」という処理を記述しました。
 
-- #### トークンに Hasura カスタムクレームが追加されたらGraphQL でユーザー情報を insert
+- #### トークンに Hasura カスタムクレームが追加されたら GraphQL でユーザー情報を insert
 
 続いて、「トークンに Hasura カスタムクレームが追加されたら、GraphQL でユーザー情報を insert」の処理を記述します。
 
