@@ -40,37 +40,8 @@
 - [ ] Recoil のセットアップ
 - [ ] ルーティング処理の追加
 - [ ] 認証機能の実装
-  - [ ] 新規アカウント登録の実装
-  - [ ] ログインの実装
-  - [ ] ログアウトの実装
-  - [ ] パスワード忘れの処理実装
-  - [ ] 自動認証機能の実装
-  - [ ] 認証情報の管理
-- [ ] JWT トークンで Hsaura のリクエストをセキュアに
-  - [ ] JWT トークンとは
-  - [ ] Hasura で JWT トークンを認証できるように設定
-  - [ ] Hasura でパーミッションを設定してセキュアなデータベースを設定
-    - [ ] users テーブルのパーミッションを設定
-    - [ ] videos テーブルのパーミッションを設定
-  - [ ] Firebase Authentication から JWT トークンを取得
-    - [ ] Firestore を確認して user のドキュメントが作成されるまで待機
-  - [ ] Hasura の GraphQL ヘッダーに JWT を実装
-    - [ ] Firestore を確認して user のドキュメントが作成されるまで待機
-    - [ ] トークンに Hasura カスタムクレームが追加されたら GraphQL でユーザー情報を insert]
-    - [ ] GraphQL のヘッダーに JWT トークンを追加
-  - [ ] Hasura のハマリポイント
-    - [ ] Hasura で JWT を使用するためには、Hasura のエンドポイントを保護する必要があります。
-    - [ ] `headers`に`X-Hasura-Admin-Secret`が含まれる場合は、`JWT`認証はスキップされます。
-    - [ ] Hasura で JWT を送信する際にはカスタムクレームを`https://hasura.io/jwt/claims`で設定する必要があります。
-    - [ ] JWT のカスタムクレームには`x-hasura-default-role`, `x-hasura-allowed-roles`が含まれている必要があります。
-    - [ ] ユーザーのロールをクライアント側で指定するには。
-    - [ ] JWT には Hasura で認識可能な独自のカスタムクレーム値を設定できます。
 - [ ] Firebase Storage に動画をアップロード
 - [ ] GraphQL リクエストを実装
-  - [ ] user データの作成と取得
-  - [ ] video データの作成
-  - [ ] video データの取得
-  - [ ] Firebase Storage から動画を取得する
 
 ### 目次
 
