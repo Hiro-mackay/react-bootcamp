@@ -4,13 +4,36 @@ import {
   DialogContent,
   Grid,
   Divider,
+  CircularProgress,
 } from "@material-ui/core";
 import { UploadForm } from "./UploadForm";
 import { VideoSelect } from "./VideoSelector";
 import useStyles from "./style";
+import { useRecoilValue } from "recoil";
+import { AccountLoaded } from "../../stores/AccountLoaded";
+import { useEffect } from "react";
+import { GlobalUser } from "../../stores/User";
+import { useNavigate } from "react-router-dom";
 
 export const Upload = () => {
   const styles = useStyles();
+
+  // recoilの値を使用
+  const accountLoaded = useRecoilValue(AccountLoaded);
+  const user = useRecoilValue(GlobalUser);
+
+  // react routerを使用する
+  const navigate = useNavigate();
+
+  // アカウントが読み込まれていない、未ログインであれば`/login`へリダレクト
+  useEffect(() => {
+    if (accountLoaded) {
+      if (!user?.id) {
+        navigate("/login");
+      }
+    }
+  }, [accountLoaded, user?.id]);
+
   return (
     // ダイアログコンポーネント
     // fullWidth: trueの場合、画面いっぱいにダイアログを表示
@@ -27,19 +50,23 @@ export const Upload = () => {
         2カラムのレイアウトを実装する  
       */}
       <DialogContent className={styles.body}>
-        <Grid container spacing={4}>
-          <Grid xs item>
-            <VideoSelect />
+        {/* アカウントが存在すれば、アップロードコンポーネントを表示 */}
+        {user?.id ? (
+          <Grid container spacing={4}>
+            <Grid xs item>
+              <VideoSelect />
+            </Grid>
+            <Divider orientation="vertical" flexItem />
+            <Grid xs item>
+              <UploadForm />
+            </Grid>
           </Grid>
-
-          {/* 
-            真ん中に縦線を挿入
-          */}
-          <Divider orientation="vertical" flexItem />
-          <Grid xs item>
-            <UploadForm />
+        ) : (
+          // ローディングコンポーネント表示
+          <Grid container justifyContent="center">
+            <CircularProgress size={50} />
           </Grid>
-        </Grid>
+        )}
       </DialogContent>
     </Dialog>
   );
