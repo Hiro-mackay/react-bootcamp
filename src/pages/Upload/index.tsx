@@ -11,7 +11,7 @@ import { VideoSelect } from "./VideoSelector";
 import useStyles from "./style";
 import { useRecoilValue } from "recoil";
 import { AccountLoaded } from "../../stores/AccountLoaded";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { GlobalUser } from "../../stores/User";
 import { useNavigate } from "react-router-dom";
 
@@ -21,6 +21,11 @@ export const Upload = () => {
   // recoilの値を使用
   const accountLoaded = useRecoilValue(AccountLoaded);
   const user = useRecoilValue(GlobalUser);
+
+  // 追加
+  // ファイル管理用ローカルステート
+  const [videoFile, setVideoFile] = useState<File>();
+  const [thumbFile, setThumbFile] = useState<File>();
 
   // react routerを使用する
   const navigate = useNavigate();
@@ -54,11 +59,21 @@ export const Upload = () => {
         {user?.id ? (
           <Grid container spacing={4}>
             <Grid xs item>
-              <VideoSelect />
+              {/*
+                ステートをpropsとして渡す
+              */}
+              <VideoSelect
+                videoFile={videoFile}
+                setVideoFile={setVideoFile}
+                setThumbFile={setThumbFile}
+              />
             </Grid>
             <Divider orientation="vertical" flexItem />
             <Grid xs item>
-              <UploadForm />
+              {/*
+                ステートとセッターをpropsとして渡す。
+              */}
+              <UploadForm videoFile={videoFile} thumbFile={thumbFile} />
             </Grid>
           </Grid>
         ) : (
