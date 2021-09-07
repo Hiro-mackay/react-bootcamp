@@ -7,10 +7,36 @@ import {
   Divider,
   Typography,
 } from "@material-ui/core";
+import { useEffect, useState } from "react";
 import useStyles from "./style";
 
-export const VideoPlayerCard = () => {
+// 親コンポーネントから渡されるpropsの型
+export type VideoPlayerCardProps = {
+  title: string | undefined;
+  description: string | undefined;
+  views: number | undefined;
+  ownerName: string | undefined;
+  date: Date | undefined;
+  fetcher: () => Promise<string | undefined>;
+};
+
+export const VideoPlayerCard = ({
+  title,
+  description,
+  views,
+  ownerName,
+  date,
+  fetcher,
+}: VideoPlayerCardProps) => {
   const styles = useStyles();
+
+  // 動画のダウンロードリンクURLを格納するためのステート
+  const [src, setSrc] = useState<string>();
+
+  useEffect(() => {
+    // Firebas Storageから動画のダウンロードリンクを取得する
+    fetcher().then(setSrc);
+  });
 
   return (
     // `box-shadow`と`border-radius`を除去
@@ -24,11 +50,7 @@ export const VideoPlayerCard = () => {
         そして、今回はビデオプレイヤーに操作用のコントローラーを表示させたいので、`controls`というプロパティを指定しています。
         (`controls`はMaterial-UI特有のプロパティではなく、<video>HTMLタグのプロパティです。)
       */}
-      <CardMedia
-        component="video"
-        controls
-        src="/static/production ID_4763824.mp4"
-      />
+      <CardMedia component="video" controls src={src} />
 
       {/* タイトル表示エリア */}
       <CardContent className={styles.paddingHorizontalLess}>
@@ -39,7 +61,7 @@ export const VideoPlayerCard = () => {
           <h2>タグ使いたいけど、フォントサイズなどはh6でのサイズを使いたい場合などに便利です。
         */}
         <Typography component="h2" variant="h6">
-          Organization Admin Settings: Dashboard overview [1/7]
+          {title}
         </Typography>
 
         {/* 
@@ -48,7 +70,7 @@ export const VideoPlayerCard = () => {
           https://material-ui.com/customization/color/#color-tool
         */}
         <Typography variant="body2" color="textSecondary">
-          10,094,526 回視聴 • 2018/08/06
+          {views} 回視聴 • {date ? new Date(date).toLocaleDateString() : ""}
         </Typography>
       </CardContent>
 
@@ -61,18 +83,12 @@ export const VideoPlayerCard = () => {
       <CardHeader
         className={styles.paddingHorizontalLess}
         avatar={<Avatar />}
-        title="Movieclips Trailers"
-        subheader="104K subscribers"
+        title={ownerName}
+        subheader="0 subscribers"
       />
 
       {/* 説明文エリア */}
-      <CardContent className={styles.descPadding}>
-        Find your absolutely beautiful and serene place and listen to nature
-        sounds, birds signing and relaxing water sounds with breathtaking views
-        of Mount Shuksan. It’s 8-hour 4k video of discovery and peace. Download
-        it for your personal use and transform your 4K TV into a source of
-        relaxation and restoration.
-      </CardContent>
+      <CardContent className={styles.descPadding}>{description}</CardContent>
     </Card>
   );
 };
