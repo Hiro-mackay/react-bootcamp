@@ -11,8 +11,8 @@ import {
   InMemoryCache,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-
 import { RecoilRoot } from "recoil";
+import { AuthStateListener } from "./providers/AuthStateListener";
 
 // Material-UIの「テーマ」を作成する。
 // Material-UIをカスタマイズする際には、createThemeの引数にカスタマイズ項目を渡す。
@@ -55,22 +55,27 @@ ReactDOM.render(
         Apollo Clientを初期化して、アプリケーション全体でApollo Clientを使えるようにする
       */}
         <ApolloProvider client={apolloClient}>
-          <BrowserRouter>
-            {/* 
+          {/*
+            ユーザーの認証情報を読む込み
+          */}
+          <AuthStateListener>
+            <BrowserRouter>
+              {/* 
           ブラウザの違いを吸収し、どのデバイスでは同じように表示する用のCSSを使用する
         */}
-            <CssBaseline />
+              <CssBaseline />
 
-            {/* 
+              {/* 
           アプリ全体の特殊なグローバルスタリング
         */}
-            <GlobalStyle />
+              <GlobalStyle />
 
-            {/* 
+              {/* 
           ルーティング用のメインコンポーネント
         */}
-            <RootRouter />
-          </BrowserRouter>
+              <RootRouter />
+            </BrowserRouter>
+          </AuthStateListener>
         </ApolloProvider>
       </ThemeProvider>
     </RecoilRoot>
