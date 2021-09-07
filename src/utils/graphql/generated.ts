@@ -791,7 +791,7 @@ export type InsertVideoMutation = { __typename?: 'mutation_root', insert_videos_
 export type VideosQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type VideosQuery = { __typename?: 'query_root', videos: Array<{ __typename?: 'videos', id: string, title: string, description: string, thumbnail_url: string, video_url: string, owner_id: string, duration: number, views: number, updated_at?: Maybe<any>, created_at?: Maybe<any> }> };
+export type VideosQuery = { __typename?: 'query_root', videos: Array<{ __typename?: 'videos', id: string, title: string, description: string, thumbnail_url: string, video_url: string, duration: number, views: number, updated_at?: Maybe<any>, created_at?: Maybe<any>, owner?: Maybe<{ __typename?: 'users', id: string, email: string, name: string, profile_photo_url: string, updated_at: any, created_at: any }> }> };
 
 export type UserByIdQueryVariables = Exact<{
   id: Scalars['String'];
@@ -900,7 +900,14 @@ export const VideosDocument = gql`
     description
     thumbnail_url
     video_url
-    owner_id
+    owner {
+      id
+      email
+      name
+      profile_photo_url
+      updated_at
+      created_at
+    }
     duration
     views
     updated_at

@@ -33,7 +33,7 @@ export const Home = () => {
               <VideoCard
                 title={video.title}
                 // ownerは投稿者の名前を入れたいが、現段階では、名前を取得することができない
-                owner={video.owner_id}
+                owner={video.owner?.name || ""}
                 views={video.views}
                 created={video.created_at}
                 // <VideoCard> で非同期的に画像を取得するための関数

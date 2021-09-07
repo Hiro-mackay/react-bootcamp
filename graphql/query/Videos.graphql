@@ -5,7 +5,14 @@ query Videos {
     description
     thumbnail_url
     video_url
-    owner_id
+    owner {
+      id
+      email
+      name
+      profile_photo_url
+      updated_at
+      created_at
+    }
     duration
     views
     updated_at
