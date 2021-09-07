@@ -13,6 +13,7 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { RecoilRoot } from "recoil";
 import { AuthStateListener } from "./providers/AuthStateListener";
+import { GlobalAccout } from "./providers/GlobalAccount";
 
 // Material-UIの「テーマ」を作成する。
 // Material-UIをカスタマイズする際には、createThemeの引数にカスタマイズ項目を渡す。
@@ -59,22 +60,27 @@ ReactDOM.render(
             ユーザーの認証情報を読む込み
           */}
           <AuthStateListener>
-            <BrowserRouter>
-              {/* 
-          ブラウザの違いを吸収し、どのデバイスでは同じように表示する用のCSSを使用する
-        */}
-              <CssBaseline />
+            {/*
+              ユーザー情報を読む込み
+            */}
+            <GlobalAccout>
+              <BrowserRouter>
+                {/* 
+                  ブラウザの違いを吸収し、どのデバイスでは同じように表示する用のCSSを使用する
+                */}
+                <CssBaseline />
 
-              {/* 
-          アプリ全体の特殊なグローバルスタリング
-        */}
-              <GlobalStyle />
+                {/* 
+                  アプリ全体の特殊なグローバルスタリング
+                */}
+                <GlobalStyle />
 
-              {/* 
-          ルーティング用のメインコンポーネント
-        */}
-              <RootRouter />
-            </BrowserRouter>
+                {/* 
+                  ルーティング用のメインコンポーネント
+                */}
+                <RootRouter />
+              </BrowserRouter>
+            </GlobalAccout>
           </AuthStateListener>
         </ApolloProvider>
       </ThemeProvider>
