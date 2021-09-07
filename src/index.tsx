@@ -12,6 +12,8 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
+import { RecoilRoot } from "recoil";
+
 // Material-UIの「テーマ」を作成する。
 // Material-UIをカスタマイズする際には、createThemeの引数にカスタマイズ項目を渡す。
 const theme = createTheme();
@@ -44,32 +46,34 @@ const apolloClient = new ApolloClient({
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* 
+    <RecoilRoot>
+      {/* 
       Material-UI用を初期化し、アプリケーション全体でMaterial-UIを使用できるようにする
     */}
-    <ThemeProvider theme={theme}>
-      {/*
+      <ThemeProvider theme={theme}>
+        {/*
         Apollo Clientを初期化して、アプリケーション全体でApollo Clientを使えるようにする
       */}
-      <ApolloProvider client={apolloClient}>
-        <BrowserRouter>
-          {/* 
+        <ApolloProvider client={apolloClient}>
+          <BrowserRouter>
+            {/* 
           ブラウザの違いを吸収し、どのデバイスでは同じように表示する用のCSSを使用する
         */}
-          <CssBaseline />
+            <CssBaseline />
 
-          {/* 
+            {/* 
           アプリ全体の特殊なグローバルスタリング
         */}
-          <GlobalStyle />
+            <GlobalStyle />
 
-          {/* 
+            {/* 
           ルーティング用のメインコンポーネント
         */}
-          <RootRouter />
-        </BrowserRouter>
-      </ApolloProvider>
-    </ThemeProvider>
+            <RootRouter />
+          </BrowserRouter>
+        </ApolloProvider>
+      </ThemeProvider>
+    </RecoilRoot>
   </React.StrictMode>,
   document.getElementById("root")
 );
