@@ -1,10 +1,34 @@
 import { Avatar, Card, CardHeader, CardMedia } from "@material-ui/core";
-import { HeaderTitle } from "./HeaderTitle";
-import { SubHeaderContent } from "./SubHeaderContent";
+import { HeaderTitle, HeaderTitleProps } from "./HeaderTitle";
+import { SubHeaderContent, SubHeaderContentProps } from "./SubHeaderContent";
 import useStyles from "./style";
+import { useEffect, useState } from "react";
 
-export const VideoCard = () => {
+// 子コンポーネントの型定義を使用して、冗長な書き方を防ぐことができる
+export type VideoCardProps = {
+  fetcher: () => Promise<string | undefined>;
+} & HeaderTitleProps &
+  SubHeaderContentProps;
+
+export const VideoCard = ({
+  fetcher,
+  title,
+  owner,
+  created,
+  views,
+}: VideoCardProps) => {
   const styles = useStyles();
+
+  // 動画のサムネイルのURLを格納する
+  const [imageSrc, setImageSrc] = useState<string>();
+
+  useEffect(() => {
+    // 関数の実態は、`Firebase Storage`からサムネイル用のダウンロードリンクを取得する
+    // ここでは、関数の内部構成を知ることなく、実行すると`Promise<string | undefined>`が返される関数であることでしか知らない
+    // コンポーネントから画像取得の詳細を隠しつつも、非同期な画像の取得を実現する
+    fetcher().then(setImageSrc);
+  });
+
   return (
     // elevation={0} : Cardの影を削除する
     // square: border-radiusを削除する
@@ -16,7 +40,8 @@ export const VideoCard = () => {
       */}
       <CardMedia
         className={styles.media}
-        image="/static/no-image.jpg"
+        // 画像があればサムネイルを表示
+        image={imageSrc || "/static/no-image.jpg"}
         title="Thumbnail"
       />
 
@@ -26,8 +51,12 @@ export const VideoCard = () => {
       <CardHeader
         className={styles.header}
         avatar={<Avatar />}
-        title={<HeaderTitle />}
-        subheader={<SubHeaderContent />}
+        // `Card`の`HeaderTitle`には`title`を渡す
+        title={<HeaderTitle title={title} />}
+        // `Card`の`SubHeaderContent`には、`owner`、`views`、`created`を渡す
+        subheader={
+          <SubHeaderContent owner={owner} views={views} created={created} />
+        }
       />
     </Card>
   );
