@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { storage } from "../../utils/Firebase/config";
+import { v4 as uuidv4 } from "uuid";
 
 type UploadProps = {
   file: {
@@ -32,12 +33,16 @@ export const useVideoUpload = () => {
     // 処理が始まったら、ローディング中にする
     setLoading(true);
 
+    // 動画とサムネイルのそれぞれのuuidを生成する
+    const videoName = uuidv4();
+    const thumbName = uuidv4();
+
     // try-catch構文でPromise(アップロード処理)のエラーをキャッチする
     try {
       // 動画のアップロード処理
       // 動画は全て`videos`と言う階層に保存される
       const videoUploadTask = await uploadStorage(
-        file.video.name,
+        videoName,
         file.video,
         "videos"
       );
@@ -45,7 +50,7 @@ export const useVideoUpload = () => {
       // 画像サムネイルのアップロード処理
       // 画像サムネイルは全て`thumbnails`に保存される
       const thumbnailUploadTask = await uploadStorage(
-        file.thumbnail.name,
+        thumbName,
         file.thumbnail,
         "thumbnails"
       );
