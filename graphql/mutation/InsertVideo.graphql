@@ -1,0 +1,33 @@
+# 動画のメタデータを生成するクエリー
+mutation InsertVideo(
+  $id: String!
+  $title: String!
+  $description: String = ""
+  $thumbnail_url: String!
+  $video_url: String!
+  $owner_id: String!
+) {
+  insert_videos_one(
+    object: {
+      id: $id
+      title: $title
+      description: $description
+      video_url: $video_url
+      thumbnail_url: $thumbnail_url
+      owner_id: $owner_id
+      duration: 0
+      views: 0
+    }
+  ) {
+    id
+    title
+    description
+    video_url
+    thumbnail_url
+    owner_id
+    duration
+    views
+    updated_at
+    created_at
+  }
+}
