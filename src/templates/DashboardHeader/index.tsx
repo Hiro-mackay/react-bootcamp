@@ -18,6 +18,8 @@ import useStyles from "./style";
 import { useUserByIdQuery } from "../../utils/graphql/generated";
 import { useEffect } from "react";
 
+import { Link } from "react-router-dom";
+
 export const DashboardHeader = () => {
   // 一度、useStylesを実行して、CSSを生成します。
   const styles = useStyles();
@@ -51,9 +53,9 @@ export const DashboardHeader = () => {
           "useStyles"の値は、CSSモジュールと全く同じような使い方で、使用すすることができます。
           例えば、仮に、後になって"Material-UI"をやめて独自のデザインを取り入れた時も、CSSモジュールでリプレイスしやすいような形にしています。
         */}
-          <div className={styles.logo}>
+          <Link to="/" className={styles.logo}>
             <Logo />
-          </div>
+          </Link>
         </div>
 
         {/* 
