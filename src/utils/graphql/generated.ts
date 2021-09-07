@@ -331,6 +331,7 @@ export type Timestamptz_Comparison_Exp = {
 export type Users = {
   __typename?: 'users';
   created_at: Scalars['timestamptz'];
+  email: Scalars['String'];
   id: Scalars['String'];
   name: Scalars['String'];
   profile_photo_url: Scalars['String'];
@@ -365,6 +366,7 @@ export type Users_Bool_Exp = {
   _not?: Maybe<Users_Bool_Exp>;
   _or?: Maybe<Array<Users_Bool_Exp>>;
   created_at?: Maybe<Timestamptz_Comparison_Exp>;
+  email?: Maybe<String_Comparison_Exp>;
   id?: Maybe<String_Comparison_Exp>;
   name?: Maybe<String_Comparison_Exp>;
   profile_photo_url?: Maybe<String_Comparison_Exp>;
@@ -380,6 +382,7 @@ export enum Users_Constraint {
 /** input type for inserting data into table "users" */
 export type Users_Insert_Input = {
   created_at?: Maybe<Scalars['timestamptz']>;
+  email?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   profile_photo_url?: Maybe<Scalars['String']>;
@@ -390,6 +393,7 @@ export type Users_Insert_Input = {
 export type Users_Max_Fields = {
   __typename?: 'users_max_fields';
   created_at?: Maybe<Scalars['timestamptz']>;
+  email?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   profile_photo_url?: Maybe<Scalars['String']>;
@@ -400,6 +404,7 @@ export type Users_Max_Fields = {
 export type Users_Min_Fields = {
   __typename?: 'users_min_fields';
   created_at?: Maybe<Scalars['timestamptz']>;
+  email?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   profile_photo_url?: Maybe<Scalars['String']>;
@@ -415,6 +420,13 @@ export type Users_Mutation_Response = {
   returning: Array<Users>;
 };
 
+/** input type for inserting object relation for remote table "users" */
+export type Users_Obj_Rel_Insert_Input = {
+  data: Users_Insert_Input;
+  /** on conflict condition */
+  on_conflict?: Maybe<Users_On_Conflict>;
+};
+
 /** on conflict condition type for table "users" */
 export type Users_On_Conflict = {
   constraint: Users_Constraint;
@@ -425,6 +437,7 @@ export type Users_On_Conflict = {
 /** Ordering options when selecting data from "users". */
 export type Users_Order_By = {
   created_at?: Maybe<Order_By>;
+  email?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   name?: Maybe<Order_By>;
   profile_photo_url?: Maybe<Order_By>;
@@ -441,6 +454,8 @@ export enum Users_Select_Column {
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
+  Email = 'email',
+  /** column name */
   Id = 'id',
   /** column name */
   Name = 'name',
@@ -453,6 +468,7 @@ export enum Users_Select_Column {
 /** input type for updating data in table "users" */
 export type Users_Set_Input = {
   created_at?: Maybe<Scalars['timestamptz']>;
+  email?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   profile_photo_url?: Maybe<Scalars['String']>;
@@ -463,6 +479,8 @@ export type Users_Set_Input = {
 export enum Users_Update_Column {
   /** column name */
   CreatedAt = 'created_at',
+  /** column name */
+  Email = 'email',
   /** column name */
   Id = 'id',
   /** column name */
@@ -476,12 +494,16 @@ export enum Users_Update_Column {
 /** columns and relationships of "videos" */
 export type Videos = {
   __typename?: 'videos';
+  created_at?: Maybe<Scalars['timestamptz']>;
   description: Scalars['String'];
   duration: Scalars['Int'];
   id: Scalars['String'];
+  /** An object relationship */
+  owner?: Maybe<Users>;
   owner_id: Scalars['String'];
   thumbnail_url: Scalars['String'];
   title: Scalars['String'];
+  updated_at?: Maybe<Scalars['timestamptz']>;
   video_url: Scalars['String'];
   views: Scalars['Int'];
 };
@@ -528,12 +550,15 @@ export type Videos_Bool_Exp = {
   _and?: Maybe<Array<Videos_Bool_Exp>>;
   _not?: Maybe<Videos_Bool_Exp>;
   _or?: Maybe<Array<Videos_Bool_Exp>>;
+  created_at?: Maybe<Timestamptz_Comparison_Exp>;
   description?: Maybe<String_Comparison_Exp>;
   duration?: Maybe<Int_Comparison_Exp>;
   id?: Maybe<String_Comparison_Exp>;
+  owner?: Maybe<Users_Bool_Exp>;
   owner_id?: Maybe<String_Comparison_Exp>;
   thumbnail_url?: Maybe<String_Comparison_Exp>;
   title?: Maybe<String_Comparison_Exp>;
+  updated_at?: Maybe<Timestamptz_Comparison_Exp>;
   video_url?: Maybe<String_Comparison_Exp>;
   views?: Maybe<Int_Comparison_Exp>;
 };
@@ -552,12 +577,15 @@ export type Videos_Inc_Input = {
 
 /** input type for inserting data into table "videos" */
 export type Videos_Insert_Input = {
+  created_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
   duration?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['String']>;
+  owner?: Maybe<Users_Obj_Rel_Insert_Input>;
   owner_id?: Maybe<Scalars['String']>;
   thumbnail_url?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
   video_url?: Maybe<Scalars['String']>;
   views?: Maybe<Scalars['Int']>;
 };
@@ -565,12 +593,14 @@ export type Videos_Insert_Input = {
 /** aggregate max on columns */
 export type Videos_Max_Fields = {
   __typename?: 'videos_max_fields';
+  created_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
   duration?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['String']>;
   owner_id?: Maybe<Scalars['String']>;
   thumbnail_url?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
   video_url?: Maybe<Scalars['String']>;
   views?: Maybe<Scalars['Int']>;
 };
@@ -578,12 +608,14 @@ export type Videos_Max_Fields = {
 /** aggregate min on columns */
 export type Videos_Min_Fields = {
   __typename?: 'videos_min_fields';
+  created_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
   duration?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['String']>;
   owner_id?: Maybe<Scalars['String']>;
   thumbnail_url?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
   video_url?: Maybe<Scalars['String']>;
   views?: Maybe<Scalars['Int']>;
 };
@@ -606,12 +638,15 @@ export type Videos_On_Conflict = {
 
 /** Ordering options when selecting data from "videos". */
 export type Videos_Order_By = {
+  created_at?: Maybe<Order_By>;
   description?: Maybe<Order_By>;
   duration?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
+  owner?: Maybe<Users_Order_By>;
   owner_id?: Maybe<Order_By>;
   thumbnail_url?: Maybe<Order_By>;
   title?: Maybe<Order_By>;
+  updated_at?: Maybe<Order_By>;
   video_url?: Maybe<Order_By>;
   views?: Maybe<Order_By>;
 };
@@ -623,6 +658,8 @@ export type Videos_Pk_Columns_Input = {
 
 /** select columns of table "videos" */
 export enum Videos_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
   /** column name */
   Description = 'description',
   /** column name */
@@ -636,6 +673,8 @@ export enum Videos_Select_Column {
   /** column name */
   Title = 'title',
   /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
   VideoUrl = 'video_url',
   /** column name */
   Views = 'views'
@@ -643,12 +682,14 @@ export enum Videos_Select_Column {
 
 /** input type for updating data in table "videos" */
 export type Videos_Set_Input = {
+  created_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
   duration?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['String']>;
   owner_id?: Maybe<Scalars['String']>;
   thumbnail_url?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
   video_url?: Maybe<Scalars['String']>;
   views?: Maybe<Scalars['Int']>;
 };
@@ -684,6 +725,8 @@ export type Videos_Sum_Fields = {
 /** update columns of table "videos" */
 export enum Videos_Update_Column {
   /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
   Description = 'description',
   /** column name */
   Duration = 'duration',
@@ -695,6 +738,8 @@ export enum Videos_Update_Column {
   ThumbnailUrl = 'thumbnail_url',
   /** column name */
   Title = 'title',
+  /** column name */
+  UpdatedAt = 'updated_at',
   /** column name */
   VideoUrl = 'video_url',
   /** column name */
@@ -725,24 +770,28 @@ export type Videos_Variance_Fields = {
 export type InsertUserMutationVariables = Exact<{
   id: Scalars['String'];
   name: Scalars['String'];
+  email: Scalars['String'];
 }>;
 
 
-export type InsertUserMutation = { __typename?: 'mutation_root', insert_users_one?: Maybe<{ __typename?: 'users', id: string, name: string, profile_photo_url: string, created_at: any, updated_at: any }> };
+export type InsertUserMutation = { __typename?: 'mutation_root', insert_users_one?: Maybe<{ __typename?: 'users', id: string, name: string, email: string, profile_photo_url: string, created_at: any, updated_at: any }> };
 
 export type UserByIdQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type UserByIdQuery = { __typename?: 'query_root', users_by_pk?: Maybe<{ __typename?: 'users', id: string, name: string, profile_photo_url: string, updated_at: any, created_at: any }> };
+export type UserByIdQuery = { __typename?: 'query_root', users_by_pk?: Maybe<{ __typename?: 'users', id: string, name: string, email: string, profile_photo_url: string, updated_at: any, created_at: any }> };
 
 
 export const InsertUserDocument = gql`
-    mutation InsertUser($id: String!, $name: String!) {
-  insert_users_one(object: {id: $id, name: $name, profile_photo_url: ""}) {
+    mutation InsertUser($id: String!, $name: String!, $email: String!) {
+  insert_users_one(
+    object: {id: $id, name: $name, email: $email, profile_photo_url: ""}
+  ) {
     id
     name
+    email
     profile_photo_url
     created_at
     updated_at
@@ -766,6 +815,7 @@ export type InsertUserMutationFn = Apollo.MutationFunction<InsertUserMutation, I
  *   variables: {
  *      id: // value for 'id'
  *      name: // value for 'name'
+ *      email: // value for 'email'
  *   },
  * });
  */
@@ -781,6 +831,7 @@ export const UserByIdDocument = gql`
   users_by_pk(id: $id) {
     id
     name
+    email
     profile_photo_url
     updated_at
     created_at

@@ -1,7 +1,10 @@
-mutation InsertUser($id: String!, $name: String!) {
-  insert_users_one(object: { id: $id, name: $name, profile_photo_url: "" }) {
+mutation InsertUser($id: String!, $name: String!, $email: String!) {
+  insert_users_one(
+    object: { id: $id, name: $name, email: $email, profile_photo_url: "" }
+  ) {
     id
     name
+    email
     profile_photo_url
     created_at
     updated_at
