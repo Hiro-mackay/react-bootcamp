@@ -8,10 +8,7 @@ module.exports = {
   },
   // Queryを記述したファイルへのパス。
   // 絶対パス指定
-  documents: [
-    "graphql/query/users.graphql",
-    "graphql/mutation/InsertUser.graphql",
-  ],
+  documents: ["graphql/query/*.graphql", "graphql/mutation/*.graphql"],
   generates: {
     "src/utils/graphql/generated.ts": {
       plugins: [
