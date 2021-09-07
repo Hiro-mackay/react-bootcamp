@@ -1,7 +1,10 @@
-import { useRef, useState } from "react";
+import { useEffect } from "react";
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { FireSignupType } from "../../../utils/Firebase/signup";
 import { signup as fireSignup } from "../../../utils/Firebase/signup";
 import { useInsertUserMutation } from "../../../utils/graphql/generated";
+import { SetErrorFn, useAuthHelper } from "../useAuthHelper";
 
 export type SignupPropsType = {
   name: string;
@@ -14,59 +17,82 @@ export const useSignup = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
-  // エラーが発生したら全てここに格納する
-  const [error, setError] = useState<Error>();
-
-  // サインアップの処理が実行されている間、trueになる。
-  const [loading, setLoading] = useState<boolean>(false);
+  // リダイレクト用の関数
+  const navigate = useNavigate();
 
   // userを追加するためのGraohQL Mutation Hooks
   const [insertMutation, { error: apolloError }] = useInsertUserMutation();
 
+  const formValidation = (setError: SetErrorFn) => {
+    let invalidValidation = false;
+
+    // Nameフォームのバリデーションチェック
+    // 今回はシンプルにするために、入力が空でないかだけ確認する
+    if (!nameRef.current?.value) {
+      setError("name", "名前が入力されていません。");
+      invalidValidation = true;
+    }
+
+    // Emailフォームのバリデーションチェック
+    // 今回はシンプルにするために、入力が空でないかだけ確認する
+    if (!emailRef.current?.value) {
+      setError("email", "メールアドレスを入力してください。");
+      invalidValidation = true;
+    }
+
+    // Passwordフォームのバリデーションチェック
+    // 今回はシンプルにするために、入力が空でないかだけ確認する
+    if (!passwordRef.current?.value) {
+      setError("password", "パスワードを入力してください。");
+      invalidValidation = true;
+    }
+
+    // バリデーションが有効か無効化を返す
+    return invalidValidation;
+  };
+
   // 実際のサインアップのロジック
   const signup = async () => {
-    if (
-      !nameRef.current?.value ||
-      !emailRef.current?.value ||
-      !passwordRef.current?.value
-    ) {
-      // 一つでも値が入っていないフォームがあったら、処理を中断
-      // 最終的にここで、エラー処理を入れてユーザーにエラーを表示する
-      return;
+    // Firebaseのサインアップ処理を実行
+    const { user } = await fireSignup({
+      email: emailRef.current?.value || "",
+      password: passwordRef.current?.value || "",
+    });
+
+    if (!user?.uid) {
+      throw new Error("ユーザーの登録に失敗しました。");
     }
 
-    try {
-      setLoading(true);
-      // Firebaseのサインアップ処理を実行
-      const { user } = await fireSignup({
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
-      });
+    // Hasuraにuserを作成する
+    const apolloResponse = await insertMutation({
+      variables: {
+        id: user.uid,
+        name: nameRef.current?.value || "",
+        email: emailRef.current?.value || "",
+      },
+    });
 
-      if (!user?.uid) {
-        throw new Error("ユーザーの登録に失敗しました。");
-      }
-
-      // Hasuraにuserを作成する
-      const apolloResponse = await insertMutation({
-        variables: {
-          id: user.uid,
-          name: nameRef.current.value,
-          email: emailRef.current.value,
-        },
-      });
-
-      if (apolloResponse.data?.insert_users_one?.id) {
-        // `/`へリダイレクト
-      } else {
-        throw new Error("ユーザーの登録に失敗しました。");
-      }
-    } catch (error) {
-      setError(error);
-    } finally {
-      setLoading(false);
+    if (apolloResponse.data?.insert_users_one?.id) {
+      // `/`へリダイレクト
+      navigate("/");
+    } else {
+      throw new Error("ユーザーの登録に失敗しました。");
     }
   };
+
+  // useAuthHelperを使用して、実際に認証に使用する関数を生成する
+  const { authExecute, error, setErrorHandler, loading } = useAuthHelper(
+    signup,
+    formValidation
+  );
+
+  // GraphQLのエラーがあったら、ここでキャッチして、エラー処理を行う
+  // 今回は、エラーメッセージを表示するだけ。
+  useEffect(() => {
+    if (apolloError?.message) {
+      setErrorHandler("main", apolloError.message);
+    }
+  }, [apolloError]);
 
   return {
     ref: {
@@ -74,7 +100,7 @@ export const useSignup = () => {
       emailRef,
       passwordRef,
     },
-    signup,
+    signup: authExecute,
     error,
     loading,
   };
