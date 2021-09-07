@@ -1,0 +1,14 @@
+query Videos {
+  videos {
+    id
+    title
+    description
+    thumbnail_url
+    video_url
+    owner_id
+    duration
+    views
+    updated_at
+    created_at
+  }
+}
