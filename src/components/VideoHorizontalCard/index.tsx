@@ -1,10 +1,36 @@
 import { Card, CardHeader, CardMedia } from "@material-ui/core";
-import { HeaderTitle } from "../VideoCard/HeaderTitle";
-import { SubHeaderContent } from "../VideoCard/SubHeaderContent";
+import { useEffect, useState } from "react";
+import { HeaderTitle, HeaderTitleProps } from "../VideoCard/HeaderTitle";
+import {
+  SubHeaderContent,
+  SubHeaderContentProps,
+} from "../VideoCard/SubHeaderContent";
 import useStyles from "./styles";
 
-export const VideoHorizontalCard = () => {
+// 親コンポーネントから渡されるpropsの型
+export type VideoHorizontalCardProps = {
+  fetcher: () => Promise<string | undefined>;
+} & HeaderTitleProps &
+  SubHeaderContentProps;
+
+export const VideoHorizontalCard = ({
+  title,
+  owner,
+  views,
+  created,
+  fetcher,
+}: VideoHorizontalCardProps) => {
   const styles = useStyles();
+
+  // サムネイルのダウンロードリンクのステート
+  const [src, setSrc] = useState<string>();
+
+  // 追加
+  useEffect(() => {
+    // サムネイルのダウンロードリンクを取得する関数
+    fetcher().then(setSrc);
+  });
+
   return (
     // elevation={0} : box-shadowの影を削除する
     // square: border-radiusを削除する
@@ -24,20 +50,21 @@ export const VideoHorizontalCard = () => {
         サムネイルを16:9で表示するために、`CardMedia`を<div>で囲み、widthプロパティを固定しています。
       */}
       <div className={styles.thumbnail}>
-        <CardMedia
-          className={styles.media}
-          image="/static/no-image.jpg"
-          title="Thumbnail"
-        />
+        {/*
+          取得したサムネイルのダウンロードリンクを参照する
+        */}
+        <CardMedia className={styles.media} image={src} title="Thumbnail" />
       </div>
 
-      {/* 
+      {/*
         `Home`で作成した<HeaderTitle>と<SubHeaderContent>を流用する
       */}
       <CardHeader
         className={styles.contentPadding}
-        title={<HeaderTitle />}
-        subheader={<SubHeaderContent />}
+        title={<HeaderTitle title={title} />}
+        subheader={
+          <SubHeaderContent owner={owner} views={views} created={created} />
+        }
       />
     </Card>
   );
