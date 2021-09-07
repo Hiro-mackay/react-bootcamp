@@ -1,0 +1,21 @@
+query RecommendVideos($currentVideoId: String!) {
+  videos(where: { id: { _neq: $currentVideoId } }) {
+    id
+    title
+    description
+    thumbnail_url
+    video_url
+    views
+    duration
+    owner {
+      id
+      name
+      profile_photo_url
+      updated_at
+      email
+      created_at
+    }
+    created_at
+    updated_at
+  }
+}

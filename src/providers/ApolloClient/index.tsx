@@ -15,14 +15,8 @@ const httpLink = createHttpLink({
 
 const authLink = setContext(async () => {
   const token = await fireAuth.currentUser?.getIdToken(true);
-
-  return {
-    headers: {
-      // Bearerトークンでトークンを送信する
-      // headerのプロパティは`Authorization`
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-  };
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  return { headers };
 });
 
 // Apollo Clientのインスタンスをここで作成している。
@@ -33,8 +27,6 @@ const apolloClient = new ApolloClient({
   // Apollo Clientを使う理由にこのキャッシュ機能のために使うと言っても過言ではありません。
   cache: new InMemoryCache(),
 });
-
-console.log(authLink.concat(httpLink));
 
 export const ApolloProvider = ({ children }: PropsWithChildren<{}>) => {
   return <Provider client={apolloClient}>{children}</Provider>;

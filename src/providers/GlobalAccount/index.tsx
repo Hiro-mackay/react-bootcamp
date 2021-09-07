@@ -61,12 +61,10 @@ export const GlobalAccout = ({ children }: PropsWithChildren<{}>) => {
 
   useEffect(() => {
     // GraphQLからのエラーがあった場合は、
-    // Recoilをudefinedで更新し、
-    // ユーザーにログアウトさせる。
+    // Recoilをudefinedで更新させる。
     if (apolloError?.message) {
       console.error(apolloError?.message);
       setGlobalUser(undefined);
-      signout();
     }
   }, [apolloError]);
 

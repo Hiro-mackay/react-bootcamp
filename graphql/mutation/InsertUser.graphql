@@ -4,8 +4,8 @@ mutation InsertUser($id: String!, $name: String!, $email: String!) {
   ) {
     id
     name
-    email
     profile_photo_url
+    email
     created_at
     updated_at
   }

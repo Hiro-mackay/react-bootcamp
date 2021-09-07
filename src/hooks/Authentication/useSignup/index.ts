@@ -72,6 +72,8 @@ export const useSignup = () => {
     // アカウントにトークンが設定されるまで待機
     await checkAuthToken(user.uid);
 
+    console.log("user query");
+
     // Hasuraにuserを作成する
     const apolloResponse = await insertMutation({
       variables: {
@@ -100,6 +102,7 @@ export const useSignup = () => {
 
   useEffect(() => {
     if (apolloError?.message) {
+      console.log(apolloError);
       setErrorHandler("main", apolloError.message);
     }
   }, [apolloError]);

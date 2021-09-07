@@ -4,13 +4,40 @@ import {
   DialogContent,
   Grid,
   Divider,
+  CircularProgress,
 } from "@material-ui/core";
 import { UploadForm } from "./UploadForm";
 import { VideoSelect } from "./VideoSelector";
 import useStyles from "./style";
+import { useRecoilValue } from "recoil";
+import { AccountLoaded } from "../../stores/AccountLoaded";
+import { useEffect, useState } from "react";
+import { GlobalUser } from "../../stores/User";
+import { useNavigate } from "react-router-dom";
 
 export const Upload = () => {
   const styles = useStyles();
+
+  // recoilの値を使用
+  const accountLoaded = useRecoilValue(AccountLoaded);
+  const user = useRecoilValue(GlobalUser);
+
+  // ファイル管理用ローカルステート
+  const [videoFile, setVideoFile] = useState<File>();
+  const [thumbFile, setThumbFile] = useState<File>();
+
+  // react routerを使用する
+  const navigate = useNavigate();
+
+  // アカウントが読み込まれていない、未ログインであればリダレクト
+  useEffect(() => {
+    if (accountLoaded) {
+      if (!user?.id) {
+        navigate("/login");
+      }
+    }
+  }, [accountLoaded, user?.id]);
+
   return (
     // ダイアログコンポーネント
     // fullWidth: trueの場合、画面いっぱいにダイアログを表示
@@ -19,27 +46,36 @@ export const Upload = () => {
     <Dialog fullWidth={true} maxWidth="md" open={true}>
       {/* タイトル用コンポーネント */}
       <DialogTitle>動画のアップロード</DialogTitle>
-
       <Divider />
-
-      {/* 
-        コンテント用
-        2カラムのレイアウトを実装する  
-      */}
       <DialogContent className={styles.body}>
-        <Grid container spacing={4}>
-          <Grid xs item>
-            <VideoSelect />
+        {/* アカウントが存在すれば、アップロードコンポーネントを表示 */}
+        {user?.id ? (
+          //  コンテント用
+          //  2カラムのレイアウトを実装する
+          <Grid container spacing={4}>
+            <Grid xs item>
+              {/* 
+                ステートをpropsとして渡す
+              */}
+              <VideoSelect
+                videoFile={videoFile}
+                setVideoFile={setVideoFile}
+                setThumbFile={setThumbFile}
+              />
+            </Grid>
+            <Divider orientation="vertical" flexItem />
+            <Grid xs item>
+              {/* 
+                ステートとセッターをpropsとして渡す。
+              */}
+              <UploadForm videoFile={videoFile} thumbFile={thumbFile} />
+            </Grid>
           </Grid>
-
-          {/* 
-            真ん中に縦線を挿入
-          */}
-          <Divider orientation="vertical" flexItem />
-          <Grid xs item>
-            <UploadForm />
+        ) : (
+          <Grid container justifyContent="center">
+            <CircularProgress size={50} />
           </Grid>
-        </Grid>
+        )}
       </DialogContent>
     </Dialog>
   );

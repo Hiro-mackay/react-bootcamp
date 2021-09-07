@@ -72,6 +72,7 @@
     - [Firestore を確認して user のドキュメントが作成されるまで待機](#firestore-を確認して-user-のドキュメントが作成されるまで待機)
     - [トークンに Hasura カスタムクレームが追加されたら GraphQL でユーザー情報を insert](#トークンに-hasura-カスタムクレームが追加されたらgraphql-でユーザー情報を-insert)
     - [GraphQL のヘッダーに JWT トークンを追加](#graphql-のヘッダーに-jwt-トークンを追加)
+    - [クレームを追加するためにアカウントを作成し直す](#クレームを追加するためにアカウントを作成し直す)
   - [Hasura のハマリポイント](#hasura-のハマリポイント)
     - [Hasura で JWT を使用するためには、Hasura のエンドポイントを保護する必要があります。](#hasura-で-jwt-を使用するためにはhasura-のエンドポイントを保護する必要があります)
     - [`headers`に`X-Hasura-Admin-Secret`が含まれる場合は、`JWT`認証はスキップされます。](#headersにx-hasura-admin-secretが含まれる場合はjwt認証はスキップされます)
@@ -81,8 +82,6 @@
     - [JWT には Hasura で認識可能な独自のカスタムクレーム値を設定できます。](#jwt-には-hasura-で認識可能な独自のカスタムクレーム値を設定できます)
 - [Firebase Storage に動画をアップロード]
 - [GraphQL リクエストを実装]
-  - [user データの作成と取得]
-  - [video データの作成]
   - [video データの取得]
   - [Firebase Storage から動画を取得する]
 
@@ -3529,6 +3528,8 @@ Hasura は、リクエストの中に含まれている`Bearerトークン`を�
 
 以上で、アプリケーションをセキュアに開発できるようになる方法が分かりました。
 
+- #### クレームを追加するためにアカウントを作成し直す
+
 - ### Hasura のハマリポイント
 
 ここまででも、Apollo Client と Hasura の認証・認可の方法を見てきました。
@@ -3665,9 +3666,2007 @@ const customClaims = {
 
 ## Firebase Storage に動画をアップロード
 
+データベースへのデータのアクセスができるようになったので、次は、動画をストレージにアップロードする処理を実装していきます。
+
+今回のアプリケーションでファイルをアップロードする先として、`Firebase Storage`を使用します。
+
+`Firebase Storage`は、`AWS`で言うところの`S3`とほぼ同じサービスで、ファイルなどを保存するのに適したストレージになっています。
+
+`Firebase Storage`はライブラリが作り込まれているため、特段の学習を必要とすることなく直感的にファイルをアップロード/ダウンロードすることがことができます。
+
+動画をアップロードするためのフローを以下にまとめます。
+
+1. ログインしているユーザーのみアップロードを許可する
+2. ブラウザからファイルを選択する
+3. 選択したファイルを`Firebase Storage`にアップロードする
+4. 動画のメタデータをデータベースに保存する
+
+動画のアップロードは`/upload`というパスから行い、これからの記述は主に`<Upload>`コンポーネントを編集していきます。
+
+アップロード処理の実態は、`Hooks`でまとめ、コンポーネントからは`Hooks`を呼び出すだけにし、処理の詳細は`Hooks`に記述していきます。
+
+- ### ログインしているユーザーのみアップロードを許可する
+
+今回のアプリケーションでは、ログインしていないユーザーには動画のアップロードを行えないようにしていきます。
+
+これを実現するためには、二つの実装が必要です。
+
+1. ログインしているユーザーにのみ、アップロード画面へのリンクを表示する。
+2. 未ログインでアップロード画面を表示したら、ログインを促す
+
+- #### ログインしているユーザーにのみ、アップロード画面へのリンクを表示する。
+
+アップロード画面へのリンクは、画面のヘッダーのアイコンに埋め込みます。
+
+![upload header link]()
+
+`DashboardHeader`に記述されているヘッダーのコンポーネントを修正して、`/upload`画面に飛べるようにします。
+
+```TSX
+// src/templates/DashboardHeader/index.tsx
+
+import { AppBar, Avatar, Button, IconButton, Toolbar } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import VideoCallIcon from "@material-ui/icons/VideoCall";
+import { Logo } from "../../components/Logo";
+import { SearchBar } from "./SearchBar";
+import useStyles from "./style";
+import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { GlobalUser } from "../../stores/User";
+
+export const DashboardHeader = () => {
+  const styles = useStyles();
+  const globalUser = useRecoilValue(GlobalUser);
+  return (
+    <AppBar elevation={0} color="inherit">
+      <Toolbar className={styles.between}>
+        <div className={styles.flex}>
+          <IconButton>
+            <MenuIcon />
+          </IconButton>
+          <Link to="/" className={styles.logo}>
+            <Logo />
+          </Link>
+        </div>
+
+        <SearchBar />
+
+        <div className={styles.flex}>
+          {globalUser ? (
+            <>
+              {/*
+                リンクを追加
+              */}
+              <Link to="/upload">
+                <IconButton>
+                  <VideoCallIcon />
+                </IconButton>
+              </Link>
+              <IconButton className={styles.profileIcon}>
+                <Avatar />
+              </IconButton>
+            </>
+          ) : (
+            <Button variant="outlined" color="primary" href="/login">
+              ログイン
+            </Button>
+          )}
+        </div>
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+```
+
+これで、どこからでもすぐにアップロード画面に行くことができます。
+
+- #### 未ログインでアップロード画面を表示したら、ログインを促す
+
+続いて、未ログインのユーザーがアップロード画面にアクセスしたら、ログイン画面にリダイレクトする処理を書きます。
+
+仮に、前項の未ログイン時にボタンリンクを表示しないという設計にしていても、URL に直接アクセスすることでアップロード画面を表示することが可能です。
+
+その場合の対応として、未ログイン状態で`/uoload`にアクセスしたら、ログイン画面にリダイレクトを行う処理を書きます。
+
+処理の流れとしては、
+
+1. アカウントが Loading 中かどうかチェック
+2. アカウントが読み込まれていれば、そのまま表示
+3. アカウントが読み込まれていなければ、`/login`にリダイレクトする
+
+```TSX
+// src/pages/Upload/index.tsx
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Grid,
+  Divider,
+  CircularProgress,
+} from "@material-ui/core";
+import { UploadForm } from "./UploadForm";
+import { VideoSelect } from "./VideoSelector";
+import useStyles from "./style";
+
+// 必要なライブラリーを追加
+import { useRecoilValue } from "recoil";
+import { AccountLoaded } from "../../stores/AccountLoaded";
+import { useEffect } from "react";
+import { GlobalUser } from "../../stores/User";
+import { useNavigate } from "react-router-dom";
+
+export const Upload = () => {
+  const styles = useStyles();
+
+  // recoilの値を使用
+  const accountLoaded = useRecoilValue(AccountLoaded);
+  const user = useRecoilValue(GlobalUser);
+
+  // react routerを使用する
+  const navigate = useNavigate();
+
+  // アカウントが読み込まれていない、未ログインであれば`/login`へリダレクト
+  useEffect(() => {
+    if (accountLoaded) {
+      if (!user?.id) {
+        navigate("/login");
+      }
+    }
+  }, [accountLoaded, user?.id]);
+
+  return (
+    <Dialog fullWidth={true} maxWidth="md" open={true}>
+      <DialogTitle>動画のアップロード</DialogTitle>
+      <Divider />
+      <DialogContent className={styles.body}>
+        {/* アカウントが存在すれば、アップロードコンポーネントを表示 */}
+        {user?.id ? (
+          <Grid container spacing={4}>
+            <Grid xs item>
+              <VideoSelect />
+            </Grid>
+            <Divider orientation="vertical" flexItem />
+            <Grid xs item>
+              <UploadForm />
+            </Grid>
+          </Grid>
+        ) : (
+          // ローディングコンポーネント表示
+          <Grid container justifyContent="center">
+            <CircularProgress size={50} />
+          </Grid>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+};
+```
+
+アップロード画面にアクセスしたら、まずはアカウントの読み込みを待機します。
+
+アカウントの読み込みが終了したら、アカウントの有無でリダレクトを行うか、画面表示を行うかを処理しています。
+
+- ### ブラウザからファイルを選択する
+
+ブラウザからアップロードを行うファイルの選択を行ないます。
+
+現在、ファイルを選択すると、`<VideoSelect>`コンポーネントで動画ファイルの取得とサムネイルの生成を行なっています。
+
+しかし、ファイル群のアップロードを実行するのは、「動画をアップロード」ボタンがある`<UploadForm>`コンポーネントです。
+
+つまり、`<VideoSelect>`にステートをなんらかの形で`<UploadForm>`に渡してあげる必要があります。
+
+方法としては、コンポーネント間のステートを簡単に管理できる`Recoil`を用いることもできますが、`Recoil`ではアプリケーションのフローバルな値を管理する形にしたいです。
+
+なので、ここでは、あくまでローカルステートの管理範囲として`useState`を用いて動画とサムネイルの二つのステートを管理します。
+
+まずは、それぞれのステート管理を`<Upload>`コンポネートに移行して、親コンポーネントでのステート管理にします。
+
+そして、`<VideoSelect>`と`<UploadForm>`のコンポーネントにファイルステートを渡します。
+
+```TSX
+// src/pages/Upload/index.tsx
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Grid,
+  Divider,
+  CircularProgress,
+} from "@material-ui/core";
+import { UploadForm } from "./UploadForm";
+import { VideoSelect } from "./VideoSelector";
+import useStyles from "./style";
+import { useRecoilValue } from "recoil";
+import { AccountLoaded } from "../../stores/AccountLoaded";
+import { useEffect, useState } from "react";
+import { GlobalUser } from "../../stores/User";
+import { useNavigate } from "react-router-dom";
+
+export const Upload = () => {
+  const styles = useStyles();
+  const accountLoaded = useRecoilValue(AccountLoaded);
+  const user = useRecoilValue(GlobalUser);
+
+  // 追加
+  // ファイル管理用ローカルステート
+  const [videoFile, setVideoFile] = useState<File>();
+  const [thumbFile, setThumbFile] = useState<File>();
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (accountLoaded) {
+      if (!user?.id) {
+        navigate("/login");
+      }
+    }
+  }, [accountLoaded, user?.id]);
+
+  return (
+    <Dialog fullWidth={true} maxWidth="md" open={true}>
+      <DialogTitle>動画のアップロード</DialogTitle>
+      <Divider />
+      <DialogContent className={styles.body}>
+        {user?.id ? (
+          <Grid container spacing={4}>
+            <Grid xs item>
+              {/*
+                ステートをpropsとして渡す
+              */}
+              <VideoSelect
+                videoFile={videoFile}
+                setVideoFile={setVideoFile}
+                setThumbFile={setThumbFile}
+              />
+            </Grid>
+            <Divider orientation="vertical" flexItem />
+            <Grid xs item>
+              {/*
+                ステートとセッターをpropsとして渡す。
+              */}
+              <UploadForm videoFile={videoFile} thumbFile={thumbFile} />
+            </Grid>
+          </Grid>
+        ) : (
+          <Grid container justifyContent="center">
+            <CircularProgress size={50} />
+          </Grid>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+};
+```
+
+これで、二つのコンポーネントでステートの共有ができるようになりました。
+
+`<VideoSelect>`コンポーネントを修正して、親コンポーネントから渡される`props`を使用して動画とサムネイルのファイルを管理できるようにします。
+
+```TSX
+// src/pages/Upload/VideoSelector/index.tsx
+
+import { Button, CardMedia, Grid, Typography } from "@material-ui/core";
+import {
+  useState,
+  useRef,
+  ChangeEvent,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+} from "react";
+import useStyles from "./style";
+
+
+// 追加
+// VideoSelectコンポーネントのプロップスとして、引数を型定義する
+export type VideoSelectProps = {
+  videoFile: File | undefined;
+  setVideoFile: Dispatch<SetStateAction<File | undefined>>;
+  setThumbFile: Dispatch<SetStateAction<File | undefined>>;
+};
+
+
+// 追加
+// 親コンポーネントから、VideoSelectに渡される引数
+export const VideoSelect = ({
+  videoFile,
+  setVideoFile,
+  thumbFile,
+  setThumbFile,
+}: VideoSelectProps) => {
+  const styles = useStyles();
+  const [videoURL, setVideoURL] = useState<string>();
+  const [thumbnailURLs, setThumbnailURLs] = useState<string[]>([]);
+
+  // 追加
+  // 現在選択中のサムネイルの参照URLを格納する
+  const [selectThumbURL, setSelectThumbURL] = useState<string>();
+
+  const createThumbnail = (videoRefURL: string) => {
+    const video = document.createElement("video");
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    video.onloadeddata = () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      video.currentTime = 0;
+    };
+    video.onseeked = () => {
+      if (video.currentTime >= video.duration || !context) return;
+      context.drawImage(video, 0, 0);
+      setThumbnailURLs((prev) => [...prev, canvas.toDataURL("image/jpeg")]);
+      video.currentTime += Math.ceil(video.duration / 3);
+    };
+    video.src = videoRefURL;
+    video.load();
+  };
+
+
+  // 追加
+  // サムネイルを選択して、
+  // 1. 参照URLを`selectThumbURL`に格納
+  // 2. 参照URLから画像ファイルを生成し、`setThumbFile`でファイルを親コンポーネントに渡す
+  const selectedThumb = (url: string) => {
+    //  参照URLを`selectThumbURL`に格納
+    setSelectThumbURL(url);
+
+  // 参照URLから画像ファイルを生成し、`setThumbFile`でファイルを親コンポーネントに渡す
+    fetch(url)
+      .then((res) => {
+        return res.blob();
+      })
+      .then((blob) => {
+        const thumb = new File([blob], "thumb.jpeg");
+        setThumbFile(thumb);
+      });
+  };
+
+  const selectedFile = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.currentTarget.files?.length) {
+      setVideoFile(event.currentTarget.files[0]);
+    }
+  };
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleClick = () => {
+    inputRef.current?.click();
+  };
+  useEffect(() => {
+    if (videoFile) {
+      const videoURL = URL.createObjectURL(videoFile);
+      setVideoURL(videoURL);
+      createThumbnail(videoURL);
+    }
+  }, [videoFile]);
+
+  // 追加
+  // サムネイルが生成_`されたら、最初のサムネイルを必ず選択にする
+  // これで、サムネイルが選択されずに動画をアップロードすることを防ぐ
+  useEffect(() => {
+    if (thumbnailURLs.length && thumbnailURLs[0] !== selectThumbURL) {
+      selectedThumb(thumbnailURLs[0]);
+    }
+  }, [thumbnailURLs]);
+
+  return (
+    <div className={styles.root}>
+
+      {videoURL && (
+        <div className={styles.full}>
+          <CardMedia component="video" src={videoURL} controls />
+
+          <Typography className={styles.textPadding}>サムネイル</Typography>
+          <Grid container spacing={2} className={styles.thumbnailContent}>
+            {thumbnailURLs.map((url) => {
+              return (
+                <Grid item xs={4}>
+                  <CardMedia
+
+                    // 追加
+                    // サムネイルのスタリングを`useStyles`に移行
+                    // サムネイル用のスタリングと選択中のサムネイルのスタリングを追加
+                    className={`${styles.thumbnail} ${
+                      url === selectThumbURL ? styles.selectedThumb : ""
+                    }`}
+                    image={url}
+
+                    // 追加
+                    // サムネイル画像を押したら、その画像をサムネイルとして選択する
+                    onClick={() => {
+                      selectedThumb(url);
+                    }}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </div>
+      )}
+      <input type="file" hidden ref={inputRef} onChange={selectedFile} />
+      {!videoURL && (
+        <Button variant="contained" color="primary" onClick={handleClick}>
+          ファイルを選択
+        </Button>
+      )}
+    </div>
+  );
+};
+```
+
+スタリングを修正します。
+
+```TS
+// src/pages/Upload/VideoSelector/style.ts
+import { makeStyles } from "@material-ui/core";
+
+export default makeStyles({
+  root: {
+    display: "flex",
+    minHeight: 300,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textPadding: {
+    paddingTop: 20,
+    paddingBottom: 10,
+  },
+  thumbnailContent: {
+    paddingBottom: 30,
+  },
+  full: {
+    width: "100%",
+  },
+
+  // 追加
+  thumbnail: {
+    paddingTop: "56.25%",
+    cursor: "pointer",
+  },
+
+  // 追加
+  selectedThumb: {
+    border: "2px solid red",
+  },
+});
+
+```
+
+これで、選択した動画及びサムネイルのファイルを、親コンポーネントに渡すことができました。
+
+この親コンポーネントに渡されるファイルを使って、`<UploadForm>`コンポーネントで実際にファイルのアップロード処理を行なっていきます。
+
+- ### 選択したファイルを`Firebase Storage`にアップロードする
+
+それでは実際にファイルを`Firebase Storage`にアップロードする処理を実装していきます。
+
+動画のアップロードは、`Hooks`として処理をまとめあげます。
+
+`useVideoUpload`という名前の`Hooks`を作成していきます。
+
+`useVideoUpload`では`Firebase Storage`へのアップロードの他に、Hasura への動画のアップロードも行なっていきます。
+
+アップロードに必要な処理は全てのこの`useVideoUpload`にまとめて記述していく形になります。
+
+まずは、動画とサムネイルを`Firebase Storage`にアップロードする処理を記述していきます。
+
+```TS
+// src/hooks/VideoUpload/index.ts を作成
+
+import { useState } from "react";
+import { storage } from "../../utils/Firebase/config";
+
+type UploadProps = {
+  file: {
+    thumbnail: File;
+    video: File;
+  };
+  title: string;
+  description?: string;
+};
+
+export const useVideoUpload = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error>();
+
+  // Firebase Storageにファイルをアップロードする処理
+  const uploadStorage = (id: string, file: File, path: string) => {
+    // ファイルから拡張子を抜き出す
+    const exe = file.name.split(".").pop();
+
+    // `ref`でファイルのパスを指定する。
+    // → PCのディレクトリと同じ考え方。ref('videos/video.mp4')とすれば、videosという階層にvideo.mp4を作成する
+    //
+    // putでファイルのアップロードを実際に行う
+    // `ref`で指定したパスに対して、ファイルの実態をアップロードする
+    return storage.ref(`${path}/${id}.${exe}`).put(file);
+  };
+
+  const upload = async ({ file, title, description, ownerId }: UploadProps) => {
+    // 処理が始まったら、ローディング中にする
+    setLoading(true);
+
+    // try-catch構文でPromise(アップロード処理)のエラーをキャッチする
+    try {
+      // 動画のアップロード処理
+      // 動画は全て`videos`と言う階層に保存される
+      const videoUploadTask = await uploadStorage(
+        "videoID",
+        file.video,
+        "videos"
+      );
+
+      // 画像サムネイルのアップロード処理
+      // 画像サムネイルは全て`thumbnails`に保存される
+      const thumbnailUploadTask = await uploadStorage(
+        "thumbId",
+        file.thumbnail,
+        "thumbnails"
+      );
+    } catch (error) {
+      // アップロードの途中でエラーが発生したら、処理を中断して、ここに記述される処理が行われる
+
+      console.error(error);
+      setError(new Error("エラーが発生しました。最初からやり直してください。"));
+    } finally {
+      // 全ての処理が完了したら、ローディングをfalseにする
+      setLoading(false);
+    }
+  };
+
+  return {
+    upload,
+    loading,
+    error,
+  };
+};
+
+```
+
+`Firebase Storage`へのファイルのアップロードは以上のコードだけで実現可能です。
+
+アップロードの実態は、`storage.ref(`${path}/${id}.${exe}`).put(file);`で実際にファイルのアップロードを行なっています。
+
+アップロードはこれで完了しましたが、まだこのコードには問題があります。
+
+それは、`uploadStorage`関数に対して、`id`という引数にファイルの名前を渡している箇所です。
+
+```TS
+const videoUploadTask = await uploadStorage(
+  file.video.name, // 問題あり！！
+  file.video,
+  "videos"
+);
+
+const thumbnailUploadTask = await uploadStorage(
+  file.thumbnail.name, // 問題あり！！
+  file.thumbnail,
+  "thumbnails"
+);
+```
+
+このコードの何が問題かというと、`Firebase Storage`では同じ階層に同じ名前のファイルが存在すると、「上書き」保存をしてしまいます。
+
+同じ名前のファイルを保存するたびに、古い動画は削除されてしまいます。
+
+これを解決するために、ファイルにユニーク（一意）な ID を割り振ります。
+
+そうすることで、ファイルの名前に左右されることなく、必ず違う名前のファイルとして`Firebase Storage`に保存することができます。
+
+ユニークな ID を生成する方法はいくつかありますが、ここでは、一番簡単な方法として、`UUID`を用いた方法をご紹介します。
+
+`UUID`とは、128 ビットのランダムの文字列を生成することで、衝突することがないユニークな値を生成するための技術です。
+
+「ランダムなのに衝突しないの？」という疑問を持たれた方は、[こちらの資料が参考になります](https://zenn.dev/kiyocy24/articles/uuid-duplicate-time)
+
+JavaScript で UUID による ID の生成を行うためには、ライブラリとして提供されているパッケージを使用します。
+
+```bash
+# ターミナル（コマンドプロンプト）
+npm install uuid @types/uuid
+
+# or
+
+yarn add uuid @types/uuid
+```
+
+`uuid`パッケージをインストールしたら、先程の`useVideoUpload`でそれぞれのアップロードで uuid を生成して渡します。
+
+```TS
+// src/hooks/VideoUpload/index.ts
+
+import { useState } from "react";
+import { storage } from "../../utils/Firebase/config";
+
+// 追加
+import { v4 as uuidv4 } from "uuid";
+
+type UploadProps = {
+  file: {
+    thumbnail: File;
+    video: File;
+  };
+  title: string;
+  description?: string;
+};
+
+export const useVideoUpload = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error>();
+  const uploadStorage = (id: string, file: File, path: string) => {
+    const exe = file.name.split(".").pop();
+    return storage.ref(`${path}/${id}.${exe}`).put(file);
+  };
+
+  const upload = async ({ file, title, description, ownerId }: UploadProps) => {
+    setLoading(true);
+
+    // 追加
+    // 動画とサムネイルのそれぞれのuuidを生成する
+    const videoName = uuidv4();
+    const thumbName = uuidv4();
+
+    try {
+      const videoUploadTask = await uploadStorage(
+        // 動画のファイル名として、uuidのID をファイル名にする
+        videoName,
+        file.video,
+        "videos"
+      );
+
+      const thumbnailUploadTask = await uploadStorage(
+        // サムネイルのファイル名として、uuidのID をファイル名にする
+        thumbName,
+        file.thumbnail,
+        "thumbnails"
+      );
+    } catch (error) {
+      console.error(error);
+      setError(new Error("エラーが発生しました。最初からやり直してください。"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    upload,
+    loading,
+    error,
+  };
+};
+
+```
+
+これで、ファイルの名前を重複させることなく、ファイルを保存できるようになりました。
+
+以上でファイルのアップロードが完了しました。
+
+後は、アップロードしたファイルの参照を動画のタイトルと共に`Hasura`に保存するだけです。
+
+- ### 動画のメタデータをデータベースに保存する
+
+最後は、動画のメタデータの保存です。
+
+`GraphQL`で`Hasura`に動画のメタデータを保存します。
+
+`User`を作成した時と同じように、`Hasura`のコンソール画面から`video`テーブルにデータを保存する`mutation`クエリーを生成します。
+
+```graphql
+# 動画のメタデータを生成するクエリー
+mutation InsertVideo(
+  $id: String!
+  $title: String!
+  $description: String = ""
+  $thumbnail_url: String!
+  $video_url: String!
+  $owner_id: String!
+) {
+  insert_videos_one(
+    object: {
+      id: $id
+      title: $title
+      description: $description
+      video_url: $video_url
+      thumbnail_url: $thumbnail_url
+      owner_id: $owner_id
+      duration: 0
+      views: 0
+    }
+  ) {
+    id
+    title
+    description
+    video_url
+    thumbnail_url
+    owner_id
+    duration
+    views
+    updated_at
+    created_at
+  }
+}
+```
+
+```json
+// QUERY VARIABLES
+
+{
+  "id": "videoId",
+  "title": "title",
+  "thumbnail_url": "thumb",
+  "video_url": "video",
+  "owner_id": "userid"
+}
+```
+
+![hasura video mutation]()
+
+`Execute Query(実行ボタン)`を押して、クエリーが問題なく実行されるか確認します。
+
+エラーが出ていなければ、このクエリーをアプリケーションに移し替えます。
+
+```graphql
+# graphql/mutation/InsertVideo.graphqlを作成
+
+# 動画のメタデータを生成するクエリー
+mutation InsertVideo(
+  $id: String!
+  $title: String!
+  $description: String = ""
+  $thumbnail_url: String!
+  $video_url: String!
+  $owner_id: String!
+) {
+  insert_videos_one(
+    object: {
+      id: $id
+      title: $title
+      description: $description
+      video_url: $video_url
+      thumbnail_url: $thumbnail_url
+      owner_id: $owner_id
+      duration: 0
+      views: 0
+    }
+  ) {
+    id
+    title
+    description
+    video_url
+    thumbnail_url
+    owner_id
+    duration
+    views
+    updated_at
+    created_at
+  }
+}
+```
+
+`codegen`のスクリプトを実行して、クエリーから`Hooks`を生成します。
+
+といきたいところですが、今のままでは、`InsertVideo`の`Hooks`を作成することができません。
+
+原因は、`codegen.js`にて、`InsertVideo.graphql`のファイルを参照する記述ができていないためです。
+
+`codegen.js`で、新しく作られる`.graphql`ファイルも自動で全て参照する設定に書き換えます。
+
+```js
+// script/codegen.js
+
+module.exports = {
+  schema: {
+    [process.env.REACT_APP_GRAPHQL_END_POINT_ORIGIN]: {
+      headers: {
+        "x-hasura-admin-secret": process.env.REACT_APP_HASURA_SECRET_KEY,
+      },
+    },
+  },
+  documents: [
+    // ファイル名を`*`に変更することで、ディレクトリの全ての`.graphql`を参照するようにする
+    "graphql/query/*.graphql",
+    "graphql/mutation/*.graphql",
+  ],
+  generates: {
+    "src/utils/graphql/generated.ts": {
+      plugins: [
+        "typescript",
+        "typescript-operations",
+        "typescript-react-apollo",
+      ],
+      config: {
+        withHooks: true,
+      },
+    },
+  },
+};
+```
+
+これで、これから`.graphql`を新しく作成しても、自動で`codegen.js`で参照されるようになります。
+
+それでは、`codegen`スクリプトを実行して`Hooks`を作成します。
+
+```bash
+# ターミナル（コマンドプロンプト）
+
+npm run codegen
+
+```
+
+`InsertVideo`の`Hooks`が生成されたので、`useVideoUpload`でそうがのメタデータを保存する処理を実装します。
+
+```TS
+// src/hooks/VideoUpload/index.ts
+
+import { useEffect, useState } from "react";
+import { storage } from "../../utils/Firebase/config";
+import { v4 as uuidv4 } from "uuid";
+
+// 追加
+import { useInsertVideoMutation } from "../../utils/graphql/generated";
+import { useRecoilValue } from "recoil";
+import { GlobalUser } from "../../stores/User";
+
+type UploadProps = {
+  file: {
+    thumbnail: File;
+    video: File;
+  };
+  title: string;
+  description?: string;
+};
+
+export const useVideoUpload = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error>();
+
+  // 動画のメタデータを保存するGraphQLMutation
+  const [mutation, { error: apolloError }] = useInsertVideoMutation();
+
+  // `video`の`ownerId`のために、userのidを取得する
+  const user = useRecoilValue(GlobalUser);
+
+
+  const uploadStorage = (id: string, file: File, path: string) => {
+    const exe = file.name.split(".").pop();
+    return storage.ref(`${path}/${id}.${exe}`).put(file);
+  };
+
+  const upload = async ({ file, title, description, ownerId }: UploadProps) => {
+    // 追加
+    // ユーザーが読み込まれていない、未ログインであれば処理を中断する
+    if (!user?.id) {
+      return;
+    }
+
+    setLoading(true);
+    const videoId = uuidv4();
+    const thumbId = uuidv4();
+
+    // 動画のIDを生成する
+    const videoId = uuidv4();
+
+    try {
+      const videoUploadTask = await uploadStorage(
+        videoName,
+        file.video,
+        "videos"
+      );
+
+      const thumbnailUploadTask = await uploadStorage(
+        thumbName,
+        file.thumbnail,
+        "thumbnails"
+      );
+
+      // 追加
+      // 動画のメタデータを保存する
+      const res = await mutation({
+        variables: {
+          id: videoId,
+          title,
+          description,
+          video_url: videoUploadTask.ref.fullPath,
+          thumbnail_url: thumbnailUploadTask.ref.fullPath,
+          owner_id: ownerId,
+        },
+      });
+
+      // 追加
+      // 全ての処理が終わったら、動画のメタデータを返す
+      return res.data?.insert_videos_one;
+
+    } catch (error) {
+      console.error(error);
+      setError(new Error("エラーが発生しました。最初からやり直してください。"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 追加
+  // Apollo Clientのエラーをキャッチする
+  useEffect(() => {
+    if (apolloError) {
+      console.error(apolloError);
+      setError(new Error("エラーが発生しました。最初からやり直してください。"));
+    }
+  }, [apolloError]);
+
+  return {
+    upload,
+    loading,
+    error,
+  };
+};
+```
+
+これで、`useVideoUpload`で動画をアップロードする処理が完成しました。
+
+この`Hooks`を`<UploadForm>`コンポーネントで呼び出すことで、動画のアップロードの処理を完成させていきます。
+
+```TSX
+// src/pages/Upload/UploadForm/index.tsx
+
+import { Button, TextField, Typography } from "@material-ui/core";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
+import { useRecoilValue } from "recoil";
+import { useVideoUpload } from "../../../hooks/VideoUpload";
+import { GlobalUser } from "../../../stores/User";
+
+import useStyles from "./style";
+
+export type UploadFormProps = {
+  videoFile: File | undefined;
+  thumbFile: File | undefined;
+};
+
+export const UploadForm = ({ videoFile, thumbFile }: UploadFormProps) => {
+  const styles = useStyles();
+
+  // リダイレクト用関数
+  const navigate = useNavigate();
+
+  // videoをアップロードする際の、ownerIdのためのuserId
+  const user = useRecoilValue(GlobalUser);
+
+  // ユーザー入力を受け取る`ref`変数
+  const titleRef = useRef<HTMLInputElement>(null);
+  const descRef = useRef<HTMLTextAreaElement>(null);
+
+  // エラーを表示する用のステート
+  const [errorMessage, setErrorMessage] = useState<Error>();
+
+  // 動画をアップロードするためのHooks
+  const { upload, loading, error: uploadError } = useVideoUpload();
+
+  // 「動画をアップロード」ボタンをクリックしたら実行する関数
+  const submit = () => {
+    setErrorMessage(undefined);
+
+    if (!user?.id) {
+      return setErrorMessage(new Error("ログインされていません。"));
+    }
+
+    if (!videoFile || !thumbFile) {
+      return setErrorMessage(new Error("ファイルを選択してください。"));
+    }
+
+    if (!titleRef.current?.value) {
+      return setErrorMessage(new Error("タイトルをしてください。"));
+    }
+
+    upload({
+      file: {
+        video: videoFile,
+        thumbnail: thumbFile,
+      },
+      title: titleRef.current.value,
+      description: descRef.current?.value,
+      ownerId: user.id,
+    }).then(() => {
+      // 動画のアップロードが成功すれば、`home`URLにリダイレクト
+      if (data?.id) {
+        navigate("/");
+      }
+    });
+  };
+
+  // Hooksからのエラーを受け取り、画面表示用のエラーステートに渡す。
+  useEffect(() => {
+    setErrorMessage(uploadError);
+  }, [uploadError]);
+
+  return (
+    <>
+      <label className={styles.label}>
+        <Typography variant="body2">タイトル</Typography>
+        <TextField
+          size="small"
+          fullWidth
+          variant="outlined"
+          inputRef={titleRef}
+        />
+      </label>
+
+      <label className={styles.label}>
+        <Typography variant="body2">説明</Typography>
+        <TextField
+          size="small"
+          fullWidth
+          variant="outlined"
+          multiline
+          rows={4}
+          inputRef={descRef}
+        />
+      </label>
+
+      {errorMessage?.message && (
+        <label className={styles.label}>
+          <Typography align="center" color="error">
+            {errorMessage?.message}
+          </Typography>
+        </label>
+      )}
+
+      <div className={styles.butotn}>
+        <Button
+          variant="contained"
+          color="primary"
+          disabled={loading}
+          onClick={submit}
+        >
+          {loading ? "アップロード中" : "動画をアップロード"}
+        </Button>
+      </div>
+    </>
+  );
+};
+
+
+```
+
+画面表示を確認して、動画がアップロードされているか見てみましょう。
+
+![video upload component]()
+
+アップロード処理は完了したみたいですが、本当にアップロードされているかはまだわかりませんね。
+
+次の章で、アップロードされた動画を閲覧できるようにしましょう。
+
 ## GraphQL リクエストを実装
 
-- ### user データの作成と取得
-- ### video データの作成
-- ### video データの取得
+いよいよ実装も、終盤になってまいりました。
+
+残っている実装は、先ほどアップードした動画を実際に画面上で再生できるようにすることです。
+
+と言いつも、難しいことはありません。
+
+GraphQL によるデータの取得と、`Firebase Storage`からファイルの参照を取得して、画像または動画を表示する処理を実装します。
+
+- ### video データのリストを取得
+
+まずは、動画再生画面に行くまでに、動画一覧を表示し、カードをクリックすると再生画面に遷移する機能を実装します。
+
+動画の一覧表示は、`/`の URL で表示されるカードが一覧で表示されているページで、実際にアップロードされている動画のメタデータを取得して表示します。
+
+早速、データベースに保存されているデータを取得しきます。
+
+例の如く、`Hasura`で動画のメタデータを取得する`query`を作成して、アプリケーションに適用します。
+
+![Hasura video query]()
+
+`Execute Query(実行ボタン)`を押して、クエリーが問題なく実行されていれば、アプリケーションに移し替えます。
+
+```graphql
+# graphql/query/Videos.graphqlを作成
+
+query Videos {
+  videos {
+    id
+    title
+    description
+    thumbnail_url
+    video_url
+    owner_id
+    duration
+    views
+    updated_at
+    created_at
+  }
+}
+```
+
+また、`codegen`スクリプトを実行して、`Hooks`を作成します。
+
+```bash
+# ターミナル（コマンドプロンプト）
+npm run codegen
+
+# or
+
+yarn codegen
+```
+
+`<Home>`コンポーネントで、動画のメタデータを取得する機能を実装します。
+
+動画一覧表示機能は、`GraphQL`の`query`を実行すると共に、`Firebase Storage`からサムネイルを取得する必要があります。
+
+データの取得の前に、コンポーネントがデータを受け取れるように修正を加えます。
+
+`VideoCard`、`HeaderTitle`、`SubHeaderContent`のコンポーネントに、それぞれ親コンポーネントから`props`を受け取るように変更します。
+
+```TSX
+// src/components/VideoCard/HeaderTitle/index.tsx
+
+import { Typography } from "@material-ui/core";
+import useStyles from "./style";
+
+// 追加
+export type HeaderTitleProps = {
+  title: string;
+};
+
+// 親コンポーネントからタイトルを受け取る
+export const HeaderTitle = ({ title }: HeaderTitleProps) => {
+  const styles = useStyles();
+
+  return (
+    <Typography className={styles.root} variant="subtitle1" component="h3">
+
+      {
+        // 追加
+        // タイトルを表示
+        title
+      }
+    </Typography>
+  );
+};
+
+```
+
+```TSX
+// src/components/VideoCard/SubHeaderContent/index.tsx
+
+import { Typography } from "@material-ui/core";
+
+// 追加
+export type SubHeaderContentProps = {
+  owner: string;
+  views: number;
+  created: Date;
+};
+
+// 親コンポーネントから、投稿者情報、再生回数、アップロード日時を受け取ります。
+export const SubHeaderContent = ({
+  owner,
+  views,
+  created,
+}: SubHeaderContentProps) => {
+
+
+  return (
+    <>
+      <Typography variant="body2">
+        {
+          // 追加
+          // 投稿者情報
+          owner
+        }
+      </Typography>
+      <Typography variant="body2">
+        {
+          // 追加
+          // 再生回数
+          views
+        } views {
+          // 追加
+          // 投稿時間を表示
+          new Date(created).toLocaleDateString()
+        }
+      </Typography>
+    </>
+  );
+};
+```
+
+```TSX
+// src/components/VideoCard/index.tsx
+
+import { Avatar, Card, CardHeader, CardMedia } from "@material-ui/core";
+import { HeaderTitle, HeaderTitleProps } from "./HeaderTitle";
+import { SubHeaderContent, SubHeaderContentProps } from "./SubHeaderContent";
+import useStyles from "./style";
+import { useEffect, useState } from "react";
+
+// 追加
+// 子コンポーネントの型定義を使用して、冗長な書き方を防ぐことができる
+export type VideoCardProps = {
+  fetcher: () => Promise<string | undefined>;
+} & HeaderTitleProps &
+  SubHeaderContentProps;
+
+// propsを親から受け取る
+export const VideoCard = ({
+  fetcher,
+  title,
+  owner,
+  created,
+  views,
+}: VideoCardProps) => {
+  const styles = useStyles();
+
+  // 追加
+  // 動画のサムネイルのURLを格納する
+  const [imageSrc, setImageSrc] = useState<string>();
+
+  // 追加
+  useEffect(() => {
+    // 関数の実態は、`Firebase Storage`からサムネイル用のダウンロードリンクを取得する
+    // ここでは、関数の内部構成を知ることなく、実行すると`Promise<string | undefined>`が返される関数であることでしか知らない
+    // コンポーネントから画像取得の詳細を隠しつつも、非同期な画像の取得を実現する
+    fetcher().then(setImageSrc);
+  });
+
+  return (
+    <Card className={styles.root} elevation={0} square>
+      <CardMedia
+        className={styles.media}
+
+        // 追加
+        // 画像があればサムネイルを表示
+        image={imageSrc || "/static/no-image.jpg"}
+        title="Thumbnail"
+      />
+
+      {/*
+        タイトルやユーザーサムネイルを表示する
+      */}
+      <CardHeader
+        className={styles.header}
+        avatar={<Avatar />}
+
+        // 追加
+        // `Card`の`HeaderTitle`には`title`を渡す
+        title={<HeaderTitle title={title} />}
+
+        // 追加
+        // `Card`の`SubHeaderContent`には、`owner`、`views`、`created`を渡す
+        subheader={
+          <SubHeaderContent owner={owner} views={views} created={created} />
+        }
+      />
+    </Card>
+  );
+};
+```
+
+`<VideoCard>`コンポーネントは親コンポーネントから`props`を受け取るだけで、画面表示ができるようになりました。
+
+では、実際に親コンポーネントでデータを取得し、`<VideoCard>`に流す処理を記述していきます。
+
+```TSX
+// src/pages/Home/index.tsx
+
+import { Container, Grid } from "@material-ui/core";
+import { useEffect } from "react";
+import { VideoCard } from "../../components/VideoCard";
+
+// 追加
+import { storage } from "../../utils/Firebase/config";
+import { useVideosQuery } from "../../utils/graphql/generated";
+
+export const Home = () => {
+
+  // videoを取得する`query`
+  const { data, error } = useVideosQuery();
+
+  // エラーがあればコンソールの表示
+  useEffect(() => {
+    console.error(error);
+  }, [error]);
+
+  return (
+    <Container>
+      <Grid container spacing={2}>
+
+        {/*
+          `query`で取得した動画データを表示する
+        */}
+        {data?.videos.map((video) => (
+          <Grid item xs={3}>
+
+            {/*
+              カードをクリックしたら、プレイヤー画面を表示します。
+            */}
+            <Link to={`/watch/${video.id}`} style={{ textDecoration: "none" }}>
+
+              {/*
+                `<VideoCard>`には、先ほど指定されていたpropsを流し込みます
+              */}
+              <VideoCard
+                title={video.title}
+                // ownerは投稿者の名前を入れたいが、現段階では、名前を取得することができない
+                owner={video.owner_id}
+                views={video.views}
+                created={video.created_at}
+
+                // <VideoCard> で非同期的に画像を取得するための関数
+                fetcher={() => storage.ref(video.thumbnail_url).getDownloadURL()}
+              />
+            </Link>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
+  );
+};
+
+```
+
+以上で大枠の動画リストに表示ができるようになります。
+
+しかし、一点、修正しなければならない箇所があります。
+
+`<VideoCard>`の props に、`owner={video.owner_id}`が渡されている点です。
+
+ここはデザインにもある通り、投稿者の名前が表示されるところです。
+
+しかし、現段階では、`useVideosQuery`のクエリーでは、投稿者のユーザー情報を取得することができません。
+
+`owner_id`からユーザーを再度取得しても良いですが、２度手間です。
+
+ここでは、Hasura 側で、動画のメタデータと同じクエリーでユーザーを取得できるようにします。
+
+Hasura のコンソール画面で、`videos`テーブルから`Relationships`というタブで、動画の ID に対するユーザー ID を紐付けます。
+
+![hasura video relationship user]()
+
+「Save」を押すことで、リレーションを作成することができます。
+
+このリレーションをどのように使うかをご説明します。
+
+また、Hasura のコンソール画面で、`API`タブのクエリーを実行できる画面から、`videos`の`query`に`owner`という項目が増えているのがわかると思います。
+
+![hasura explorer owner]()
+
+この`owner`を使用して、`videos`を取得すると同時に、動画に紐づいているユーザー情報を獲得することができます。
+
+![hasura video owner query]()
+
+このクエリーで、`Query Videos`を修正します。
+
+```graphql
+# graphql/query/Videos.graphql
+query Videos {
+  videos {
+    id
+    title
+    description
+    thumbnail_url
+    video_url
+    views
+    duration
+    owner {
+      id
+      email
+      name
+      profile_photo_url
+      updated_at
+      created_at
+    }
+    created_at
+  }
+}
+```
+
+最後に`codegen`スクリプトを実行して`Hooks`を作成します。
+
+```bash
+npm run codegen
+
+# or
+
+yarn codegen
+
+```
+
+これで、`videos`クエリーと同じ re クエストでユーザー情報を獲得できます。
+
+`Home`コンポーネントに戻って、ユーザーの名前を表示しましょう
+
+```TSX
+// src/pages/Home/index.tsx
+
+import { Container, Grid } from "@material-ui/core";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { VideoCard } from "../../components/VideoCard";
+import { storage } from "../../utils/Firebase/config";
+import { useVideosQuery } from "../../utils/graphql/generated";
+
+export const Home = () => {
+  const { data, error } = useVideosQuery();
+
+  useEffect(() => {
+    console.error(error);
+  }, [error]);
+
+  return (
+    <Container>
+      {/* 取得したデータを表示してみる */}
+      <Grid container spacing={2}>
+        {data?.videos.map((video) => (
+          <Grid item xs={3}>
+            <Link to={`/watch/${video.id}`} style={{ textDecoration: "none" }}>
+              <VideoCard
+                title={video.title}
+
+                // 修正
+                // owner?.nameは`undefined`である可能性があるため、`undefined`である場合は、空文字を渡すようにしています。
+                owner={video.owner?.name || ''}
+                views={video.views}
+                created={video.created_at}
+                fetcher={() =>
+                  storage.ref(video.thumbnail_url).getDownloadURL()
+                }
+              />
+            </Link>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
+  );
+};
+```
+
+> 現段階で画面表示しようとストエラーが発生するかもしれません。  
+> 原因は、`VideoHorizontalCard`で、`HeaderTitle`と`SubHeaderContent`に props を渡していないためです。  
+> 次の章で、この問題は解決しますが、今画面表示で確認したい場合は、`VideoHorizontalCard`の`HeaderTitle`と`SubHeaderContent`をコメントアウト、もしくは削除すると画面表示できるようになります。
+
 - ### Firebase Storage から動画を取得する
+
+続いて、動画プレイヤー画面でデータの取得処理を行なっていきます。
+
+と言いつつも、やることは先ほどと変わりません。
+
+`Hasura`で`query`を作成し、`codegen`で`Hooks`を作成し、コンポーネントでデータを取得するだけです。
+
+早速、`Hasura`でクエリーを作成しましょう。
+
+ここで作成するクエリーは、`ID`で一致する動画を取得するクエリーです。
+
+使用する`query`は、`video_by_pk`です。
+
+![vudeo pk query]()
+
+先ほどの`Videos`というクエリーは、保存されている全ての動画を取得するのに対し、こちらの`VideoByPk`は`id`と一致する動画を取得します。
+
+よって、`query variables`でも`id`を指定しています。
+
+アプリケーションに反映させて、`codegen`スクリプトを実行しましょう。
+
+```graphql
+# graphql/query/VideoByPk.graphqlを作成
+
+query VideoByPk($id: String!) {
+  videos_by_pk(id: $id) {
+    id
+    title
+    thumbnail_url
+    video_url
+    views
+    duration
+    description
+    owner {
+      id
+      name
+      profile_photo_url
+      email
+      updated_at
+      created_at
+    }
+    updated_at
+    created_at
+  }
+}
+```
+
+`codegen`スクリプトの実行
+
+```bash
+npm run codegen
+
+# or
+
+yarn codegen
+```
+
+作成された`Hooks`で、動画プレイヤーを完成させます。
+
+まずは、コンポーネントでデータを表示できるように修正を加えます。
+
+```TSX
+// src/pages/Watch/VideoPlayerCard/index.tsx
+
+import {
+  Avatar,
+  Card,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Divider,
+  Typography,
+} from "@material-ui/core";
+import { useEffect, useState } from "react";
+import useStyles from "./style";
+
+// 親コンポーネントから渡されるpropsの型
+export type VideoPlayerCardProps = {
+  title: string | undefined;
+  description: string | undefined;
+  views: number | undefined;
+  ownerName: string | undefined;
+  date: Date | undefined;
+  fetcher: () => Promise<string | undefined>;
+};
+
+// 親コンポーネントから渡されるprops
+export const VideoPlayerCard = ({
+  title,
+  description,
+  views,
+  ownerName,
+  date,
+  fetcher,
+}: VideoPlayerCardProps) => {
+  const styles = useStyles();
+
+  // 動画のダウンロードリンクURLを格納するためのステート
+  const [src, setSrc] = useState<string>();
+
+  useEffect(() => {
+    // URLが無かったら
+    if (!src) {
+
+      // Firebas Storageから動画のダウンロードリンクを取得する
+      fetcher().then(setSrc);
+    }
+  });
+
+  return (
+    <Card className={styles.transparent} elevation={0} square>
+      {/*
+        追加
+        srcに動画のパスを指定する
+      */}
+      <CardMedia component="video" controls src={src} />
+
+      <CardContent className={styles.paddingHorizontalLess}>
+        <Typography component="h2" variant="h6">
+          {title}
+        </Typography>
+
+        <Typography variant="body2" color="textSecondary">
+          {/*
+            追加
+            動画の視聴回数と動画のアップロード日を表示
+          */}
+          {views} 回視聴 • {date ? new Date(date).toLocaleDateString() : ""}
+        </Typography>
+      </CardContent>
+
+      <Divider />
+
+      {/*
+        追加
+        title を投稿者の名前を表示する
+      */}
+      <CardHeader
+        className={styles.paddingHorizontalLess}
+        avatar={<Avatar />}
+        title={ownerName}
+        subheader="0 subscribers"
+      />
+
+      {/* 説明文エリア */}
+      <CardContent className={styles.descPadding}>{description}</CardContent>
+    </Card>
+  );
+};
+```
+
+これで、アップロードした動画の再生が行えるようになりました。
+
+あとは、プレイヤーの右側に表示されるなんちゃってレコメンド機能をつければ完成です。
+
+リコメンド機能は本来、動画のメタデータや視聴履歴を分析して最適な動画をリコメンドしますが、今回は、アップロードされている表示動画以外の全ての動画を表示することで擬似的にリコメンド機能を実装します。
+
+早速、表示動画以外の全ての動画を取得するクエリーを作成します。
+
+```graphql
+# graphql/query/RecommendVideos.graphqlを作成
+
+query RecommendVideos($currentVideoId: String!) {
+  videos(where: { id: { _neq: $currentVideoId } }) {
+    id
+    title
+    description
+    thumbnail_url
+    video_url
+    views
+    duration
+    owner {
+      id
+      name
+      profile_photo_url
+      updated_at
+      email
+      created_at
+    }
+    created_at
+    updated_at
+  }
+}
+```
+
+`codegen`スクリプトを実行
+
+```bash
+npm run codegen
+
+# or
+
+yarn codegen
+```
+
+`VideoHorizontalCard`コンポーネントを修正して、データを表示できるようにします。
+
+```TSX
+// src/components/VideoHorizontalCard/index.tsx
+
+import { Card, CardHeader, CardMedia } from "@material-ui/core";
+import { useEffect, useState } from "react";
+import { HeaderTitle, HeaderTitleProps } from "../VideoCard/HeaderTitle";
+import {
+  SubHeaderContent,
+  SubHeaderContentProps,
+} from "../VideoCard/SubHeaderContent";
+import useStyles from "./styles";
+
+
+// 親コンポーネントから渡されるpropsの型
+export type VideoHorizontalCardProps = {
+  fetcher: () => Promise<string | undefined>;
+} & HeaderTitleProps &
+  SubHeaderContentProps;
+
+// 親コンポーネントから渡されるprops
+export const VideoHorizontalCard = ({
+  title,
+  owner,
+  views,
+  created,
+  fetcher,
+}: VideoHorizontalCardProps) => {
+  const styles = useStyles();
+
+  // 追加
+  // サムネイルのダウンロードリンクのステート
+  const [src, setSrc] = useState<string>();
+
+
+  // 追加
+  useEffect(() => {
+    // サムネイルのダウンロードリンクを取得する関数
+    fetcher().then(setSrc);
+  });
+
+  return (
+    <Card
+      className={`${styles.root} ${styles.transparent}`}
+      elevation={0}
+      square
+    >
+      <div className={styles.thumbnail}>
+
+        {/*
+          修正
+          取得したサムネイルのダウンロードリンクを参照する
+        */}
+        <CardMedia className={styles.media} image={src} title="Thumbnail" />
+      </div>
+
+      {/*
+        `Home`で作成した<HeaderTitle>と<SubHeaderContent>を流用する
+      */}
+      <CardHeader
+        className={styles.contentPadding}
+
+        // 追加
+        // タイトルを表示
+        title={<HeaderTitle title={title} />}
+
+        // 追加
+        // 投稿者名、再生回数、作成日時を表示
+        subheader={
+          <SubHeaderContent owner={owner} views={views} created={created} />
+        }
+      />
+    </Card>
+  );
+};
+
+```
+
+あとは、親コンポーネントから必要なデータを取得して、props に流し込みます。
+
+```TSX
+// src/pages/Watch/index.tsx
+
+import { Container, Grid } from "@material-ui/core";
+import { VideoPlayerCard } from "./VideoPlayerCard";
+import useStyles from "./style";
+import { VideoHorizontalCard } from "../../components/VideoHorizontalCard";
+import { useParams } from "react-router";
+import {
+  useRecommendVideosQuery,
+  useVideoByPkQuery,
+} from "../../utils/graphql/generated";
+import { storage } from "../../utils/Firebase/config";
+import { Link } from "react-router-dom";
+
+export const Watch = () => {
+  const styles = useStyles();
+
+  const { videoId } = useParams();
+
+  const { data: currentVideo } = useVideoByPkQuery({
+    variables: {
+      id: videoId,
+    },
+  });
+
+  // 追加
+  // リコメンドの動画を取得する
+  const { data: recommendVides } = useRecommendVideosQuery({
+    variables: {
+      currentVideoId: videoId,
+    },
+  });
+
+  return (
+    <Container className={styles.root}>
+      <Grid container spacing={2}>
+        <Grid item xs={8}>
+          <VideoPlayerCard
+            title={currentVideo?.videos_by_pk?.title}
+            description={currentVideo?.videos_by_pk?.description}
+            views={currentVideo?.videos_by_pk?.views}
+            ownerName={currentVideo?.videos_by_pk?.owner?.name}
+            date={currentVideo?.videos_by_pk?.created_at}
+            fetcher={async () => {
+              if (currentVideo?.videos_by_pk?.video_url) {
+                return storage
+                  .ref(currentVideo.videos_by_pk.video_url)
+                  .getDownloadURL();
+              }
+              return undefined;
+            }}
+          />
+        </Grid>
+
+
+        {/*
+          追加
+          リコメンドの動画を一覧表示
+
+        */}
+        {recommendVides?.videos.map((video) => (
+          <Grid item xs={4}>
+            <div className={styles.cardPadding}>
+
+              {/*
+                動画プレイヤーを表示するためのリンク
+              */}
+              <Link
+                to={`/watch/${video.id}`}
+                style={{ textDecoration: "none" }}
+              >
+
+                {/*
+                  カードの表示に必要なデータをpropsに渡す
+                */}
+                <VideoHorizontalCard
+                  title={video.title}
+                  views={video.views}
+                  owner={video.owner?.name || ""}
+                  created={video.created_at}
+                  fetcher={() =>
+                    storage.ref(video.thumbnail_url).getDownloadURL()
+                  }
+                />
+              </Link>
+            </div>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
+  );
+};
+
+```
+
+以上で、アップロードした動画のデータを取得して再生することができるようになりました。
+
+- ## Apollo Clinet のキャッシュを対策する
+
+ここまでで、動画のアップロード、動画のメタデータの取得、動画の再生の一連の処理を実装が完了しました。
+
+これで、アプリケーションとして完成、といきたいところですが一つ重要なバグがあります。
+
+それは Apollo Client のキャッシュ機構に起因するバグです。
+
+Apollo Client では、強力なキャッシュ機構が備え付けられています。
+
+このキャッシュ機構のおかげで、Apollo Clinet では無駄なリクエストを飛ばすことなく、データを取得することができます。
+
+普通に使う分には非常に便利な機能ではあるのですが、データを作成・更新する際には、そのデータがキャッシュに反映されずに正しい情報が表示されません。
+
+その証拠に、動画をアップロードしても、アップロードした動画が一覧に反映されていないことがわかると思います。
+
+![upload hidden cache]()
+
+Apollo Client では、データを作成・更新・削除などの`mutation`クエリーを使用する際は、Apollo Client のキャッシュにデータが変更されたことを通知する必要があります。
+
+Apollo Client のキャッシュの仕組みは、深ぼると非常に面白いトピックです。
+
+ここでは、ざっくりと簡単にご説明しますが、本番環境で運用していくとなるとしっかりその仕組みを理解しておく必要があります。
+
+Apollo Client のキャッシュは、`{ key : value }`の形でブラウザに保存されます。
+
+Apollo Client では、キャッシュにデータが保存されている保存されれている場合は、サーバにリクエストを送信せずに、キャッシュのデータを使用します。
+
+この時、冒頭で説明した場合では、データを追加したときにキャッシュが更新されず、かつアプリケーションはキャッシュのみしかデータを読み取りません。
+
+その結果、新しく作成したデータが画面に表示されずに、ブラウザを再読み込むをするとやっと表示されるようになっています。
+
+これを解決するためにはデータ追加後もアプリケーションに対して、サーバーにデータを再フェッチするよう明示する必要があります。
+
+このように Apollo Client では、データを変更した後に、特定のクエリーに対してキャッシュを更新する必要があるということを明示的に指定しなければなりません。
+
+このキャッシュを更新する方法は、Apollo Client でいくつかの方法が用意されています。
+
+しかし、どの方法を使うかは、アプリケーションやデータによって変化します。
+
+一つの考え方としては、そのデータがどれだけ最新情報を必要とするかを要点としておくのがいいかもしれません。
+
+[Apollo Client に用意されているキャッシュの更新方法については、ここで詳しく開設されています。]()
+
+今回は、動画をアップロードした後に、どのクエリーのキャッシュを更新したいかが明確なため、`mutaion`でデータを追加後に、キャッシュを更新したいクエリーを明示的に指定します。
+
+Apollo Client の`refetchQueries`という機能を使います。
+
+```TSX
+// src/hooks/VideoUpload/index.ts
+
+import { useEffect, useState } from "react";
+import { storage } from "../../utils/Firebase/config";
+import { v4 as uuidv4 } from "uuid";
+import {
+  useInsertVideoMutation,
+  VideosDocument,
+} from "../../utils/graphql/generated";
+
+type UploadProps = {
+  file: {
+    thumbnail: File;
+    video: File;
+  };
+  title: string;
+  description?: string;
+  ownerId: string;
+};
+
+export const useVideoUpload = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error>();
+
+  // 追加
+  // 動画をApolloでアップロードする`mutation`に対して、キャッシュ更新を指定
+  // 今回は、`Videos`というクエリーを指定しています。
+  const [mutation, { error: apolloError }] = useInsertVideoMutation({
+    refetchQueries: [{ query: VideosDocument }],
+  });
+
+  const uploadStorage = (id: string, file: File, path: string) => {
+
+    const exe = file.name.split(".").pop();
+    return storage.ref(`${path}/${id}.${exe}`).put(file);
+  };
+
+  const upload = async ({ file, title, description, ownerId }: UploadProps) => {
+    setLoading(true);
+    const videoName = uuidv4();
+    const thumbName = uuidv4();
+    const videoId = uuidv4();
+    try {
+      const videoUploadTask = await uploadStorage(
+        videoName,
+        file.video,
+        "videos"
+      );
+      const thumbnailUploadTask = await uploadStorage(
+        thumbName,
+        file.thumbnail,
+        "thumbnails"
+      );
+
+      console.log({
+        id: videoId,
+        title,
+        description,
+        video_url: videoUploadTask.ref.fullPath,
+        thumbnail_url: thumbnailUploadTask.ref.fullPath,
+        owner_id: ownerId,
+      });
+
+      const res = await mutation({
+        variables: {
+          id: videoId,
+          title,
+          description,
+          video_url: videoUploadTask.ref.fullPath,
+          thumbnail_url: thumbnailUploadTask.ref.fullPath,
+          owner_id: ownerId,
+        },
+      });
+
+      return res.data?.insert_videos_one;
+    } catch (error) {
+      console.error(error);
+      setError(new Error("エラーが発生しました。最初からやり直してください。"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (apolloError) {
+      console.error(apolloError);
+      setError(new Error("エラーが発生しました。最初からやり直してください。"));
+    }
+  }, [apolloError]);
+
+  return {
+    upload,
+    loading,
+    error,
+  };
+};
+
+```
+
+`refetchQueries`は、`mutation`の後に特定のクエリーを再フェッチする必要があることがわかっているときに、そのクエリーを指定します。
+
+`refetchQueries`には、いずれかの要素の配列が入ります。
+
+- gql 関数で解析された DocumentNode オブジェクト
+- 文字列として以前に実行したクエリの名前
+
+今回は一つ目の方法を用いて、クエリーを指定します。
+
+DocumentNode オブジェクトは、`codegen`スクリプトで自動的に生成されています。
+
+探し方としては、`gql`という関数で生成されている、`xxxxDocument`という名前のオブジェクトです。
+
+ここでは、`Videos`というクエリーに対して、`gql`で生成された Document オブジェクトを`useInsertVideoMutation`で指定しています。
+
+以上の 1 行を追加するだけで、動画のキャッシュ問題が解決されます。
+
+![mutation video cache success]()
+
+ここまでで、アップロードから、動画の一覧表示、動画の再生までの一連の処理を実装が完了しました。

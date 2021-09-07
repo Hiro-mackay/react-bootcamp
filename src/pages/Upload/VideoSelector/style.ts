@@ -17,4 +17,11 @@ export default makeStyles({
   full: {
     width: "100%",
   },
+  thumbnail: {
+    paddingTop: "56.25%",
+    cursor: "pointer",
+  },
+  selectedThumb: {
+    border: "2px solid red",
+  },
 });

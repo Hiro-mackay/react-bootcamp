@@ -7,8 +7,9 @@ module.exports = {
     },
   },
   documents: [
-    "graphql/query/users.graphql",
-    "graphql/mutation/InsertUser.graphql",
+    // ファイル名を`*`に変更することで、ディレクトリの全ての`.graphql`を参照するようにする
+    "graphql/query/*.graphql",
+    "graphql/mutation/*.graphql",
   ],
   generates: {
     "src/utils/graphql/generated.ts": {

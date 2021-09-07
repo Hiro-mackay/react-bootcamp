@@ -1,0 +1,21 @@
+query VideoByPk($id: String!) {
+  videos_by_pk(id: $id) {
+    id
+    title
+    thumbnail_url
+    video_url
+    views
+    duration
+    description
+    owner {
+      id
+      name
+      profile_photo_url
+      email
+      updated_at
+      created_at
+    }
+    updated_at
+    created_at
+  }
+}

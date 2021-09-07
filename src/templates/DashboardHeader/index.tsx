@@ -57,9 +57,11 @@ export const DashboardHeader = () => {
               {/* 
                 新規動画作成のアイコンボタンを追加
               */}
-              <IconButton>
-                <VideoCallIcon />
-              </IconButton>
+              <Link to="/upload">
+                <IconButton>
+                  <VideoCallIcon />
+                </IconButton>
+              </Link>
               {/* 
                 プロフィールアイコンを追加
               */}
