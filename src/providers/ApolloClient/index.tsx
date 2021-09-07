@@ -6,17 +6,19 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { PropsWithChildren } from "react";
+import { fireAuth } from "../../utils/Firebase/config";
 
 const httpLink = createHttpLink({
   uri: process.env.REACT_APP_GRAPHQL_END_POINT_ORIGIN,
 });
 
-const authLink = setContext(() => {
-  return {
-    headers: {
-      "x-hasura-admin-secret": process.env.REACT_APP_HASURA_SECRET_KEY,
-    },
-  };
+const authLink = setContext(async () => {
+  const token = await fireAuth.currentUser?.getIdToken(true);
+
+  // Bearerトークンでトークンを送信する
+  // headersのプロパティは`Authorization`
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  return { headers };
 });
 
 const apolloClient = new ApolloClient({
