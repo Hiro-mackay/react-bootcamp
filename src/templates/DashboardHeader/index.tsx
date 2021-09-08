@@ -37,9 +37,11 @@ export const DashboardHeader = () => {
           */}
           {globalUser ? (
             <>
-              <IconButton>
-                <VideoCallIcon />
-              </IconButton>
+              <Link to="/upload">
+                <IconButton>
+                  <VideoCallIcon />
+                </IconButton>
+              </Link>
               <IconButton className={styles.profileIcon}>
                 <Avatar />
               </IconButton>
