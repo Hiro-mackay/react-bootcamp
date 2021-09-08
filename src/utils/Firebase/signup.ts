@@ -4,7 +4,7 @@ import { fireAuth } from "./config";
 // signup()関数では、引数にFireSignupTypeの型、つまり文字型の`email`と`passward`が必要になります。
 export type FireSignupType = {
   email: string;
-  passward: string;
+  password: string;
 };
 
 /**
@@ -13,5 +13,5 @@ export type FireSignupType = {
  * @param {email, password} ログインに必要な値
  * @returns Promise<firebase.auth.UserCredential>
  */
-export const signup = ({ email, passward }: FireSignupType) =>
-  fireAuth.createUserWithEmailAndPassword(email, passward);
+export const signup = ({ email, password }: FireSignupType) =>
+  fireAuth.createUserWithEmailAndPassword(email, password);
