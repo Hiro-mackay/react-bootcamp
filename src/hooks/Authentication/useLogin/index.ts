@@ -28,7 +28,6 @@ export const useLogin = () => {
       setError("password", "パスワードを入力してください。");
       invalidValidation = true;
     }
-ga
     // バリデーションが有効か無効化を返す
     return invalidValidation;
   };
