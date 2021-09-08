@@ -1,5 +1,49 @@
 # ReactBootcamp 開発ドキュメント
 
+## 2021/09/08 追加
+
+ドキュメントにバグや正しくない記載がありました。
+
+最新版でこちらの説明を一新したものに大幅に修正しました。
+
+以下、以前のご説明と大きく変わった点です。
+
+- [JWT トークンとは](#jwt-トークンとは)
+
+JWTの設定方法が大き変わっています。
+
+今まではHerokuでJWTの設定を行うようなドキュメントを記載しておりました。
+
+しかし、最新版のHasuraでは、HasuraのコンソールからJWTなどの環境変数の設定ができるようになっております。
+
+詳しい設定方法は、上記リンクからお飛びください。
+
+間違った情報をドキュメントに記載しており、申し訳ありません。
+
+
+- [認証情報の管理](#認証情報の管理)
+
+Recoilを用いた認証情報の管理の箇所にて、新しいファイルを作成しております。
+
+[Loaded Atom を追加](https://github.com/Hiro-mackay/react-bootcamp/tree/bootcamp-4/document#:~:text=Loaded%20Atom%20%E3%82%92%E8%BF%BD%E5%8A%A0)というコミットの箇所で、`AccountLoaded`という`Recoil`の`Atom`を作成しています。
+
+また、そのドキュメント下、[GlobalAccout プロバイダーを追加する](https://github.com/Hiro-mackay/react-bootcamp/tree/bootcamp-4/document#:~:text=GlobalAccout%20%E3%83%97%E3%83%AD%E3%83%90%E3%82%A4%E3%83%80%E3%83%BC%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B)にて、`AccountLoaded`の`Atom`に値をセットする処理を追加しています。
+
+[GlobalAccout プロバイダーを追加する](https://github.com/Hiro-mackay/react-bootcamp/tree/bootcamp-4/document#:~:text=GlobalAccout%20%E3%83%97%E3%83%AD%E3%83%90%E3%82%A4%E3%83%80%E3%83%BC%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B)に関しては、`useEffect`内で`signout()`処理を削除しています。
+
+
+- [クレームを追加するためにアカウントを作成し直す](#クレームを追加するためにアカウントを作成し直す)
+
+[JWT トークンで Hsaura のリクエストをセキュアに](#jwt-トークンで-hsaura-のリクエストをセキュアに)では、新たに「[クレームを追加するためにアカウントを作成し直す](#クレームを追加するためにアカウントを作成し直す)」の項目を作成しました。
+
+
+- [Firebase Storage に動画をアップロード](#firebase-storage-に動画をアップロード)
+
+ここからは全て新しいドキュメントになります。
+
+途中まで進んでいた方は、以上の情報に注意して進んでいただけると、最後までスムーズに開発が可能かと思います。
+
+
 <details>
 <summary>前回までのBootcamp</summary>
 
@@ -2399,7 +2443,6 @@ export const GlobalAccout = ({ children }: PropsWithChildren<{}>) => {
     if (apolloError?.message) {
       console.error(apolloError?.message);
       setGlobalUser(undefined);
-      signout();
     }
   }, [apolloError]);
 
