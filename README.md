@@ -447,7 +447,7 @@ yarn add recoil
 
 Recoil から`Provider`を import して、`src/index.tsx`に読み込みます。
 
-[Diff - Recoil をアプリケーションに追加する]()
+[Diff - Recoil をアプリケーションに追加する](https://github.com/Hiro-mackay/react-bootcamp/commit/a37b75f7c017f95d8b8dc6ca1ee73e17d7a34694)
 
 ```TSX
 // src/index.tsx
@@ -519,7 +519,7 @@ ReactDOM.render(
 
 まずは、左上のログのリンクを追加します。
 
-[Diff - ロゴにリンクを追加する]()
+[Diff - ロゴにリンクを追加する](https://github.com/Hiro-mackay/react-bootcamp/commit/b12fe31f607d80bdfcadcb1677f8650b26e880c4)
 
 ```TSX
 // src/templates/DashboardHeader/index.tsx
@@ -580,7 +580,7 @@ export const DashboardHeader = () => {
 
 サイドバーの方にもリンクを追加していきましょう。
 
-[Diff - サイドバーにリンクを追加する]()
+[Diff - サイドバーにリンクを追加する](https://github.com/Hiro-mackay/react-bootcamp/commit/602de8b7732aca0a945b45cc51d35faf7f04cd89)
 
 ```TSX
 // src/templates/Sidebar/index.tsx
@@ -645,7 +645,7 @@ Hasura のプロジェクトコンソールから、`users`テーブルから`Mo
 
 合わせて、`Query`に`email`カラムを追加します。
 
-[Diff - graphql のクエリーを追加]()
+[Diff - graphql のクエリーを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/1e92db1c77fae2701beae9d34404a2d4a37ab435)
 
 ```graphql
 # graphql/mutation/InsertUser.graphql
@@ -714,7 +714,7 @@ yarn codegen
 
 まずは共通化を何も考えずに、`useSignup`を記述していきます。
 
-[Diff - useSignup を追加する]()
+[Diff - useSignup を追加する](https://github.com/Hiro-mackay/react-bootcamp/commit/bb3e545d5c96ee6e8b4613272e52cae9a4dca0de)
 
 ```TS
 // src/hooks/Authentication/useSignup/index.tsを作成
@@ -825,7 +825,7 @@ export const useSignup = () => {
 
 まずは、共通化する部分を独立して作成します。
 
-[Diff - 認証の処理の共通化]()
+[Diff - 認証の処理の共通化](https://github.com/Hiro-mackay/react-bootcamp/commit/dfa69058d8ae190f7403ba2ed8e1132ba6e10cb5)
 
 ```TS
 // src/hooks/Authentication/useAuthHelper/index.tsを作成
@@ -880,7 +880,7 @@ export const useAuthHelper = () => {
 
 完成形のコードを先にお見せします。
 
-[Diff - useAuthHelper 処理の詳細]()
+[Diff - useAuthHelper 処理の詳細](https://github.com/Hiro-mackay/react-bootcamp/commit/fe2fa6da75c449c95e82f3899c5092c518c88eb4)
 
 ```TS
 // src/hooks/Authentication/useAuthHelper/index.ts
@@ -972,7 +972,7 @@ export const useAuthHelper = (
 
 これが何が嬉しいかは後々わかるので、まずはこの `useAuthHelper`を使用して、`useSignup`を完成させましょう。
 
-[Diff - useSignup 処理実装]()
+[Diff - useSignup 処理実装](https://github.com/Hiro-mackay/react-bootcamp/commit/db34962de5e73efd6c1ef574829e7ca0f40e097c)
 
 ```TS
 // src/hooks/Authentication/useSignup/index.ts
@@ -1097,7 +1097,7 @@ export const useSignup = () => {
 
 では、この`useSignup`を使用して、実際に`<Signup>`コンポーネントで処理を書いてみましょう。
 
-[Diff - signup コンポーネントに hooks を実装]()
+[Diff - signup コンポーネントに hooks を実装](https://github.com/Hiro-mackay/react-bootcamp/commit/ea813af74e3513f94ce194fa4e71382cb62c5101)
 
 ```TSX
 // src/pages/Signup/index.tsx
@@ -1248,7 +1248,7 @@ usRef を用いるだけで、これらの課題を解決することができ�
 
 `useLogin`の作成
 
-[Diff - useLogin フックを追加]()
+[Diff - useLogin フックを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/a57d4f3a8e69699ed8b0db6d7a3c623c9c7393cd)
 
 ```TSX
 // src/hooks/Authentication/useLogin/index.tsを作成
@@ -1321,7 +1321,7 @@ export const useLogin = () => {
 
 ではこの`Hooks`を`<Login>`コンポーネントから呼び出します。
 
-[Diff - Login コンポーネントに hook を実装]()
+[Diff - Login コンポーネントに hook を実装](https://github.com/Hiro-mackay/react-bootcamp/commit/e7bf2abfc05cee0d7f3f7606e839a45a5a3bb9ee)
 
 ```TSX
 // src/pages/Login/index.tsx
@@ -1449,7 +1449,7 @@ export const Login = () => {
 
 ではまずは例のごとく、`useSignout`を作成します。
 
-[Diff - useSignout フックを追加]()
+[Diff - useSignout フックを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/29f67e093407979ed39a3209205a693f0f1475c9)
 
 ```TS
 // src/hooks/Authentication/useSignout/index.tsを作成
@@ -1473,7 +1473,7 @@ export const useSignout = () => {
 
 `useSignout`を呼び出したいところですが、まだ`<Signout>`コンポーネントを作成していないので、作りましょう。
 
-[Diff - Signout コンポーネントを追加]()
+[Diff - Signout コンポーネントを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/909d116ec9bfa9747278a5c9017096979ce6ef08)
 
 ```TS
 // src/pages/Signout/style.tsを作成
@@ -1511,7 +1511,7 @@ export const Signout = () => {
 
 ルーディングに`<Signout >`を追加します。
 
-[Diff - ルーティングに/signout を追加]()
+[Diff - ルーティングに/signout を追加](https://github.com/Hiro-mackay/react-bootcamp/commit/a28860ecc695f02281eb3b6e79736feb48c4991d)
 
 ```TSX
 // src/Route.tsx
@@ -1571,7 +1571,7 @@ export const RootRouter = () => {
 
 最後に、`<Signout>`に`useSignout`を追加します。
 
-[Diff - Signout コンポーネントに Hooks を追加]()
+[Diff - Signout コンポーネントに Hooks を追加](https://github.com/Hiro-mackay/react-bootcamp/commit/c1ddc4341bda38b16e8e6e34d017a8aa5aa548c4)
 
 ```TSX
 // src/pages/Signout/index.tsx
@@ -1606,7 +1606,7 @@ export const Signout = () => {
 
 パスワード忘れコンポーネントは作成ずみのなので、`Hooks`だけ作成していきましょう。
 
-[Diff - useForgetPass フックを作成]()
+[Diff - useForgetPass フックを作成](https://github.com/Hiro-mackay/react-bootcamp/commit/28e084a60531920b74d054530d08e4de31621d09)
 
 ```TS
 // src/hooks/Authentication/useForgetPass/index.tsを作成
@@ -1659,7 +1659,7 @@ export const useForgetPass = () => {
 
 `Hooks`をコンポーネントから呼び出しましょう
 
-[Diff - ForgetPassForm コンポーネントに Hooks を実装]()
+[Diff - ForgetPassForm コンポーネントに Hooks を実装](https://github.com/Hiro-mackay/react-bootcamp/commit/5a2b7955495327d8c60a7b3d688d32754f447cd5)
 
 ```TSX
 // src/pages/ForgetPassForm/index.tsx
@@ -1757,7 +1757,7 @@ firebase はこんな機能も、関数一個で簡単に使用することが�
 
 今回、まだ`<Provider>`を置くディレクトリを決めていなかったので、`providers`と言うディレクトリを作成していきます。
 
-[Diff - AuthStateListener コンポーネントでプロバイダーを追加]()
+[Diff - AuthStateListener コンポーネントでプロバイダーを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/acc5925318a1d20eda1c7d07d952c3998b582791)
 
 ```TSX
 // src/providers/AuthStateListener/index.tsxを作成
@@ -1791,7 +1791,7 @@ export const AuthStateListener = ({ children }: PropsWithChildren<{}>) => {
 
 あとは、この`AuthStateListener`を`src/index.tsx`で読み込ませていきます。
 
-[Diff - root コンポーネントに AuthStateListener プロバイダーを追加]()
+[Diff - root コンポーネントに AuthStateListener プロバイダーを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/8e91edb8a8f055bec6097606b6d7cfe130454450)
 
 ```TSX
 // src/index.tsx
@@ -1868,7 +1868,7 @@ ReactDOM.render(
 
 Recoil の`Atom`周りは、`stores`と言うディレクトリを作成し、全ての「Atom」をここで管理します。
 
-[Diff - User Atom を追加]()
+[Diff - User Atom を追加](https://github.com/Hiro-mackay/react-bootcamp/commit/7b8497ee19002a17eaea8982651b6f6c2ddb81d1)
 
 ```TS
 // src/stores/User/index.tsxを作成
@@ -1912,7 +1912,7 @@ export const GlobalUser = atom<GlobalUserType>({
 
 `uid`は`AuthStateListener`と`GlobalAccount`でそれぞれ操作したいので、新しく「Atom」として管理します。
 
-[Diff - AuthCredential Atom を追加]()
+[Diff - AuthCredential Atom を追加](https://github.com/Hiro-mackay/react-bootcamp/commit/2d456e28b5f8a652d901ec5d7ec98538f3231433)
 
 ```TS
 // src/stores/AuthCredential/index.tsを作成
@@ -1929,7 +1929,7 @@ export const AuthCredential = atom<AuthCredentialType>({
 
 合わせて、認証及び、アカウントの取得のローディング完了しているかの`Loaded Atom`を作成します。
 
-[Diff - Loaded Atom を追加]()
+[Diff - Loaded Atom を追加](https://github.com/Hiro-mackay/react-bootcamp/commit/07075023171f5b2005812caf90080c4f8de22da8)
 
 ```TS
 // src/stores/AuthCredentialLoaded/index.tsを作成
@@ -1960,7 +1960,7 @@ export const AccountLoaded = atom<AccountLoadedType>({
 
 上記の「Atom」を監視して、`Credential`の変更があればユーザー情報の変更を行う`GlobalAccount`と言う Provider を作成します。
 
-[Diff - GlobalAccout プロバイダーを追加する]()
+[Diff - GlobalAccout プロバイダーを追加する](https://github.com/Hiro-mackay/react-bootcamp/commit/73b7a322280b73477db43084b5757dd3817f47ce)
 
 ```TSX
 // src/providers/GlobalAccount/index.tsxを作成
@@ -2044,7 +2044,7 @@ export const GlobalAccout = ({ children }: PropsWithChildren<{}>) => {
 
 読み込ませる位置は、`AuthStateListener`よりも下の階層です。
 
-[Diff - root コンポーネントに GlobalAccout プロパイダーを追加]()
+[Diff - root コンポーネントに GlobalAccout プロパイダーを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/4152d51b1e36285ee802ad6b34f02fd74e64dbc5)
 
 ```TSX
 // src/index.tsx
@@ -2115,7 +2115,7 @@ ReactDOM.render(
 
 続いて、`AuthStateListener`で`credential`に id を格納するための処理を追加します。
 
-[Diff - AuthStateListener で credential を取得]()
+[Diff - AuthStateListener で credential を取得](https://github.com/Hiro-mackay/react-bootcamp/commit/bd248c3644cd513379293032f744eb16b718a2a5)
 
 ```TSX
 // src/providers/AuthStateListener/index.tsx
@@ -2161,7 +2161,7 @@ Recoil により、ユーザー情報を管理できるようになったこと�
 
 なので、ここのロジックを変更します。
 
-[Diff - ログイン状態でヘッダーのデザインを変更する]()
+[Diff - ログイン状態でヘッダーのデザインを変更する](https://github.com/Hiro-mackay/react-bootcamp/commit/6771da8af277adae214f1440af2bad9b97ccaeb8)
 
 ```TSX
 // src/templates/DashboardHeader/index.tsx
@@ -2238,7 +2238,7 @@ export const DashboardHeader = () => {
 
 一つ目のバグは、`useSignup`の中で`mutation`したデータを`GlobalUser`に確実に格納することで解決します。
 
-[Diff - 新規アカウント登録のバグを修正]()
+[Diff - 新規アカウント登録のバグを修正](https://github.com/Hiro-mackay/react-bootcamp/commit/df37f2409d9495d31b5a793070f8cbc3bd67a25e)
 
 ```TSX
 // src/hooks/Authentication/useSignup/index.ts
@@ -2341,7 +2341,7 @@ export const useSignup = () => {
 
 また、`signout`のバグは、GlobalAccount にデータをセットできるタイミングを修正します。
 
-[Diff - サインアウトのバグを解消]()
+[Diff - サインアウトのバグを解消](https://github.com/Hiro-mackay/react-bootcamp/commit/877ad6c995f175777bfb8dd12486271d57311614)
 
 ```TSX
 // src/providers/GlobalAccount/index.tsx
@@ -2967,7 +2967,7 @@ i  Writing project information to .firebaserc...
 
 今回、`functions`に作成していくコードは「アカウントが作成されたら、トークンに Hasura 用のカスタムクレームを追加する」というコードです。
 
-[Diff - firebase functions を設定してコードを記述する]()
+[Diff - firebase functions を設定してコードを記述する](https://github.com/Hiro-mackay/react-bootcamp/commit/08ae336a999944d9fc63f8c7e62b1e20dafb7ae5)
 
 ```TS
 // functions/src/index.ts
@@ -3012,6 +3012,8 @@ ESlint は、JavaScript のための静的検証ツールです。
 この ESLint ですが、今回のように`create react app`で作成した React アプリと Firebase のプロジェクトを同じ階層に作成すると、それぞれのリンターが競合して今回のようエラーが発生します。
 
 これを解決するには簡単で、`functions/.eslintrc.js`のファイル内の最初の行の`module.`を削除するだけで解決します。
+
+[Diff - firebase/.eslintrc.jsのmoduleを削除](https://github.com/Hiro-mackay/react-bootcamp/commit/4610fa249a957a928a511ed89b7a999a6c97f652)
 
 ```js
 // functions/.eslintrc.js
@@ -3079,7 +3081,7 @@ Firebase の仕様によりトークンが変更されても、そのトーク�
 
 今回のアプリケーションでは、さらりとしか使わないので、詳細は割愛します。
 
-[Diff - firebase functions に firebase store の処理を追加]()
+[Diff - firebase functions に firebase store の処理を追加](https://github.com/Hiro-mackay/react-bootcamp/commit/cd8f9a482e21ec310ba7eb373c00339b99939835)
 
 ```TS
 // functions/src/index.ts
@@ -3181,7 +3183,7 @@ service cloud.firestore {
 
 そこで、`functions`の`tsconfig.json`を変更します。
 
-[Diff - firebase の tsconfig.js の設定を修正]()
+[Diff - firebase の tsconfig.js の設定を修正](https://github.com/Hiro-mackay/react-bootcamp/commit/6c8ccb4d3d2ae4095b99fe179e7222f83d56c01e)
 
 ```json
 // functions/tsconfig.json
@@ -3255,7 +3257,7 @@ cd functions && yarn deploy && cd ../
 
 `signup`の処理が終わった直後に、トークンの生成が終了すまで待機するコードを新しく作ります。
 
-[Diff - カスタムクレームの確認用処理を追加]()
+[Diff - カスタムクレームの確認用処理を追加](https://github.com/Hiro-mackay/react-bootcamp/commit/01e8230ea60ae2e8622ff48424577c3cdddfcf55)
 
 ```TS
 // src/hooks/Authentication/useSignup/checkAuthToken.tsを作成
@@ -3299,7 +3301,7 @@ export const checkAuthToken = (userId: string): Promise<string> => {
 
 と、ここで`Firebase/config`には、`firestore`を用意してないので、作成しましょう。
 
-[Diff - firebase storage のパッケージを追加]()
+[Diff - firebase storage のパッケージを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/7b31e82a2590325d47bc4870e68e8dd2968a846e)
 
 ```TS
 // src/utils/Firebase/config.ts
@@ -3333,7 +3335,7 @@ export default firebase;
 
 ここでは、先ほど作った関数`checkAuthToken`を`sognup`内で`await`するだけで実現できます。
 
-[Diff - サインアップでトークンの取得処理を追加]()
+[Diff - サインアップでトークンの取得処理を追加](https://github.com/Hiro-mackay/react-bootcamp/commit/ac34b03e7cce30fac83a9b3a2371412887310090)
 
 ```TS
 // src/hooks/Authentication/useSignup/index.ts
@@ -3444,7 +3446,7 @@ Apollo Provider のコードを編集したいのですが、`index.tsx`内で`P
 
 そこで、`index.tsx`から Apollo Client の`Provider`を抜き出し、コードを分割します。
 
-[Diff - Apollo Client の provider を分離]()
+[Diff - Apollo Client の provider を分離](https://github.com/Hiro-mackay/react-bootcamp/commit/a9767e723eb305c1b189526eb4c6b4073cfb213d)
 
 ```TSX
 // src/providers/ApolloClient/index.tsxを作成
@@ -3484,7 +3486,7 @@ export const ApolloProvider = ({ children }: PropsWithChildren<{}>) => {
 
 移転した Apollo Client を`src/index.tsx`から呼び出します。
 
-[Diff - Apollo Provider を root コンポーネントから呼び出す]()
+[Diff - Apollo Provider を root コンポーネントから呼び出す](https://github.com/Hiro-mackay/react-bootcamp/commit/d795a4357c4805d109c409937b30a120622cdcb3)
 
 ```TSX
 // src/index.tsx
@@ -3537,7 +3539,7 @@ ReactDOM.render(
 
 `<ApolloProvider>`のコードを変更して、`headers`にトークンを格納する処理を追加します。
 
-[Diff - Apollo Client の headers にトークンを追加]()
+[Diff - Apollo Client の headers にトークンを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/546df071bf15b645d0199277540a3a3d95f79217)
 
 ```TSX
 // src/providers/ApolloClient/index.tsx
@@ -3894,7 +3896,7 @@ export const DashboardHeader = () => {
 
 実際にコードに落とし込んでいきます。
 
-[Diff - 未ログインでアップロード画面を表示したらログインを促す]()
+[Diff - 未ログインでアップロード画面を表示したらログインを促す](https://github.com/Hiro-mackay/react-bootcamp/commit/f13667743c779f1d5695a3b9b97daf143559122c)
 
 ```TSX
 // src/pages/Upload/index.tsx
@@ -3988,7 +3990,7 @@ export const Upload = () => {
 
 そして、`<VideoSelect>`と`<UploadForm>`のコンポーネントにファイルステートを渡します。
 
-[Diff - アップロードコンポーネントでステートをファイルステートを管理]()
+[Diff - アップロードコンポーネントでステートをファイルステートを管理](https://github.com/Hiro-mackay/react-bootcamp/commit/2ab326bcb5b86c668428397ff8e054989449e0b9)
 
 ```TSX
 // src/pages/Upload/index.tsx
@@ -4069,7 +4071,7 @@ export const Upload = () => {
 
 `<VideoSelect>`コンポーネントを修正して、親コンポーネントから渡される`props`を使用して動画とサムネイルのファイルを管理できるようにします。
 
-[Diff - <VideoSelect>の処理を親コンポーネント用に修正]()
+[Diff - <VideoSelect>の処理を親コンポーネント用に修正](https://github.com/Hiro-mackay/react-bootcamp/commit/912dd5f9f71c595bf85b776a166b4976b3b5943f)
 
 ```TSX
 // src/pages/Upload/VideoSelector/index.tsx
@@ -4279,7 +4281,7 @@ export default makeStyles({
 
 まずは、動画とサムネイルを`Firebase Storage`にアップロードする処理を記述していきます。
 
-[Diff - useVideoUpload で Firebase storage へのアップロードを追加]()
+[Diff - useVideoUpload で Firebase storage へのアップロードを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/8361b5745a3884ff6d88ce62004b9a0461e16a8f)
 
 ```TS
 // src/hooks/VideoUpload/index.ts を作成
@@ -4404,7 +4406,7 @@ yarn add uuid @types/uuid
 
 `uuid`パッケージをインストールしたら、先程の`useVideoUpload`でそれぞれのアップロードで uuid を生成して渡します。
 
-[Diff - ファイルの名前をユニークな ID にする]()
+[Diff - ファイルの名前をユニークな ID にする](https://github.com/Hiro-mackay/react-bootcamp/commit/b21e5e4c35db80110822f29e370296274a622330)
 
 ```TS
 // src/hooks/VideoUpload/index.ts
@@ -4539,7 +4541,7 @@ mutation InsertVideo(
 
 エラーが出ていなければ、このクエリーをアプリケーションに移し替えます。
 
-[Diff - 動画保存の GtaphQL クエリーを追加]()
+[Diff - 動画保存の GtaphQL クエリーを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/86226c416720108426c45730408d1bde96589d94)
 
 ```graphql
 # graphql/mutation/InsertVideo.graphqlを作成
@@ -4587,7 +4589,7 @@ mutation InsertVideo(
 
 `codegen.js`で、新しく作られる`.graphql`ファイルも自動で全て参照する設定に書き換えます。
 
-[Diff - codegen スクリプトでのクエリー参照を全てのクエリーファイルにする]()
+[Diff - codegen スクリプトでのクエリー参照を全てのクエリーファイルにする](https://github.com/Hiro-mackay/react-bootcamp/commit/9d862a1ee94fee1f4a1671e2b71f99de48c5644e)
 
 ```js
 // script/codegen.js
@@ -4633,7 +4635,7 @@ npm run codegen
 
 `InsertVideo`の`Hooks`が生成されたので、`useVideoUpload`でそうがのメタデータを保存する処理を実装します。
 
-[Diff - useVideoUpload に GraphQL 処理を追加]()
+[Diff - useVideoUpload に GraphQL 処理を追加](https://github.com/Hiro-mackay/react-bootcamp/commit/a492c36457f0a58f4b79728dbe86834a22e21094)
 
 ```TS
 // src/hooks/VideoUpload/index.ts
@@ -4745,7 +4747,7 @@ export const useVideoUpload = () => {
 
 この`Hooks`を`<UploadForm>`コンポーネントで呼び出すことで、動画のアップロードの処理を完成させていきます。
 
-[Diff - アップロード処理を<UploadForm>コンポーネントに実装]()
+[Diff - アップロード処理を<UploadForm>コンポーネントに実装](https://github.com/Hiro-mackay/react-bootcamp/commit/a0d0b4f760f2274a7def663e9fecfd71fa9f2d09)
 
 ```TSX
 // src/pages/Upload/UploadForm/index.tsx
@@ -4925,7 +4927,7 @@ GraphQL によるデータの取得と、`Firebase Storage`からファイル�
 
 `Execute Query(実行ボタン)`を押して、クエリーが問題なく実行されていれば、アプリケーションに移し替えます。
 
-[Diff - Videos クエリーを追加]()
+[Diff - Videos クエリーを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/541a74c451da139be35ab2a82bffeb8ab41b22be)
 
 ```graphql
 # graphql/query/Videos.graphqlを作成
@@ -4965,7 +4967,7 @@ yarn codegen
 
 `VideoCard`、`HeaderTitle`、`SubHeaderContent`のコンポーネントに、それぞれ親コンポーネントから`props`を受け取るように変更します。
 
-[Diff - HeaderTitle で props を表示できるようにする]()
+[Diff - HeaderTitle で props を表示できるようにする](https://github.com/Hiro-mackay/react-bootcamp/commit/3f2cbc99b638fb37a38f18fa41562717592978cd)
 
 ```TSX
 // src/components/VideoCard/HeaderTitle/index.tsx
@@ -4996,7 +4998,7 @@ export const HeaderTitle = ({ title }: HeaderTitleProps) => {
 
 ```
 
-[Diff - SubHeaderContent で props を表示できるようにする]()
+[Diff - SubHeaderContent で props を表示できるようにする](https://github.com/Hiro-mackay/react-bootcamp/commit/5fa42fb87938eed124fb54c90dfaf38b2f444aa0)
 
 ```TSX
 // src/components/VideoCard/SubHeaderContent/index.tsx
@@ -5043,7 +5045,7 @@ export const SubHeaderContent = ({
 };
 ```
 
-[Diff - VideoCard で props を表示できるようにする]()
+[Diff - VideoCard で props を表示できるようにする](https://github.com/Hiro-mackay/react-bootcamp/commit/70ad6d2e0bc83f430af7c97684299710b281c642)
 
 ```TSX
 // src/components/VideoCard/index.tsx
@@ -5120,7 +5122,7 @@ export const VideoCard = ({
 
 では、実際に親コンポーネントでデータを取得し、`<VideoCard>`に流す処理を記述していきます。
 
-[Diff - 動画リストを読み込む]()
+[Diff - 動画リストを読み込む](https://github.com/Hiro-mackay/react-bootcamp/commit/7a12b9dc8bb80d6274cb4e920b9d28a9f196b885)
 
 ```TSX
 // src/pages/Home/index.tsx
@@ -5254,7 +5256,7 @@ yarn codegen
 
 `Home`コンポーネントに戻って、ユーザーの名前を表示しましょう
 
-[Diff - ビデオカードに投稿者の名前を表示]()
+[Diff - ビデオカードに投稿者の名前を表示](https://github.com/Hiro-mackay/react-bootcamp/commit/f214f40b14bcdf4df0b36b635f99fc32ed734603)
 
 ```TSX
 // src/pages/Home/index.tsx
@@ -5327,7 +5329,7 @@ export const Home = () => {
 
 アプリケーションに反映させて、`codegen`スクリプトを実行しましょう。
 
-[Diff - VideoByPk クエリーを追加]()
+[Diff - VideoByPk クエリーを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/57a0765271bf7ae50514ad6f6eb8f6c2af57e78f)
 
 ```graphql
 # graphql/query/VideoByPk.graphqlを作成
@@ -5369,7 +5371,7 @@ yarn codegen
 
 まずは、コンポーネントでデータを表示できるように修正を加えます。
 
-[Diff - VideoPlayerCard で props を表示する]()
+[Diff - VideoPlayerCard で props を表示する](https://github.com/Hiro-mackay/react-bootcamp/commit/ccc83012a5692350f1a8e7ba0f98c9b774a2f2f4)
 
 ```TSX
 // src/pages/Watch/VideoPlayerCard/index.tsx
@@ -5465,7 +5467,7 @@ export const VideoPlayerCard = ({
 
 早速、表示動画以外の全ての動画を取得するクエリーを作成します。
 
-[Diff - RecommendVideos クエリーを追加]()
+[Diff - RecommendVideos クエリーを追加](https://github.com/Hiro-mackay/react-bootcamp/commit/db54d82c46ae4b24c260aebd4950f23de3c85a5c)
 
 ```graphql
 # graphql/query/RecommendVideos.graphqlを作成
@@ -5505,7 +5507,7 @@ yarn codegen
 
 `VideoHorizontalCard`コンポーネントを修正して、データを表示できるようにします。
 
-[Diff - VideoHorizontalCard で props を表示する]()
+[Diff - VideoHorizontalCard で props を表示する](https://github.com/Hiro-mackay/react-bootcamp/commit/f81388cfadf9bad9d64f40e8c3d82bff93eff1f4)
 
 ```TSX
 // src/components/VideoHorizontalCard/index.tsx
@@ -5586,7 +5588,7 @@ export const VideoHorizontalCard = ({
 
 あとは、親コンポーネントから必要なデータを取得して、props に流し込みます。
 
-[Diff - 動画再生コンポーネントを完成]()
+[Diff - 動画再生コンポーネントを完成](https://github.com/Hiro-mackay/react-bootcamp/commit/8e2ee091508d0be52f9c99bd5232b221d9e22f45)
 
 ```TSX
 // src/pages/Watch/index.tsx
@@ -5773,7 +5775,7 @@ Apollo Client では、キャッシュにデータが保存されている保存
 
 Apollo Client の`refetchQueries`という機能を使います。
 
-[Diff - アップロード時に Apollo Client のキャッシュをリフレッシュする]()
+[Diff - アップロード時に Apollo Client のキャッシュをリフレッシュする](https://github.com/Hiro-mackay/react-bootcamp/commit/4851146bd9189f29804c6c9e542abcf3114107e0)
 
 ```TSX
 // src/hooks/VideoUpload/index.ts
