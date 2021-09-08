@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { storage } from "../../utils/Firebase/config";
 import { v4 as uuidv4 } from "uuid";
-import { useInsertVideoMutation } from "../../utils/graphql/generated";
+import {
+  useInsertVideoMutation,
+  VideosDocument,
+} from "../../utils/graphql/generated";
 import { useRecoilValue } from "recoil";
 import { GlobalUser } from "../../stores/User";
 
@@ -20,7 +23,11 @@ export const useVideoUpload = () => {
   const [error, setError] = useState<Error>();
 
   // 動画のメタデータを保存するGraphQLMutation
-  const [mutation, { error: apolloError }] = useInsertVideoMutation();
+  // 動画をApolloでアップロードする`mutation`に対して、キャッシュ更新を指定
+  // 今回は、`Videos`というクエリーを指定しています。
+  const [mutation, { error: apolloError }] = useInsertVideoMutation({
+    refetchQueries: [{ query: VideosDocument }],
+  });
 
   // `video`の`ownerId`のために、userのidを取得する
   const user = useRecoilValue(GlobalUser);
