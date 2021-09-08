@@ -2545,15 +2545,15 @@ Hsaura の[コンソール画面](#https://cloud.hasura.io/projects)にアクセ
 
 今回のプロジェクトの`⚙マーク`から設定を開きます。
 
-![hasura dashboard console]()
+![hasura dashboard console](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/hasura_dashboard_console.png?raw=true)
 
 `Env Var`というタブを選択します。
 
-![hasura env var]()
+![hasura env var](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/hasura_env_var.png?raw=true)
 
 `New Env Var`から JWT の設定を反映させます。
 
-![hasura new env var]()
+![hasura new env var](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/hasura_new_env_var.png?raw=true)
 
 - HASURA_GRAPHQL_JWT_SECRET  
   {
@@ -2570,7 +2570,7 @@ Hsaura の[コンソール画面](#https://cloud.hasura.io/projects)にアクセ
 
 最終的にこのような設定になっていれば問題ありません。
 
-![hasura jwt success]()
+![hasura jwt success](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/hasura_jwt_success.png?raw=true)
 
 以上で Hasura 側での JWT の設定が完了しました。
 
@@ -3624,7 +3624,7 @@ Hasura は、リクエストの中に含まれている`Bearerトークン`を�
 
 firebase のコンソールから、`Authentication`を選択し、登録済みのアカウントの右端「︙」から「アカウントを削除」からアカウントを削除できる。
 
-![firebase delete account]()
+![firebase delete account](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/firebase_delete_account.png?raw=true)
 
 トークンが付与されていない可能性があるアカウントを全て削除します。
 
@@ -3816,7 +3816,7 @@ Hasura の Github や海外の記事など、英語の情報源に臆するこ�
 
 アップロード画面へのリンクは、画面のヘッダーのアイコンに埋め込みます。
 
-![upload header link]()
+![upload header link](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/upload_header_link.png?raw=true)
 
 `DashboardHeader`に記述されているヘッダーのコンポーネントを修正して、`/upload`画面に飛べるようにします。
 
@@ -4535,7 +4535,7 @@ mutation InsertVideo(
 }
 ```
 
-![hasura video mutation]()
+![hasura video mutation](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/hasura_video_mutation.png?raw=true)
 
 `Execute Query(実行ボタン)`を押して、クエリーが問題なく実行されるか確認します。
 
@@ -4897,7 +4897,7 @@ export const UploadForm = ({ videoFile, thumbFile }: UploadFormProps) => {
 
 画面表示を確認して、動画がアップロードされているか見てみましょう。
 
-![video upload component]()
+![video upload component](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/video_upload_component.gif?raw=true)
 
 アップロード処理は完了したみたいですが、本当にアップロードされているかはまだわかりませんね。
 
@@ -4923,7 +4923,7 @@ GraphQL によるデータの取得と、`Firebase Storage`からファイル�
 
 例の如く、`Hasura`で動画のメタデータを取得する`query`を作成して、アプリケーションに適用します。
 
-![Hasura video query]()
+![Hasura video query](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/hasura_video_query.png?raw=true)
 
 `Execute Query(実行ボタン)`を押して、クエリーが問題なく実行されていれば、アプリケーションに移し替えます。
 
@@ -5200,7 +5200,7 @@ export const Home = () => {
 
 Hasura のコンソール画面で、`videos`テーブルから`Relationships`というタブで、動画の ID に対するユーザー ID を紐付けます。
 
-![hasura video relationship user]()
+![hasura video relationship user](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/hasura_video_relationship_user.png?raw=true)
 
 「Save」を押すことで、リレーションを作成することができます。
 
@@ -5208,11 +5208,11 @@ Hasura のコンソール画面で、`videos`テーブルから`Relationships`�
 
 また、Hasura のコンソール画面で、`API`タブのクエリーを実行できる画面から、`videos`の`query`に`owner`という項目が増えているのがわかると思います。
 
-![hasura explorer owner]()
+![hasura explorer owner](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/hasura_explorer_owner.png?raw=true)
 
 この`owner`を使用して、`videos`を取得すると同時に、動画に紐づいているユーザー情報を獲得することができます。
 
-![hasura video owner query]()
+![hasura video owner query](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/hasura_video_owner_query.png?raw=true)
 
 このクエリーで、`Query Videos`を修正します。
 
@@ -5321,7 +5321,7 @@ export const Home = () => {
 
 使用する`query`は、`video_by_pk`です。
 
-![vudeo pk query]()
+![vudeo pk query](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/vudeo_pk_query.png?raw=true)
 
 先ほどの`Videos`というクエリーは、保存されている全ての動画を取得するのに対し、こちらの`VideoByPk`は`id`と一致する動画を取得します。
 
@@ -5723,7 +5723,7 @@ service firebase.storage {
 }
 ```
 
-![firebase storage rules]()
+![firebase storage rules](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/firebase_storage_rules.png?raw=true)
 
 `/signout`でログアウトした状態で動画を見ても、しっかりファイルが取得されているのがわかります。
 
@@ -5743,7 +5743,7 @@ Apollo Client では、強力なキャッシュ機構が備え付けられてい
 
 その証拠に、動画をアップロードしても、アップロードした動画が一覧に反映されていないことがわかると思います。
 
-![upload hidden cache]()
+![upload hidden cache](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/upload_hidden_cache.gif?raw=true)
 
 Apollo Client では、データを作成・更新・削除などの`mutation`クエリーを使用する際は、Apollo Client のキャッシュにデータが変更されたことを通知する必要があります。
 
@@ -5892,6 +5892,6 @@ DocumentNode オブジェクトは、`codegen`スクリプトで自動的に生�
 
 以上の 1 行を追加するだけで、動画のキャッシュ問題が解決されます。
 
-![mutation video cache success]()
+![mutation video cache success](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/mutation_video_cache_success.gif?raw=true)
 
 ここまでで、アップロードから、動画の一覧表示、動画の再生までの一連の処理を実装が完了しました。
