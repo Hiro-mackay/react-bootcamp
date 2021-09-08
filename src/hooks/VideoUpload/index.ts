@@ -64,14 +64,6 @@ export const useVideoUpload = () => {
         "thumbnails"
       );
 
-      console.log({
-        id: videoId,
-        title,
-        description,
-        video_url: videoUploadTask.ref.fullPath,
-        thumbnail_url: thumbnailUploadTask.ref.fullPath,
-        owner_id: ownerId,
-      });
 
       const res = await mutation({
         variables: {

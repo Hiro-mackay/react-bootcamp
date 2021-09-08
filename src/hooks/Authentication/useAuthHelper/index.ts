@@ -50,7 +50,7 @@ export const useAuthHelper = (
       // 認証ロジックを実行
       // 成功すれば、リダイレクト処理
       await executeProcess();
-    } catch (error) {
+    } catch (error: any) {
       // エラーがあれば、エラーをセットして処理を中断
       setErrorHandler("main", error.message);
     } finally {

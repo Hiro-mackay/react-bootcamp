@@ -42,6 +42,7 @@
 - [ ] 認証機能の実装
 - [ ] Firebase Storage に動画をアップロード
 - [ ] GraphQL リクエストを実装
+- [ ] Apollo Clinet のキャッシュを対策する
 
 ### 目次
 
@@ -75,15 +76,24 @@
     - [クレームを追加するためにアカウントを作成し直す](#クレームを追加するためにアカウントを作成し直す)
   - [Hasura のハマリポイント](#hasura-のハマリポイント)
     - [Hasura で JWT を使用するためには、Hasura のエンドポイントを保護する必要があります。](#hasura-で-jwt-を使用するためにはhasura-のエンドポイントを保護する必要があります)
-    - [`headers`に`X-Hasura-Admin-Secret`が含まれる場合は、`JWT`認証はスキップされます。](#headersにx-hasura-admin-secretが含まれる場合はjwt認証はスキップされます)
-    - [Hasura で JWT を送信する際にはカスタムクレームを`https://hasura.io/jwt/claims`で設定する必要があります。](#hasura-で-jwt-を送信する際にはカスタムクレームをhttpshasuraiojwtclaimsで設定する必要があります)
-    - [JWT のカスタムクレームには`x-hasura-default-role`, `x-hasura-allowed-roles`が含まれている必要があります。](#jwt-のカスタムクレームにはx-hasura-default-role-x-hasura-allowed-rolesが含まれている必要があります)
+    - [headers に X-Hasura-Admin-Secret が含まれる場合は、JWT 認証はスキップされます。](#headersにx-hasura-admin-secretが含まれる場合はjwt認証はスキップされます)
+    - [Hasura で JWT を送信する際にはカスタムクレームを https://hasura.io/jwt/claims で設定する必要があります。](#hasura-で-jwt-を送信する際にはカスタムクレームをhttpshasuraiojwtclaimsで設定する必要があります)
+    - [JWT のカスタムクレームには x-hasura-default-role, x-hasura-allowed-roles が含まれている必要があります。](#jwt-のカスタムクレームにはx-hasura-default-role-x-hasura-allowed-rolesが含まれている必要があります)
     - [ユーザーのロールをクライアント側で指定するには。](#ユーザーのロールをクライアント側で指定するには)
     - [JWT には Hasura で認識可能な独自のカスタムクレーム値を設定できます。](#jwt-には-hasura-で認識可能な独自のカスタムクレーム値を設定できます)
-- [Firebase Storage に動画をアップロード]
-- [GraphQL リクエストを実装]
-  - [video データの取得]
-  - [Firebase Storage から動画を取得する]
+- [Firebase Storage に動画をアップロード](#firebase-storage-に動画をアップロード)
+  - [ログインしているユーザーのみアップロードを許可する](#ログインしているユーザーのみアップロードを許可する)
+    - [ログインしているユーザーにのみ、アップロード画面へのリンクを表示する。](#ログインしているユーザーにのみ、アップロード画面へのリンクを表示する)
+    - [未ログインでアップロード画面を表示したらログインを促す](#未ログインでアップロード画面を表示したらログインを促す)
+    - [未ログインでアップロード画面を表示したらログインを促す](#未ログインでアップロード画面を表示したらログインを促す)
+  - [ブラウザからファイルを選択する](#ブラウザからファイルを選択する)
+  - [選択したファイルを Firebase Storage にアップロードする](#選択したファイルをfirebase-storageにアップロードする)
+  - [動画のメタデータをデータベースに保存する](#動画のメタデータをデータベースに保存する)
+- [GraphQL リクエストを実装](#graphql-リクエストを実装)
+  - [video データの取得](#video-データのリストを取得)
+  - [Firebase Storage から動画を取得する](#firebase-storage-から動画を取得する)
+  - [Firebase Storage のルールを書き換えてサムネイルを取得する](#firebase-storageのルールを書き換えてサムネイルを取得する)
+- [Apollo Clinet のキャッシュを対策する](#apollo-clinet-のキャッシュを対策する)
 
 # ReactBootcamp 第三回目勉強会ドキュメント
 
@@ -247,7 +257,7 @@ Hooks の作成方法がわかったところで、もう一つ React 開発で�
 
 この方法では、ルートコンポーネント（src/index.tsx など）でアプリケーション全体で管理したい`state`を全て管理し、`props`によるバケツリレーで下位のコンポーネントに`state`を逐一渡していきます。
 
-しかし、この方法でアプリケーションを構築することはほぼなく、` useState``はあくまでローカルな `state`を管理するために使用するようにしましょう。
+しかし、この方法でアプリケーションを構築することはほぼなく、`useState`はあくまでローカルな `state`を管理するために使用するようにしましょう。
 
 - ### `useContect`での管理
 
@@ -437,7 +447,7 @@ yarn add recoil
 
 Recoil から`Provider`を import して、`src/index.tsx`に読み込みます。
 
-[Diff - ]()
+[Diff - Recoil をアプリケーションに追加する]()
 
 ```TSX
 // src/index.tsx
@@ -509,7 +519,7 @@ ReactDOM.render(
 
 まずは、左上のログのリンクを追加します。
 
-[Diff - ]()
+[Diff - ロゴにリンクを追加する]()
 
 ```TSX
 // src/templates/DashboardHeader/index.tsx
@@ -569,6 +579,8 @@ export const DashboardHeader = () => {
 ロゴに`/`のルーティングに飛ぶようなリンクを追加できました。
 
 サイドバーの方にもリンクを追加していきましょう。
+
+[Diff - サイドバーにリンクを追加する]()
 
 ```TSX
 // src/templates/Sidebar/index.tsx
@@ -633,7 +645,7 @@ Hasura のプロジェクトコンソールから、`users`テーブルから`Mo
 
 合わせて、`Query`に`email`カラムを追加します。
 
-[Diff - ]()
+[Diff - graphql のクエリーを追加]()
 
 ```graphql
 # graphql/mutation/InsertUser.graphql
@@ -702,7 +714,7 @@ yarn codegen
 
 まずは共通化を何も考えずに、`useSignup`を記述していきます。
 
-[Diff - ]()
+[Diff - useSignup を追加する]()
 
 ```TS
 // src/hooks/Authentication/useSignup/index.tsを作成
@@ -813,7 +825,7 @@ export const useSignup = () => {
 
 まずは、共通化する部分を独立して作成します。
 
-[Diff - ]()
+[Diff - 認証の処理の共通化]()
 
 ```TS
 // src/hooks/Authentication/useAuthHelper/index.tsを作成
@@ -854,6 +866,7 @@ export const useAuthHelper = () => {
     authExecute,
     loading,
     error,
+    setErrorHandler
   };
 };
 
@@ -867,7 +880,7 @@ export const useAuthHelper = () => {
 
 完成形のコードを先にお見せします。
 
-[Diff - ]()
+[Diff - useAuthHelper 処理の詳細]()
 
 ```TS
 // src/hooks/Authentication/useAuthHelper/index.ts
@@ -925,7 +938,7 @@ export const useAuthHelper = (
       // 認証ロジックを実行
       // 成功すれば、リダイレクト処理（この処理はここでは書いてありません。）
       await executeProcess();
-    } catch (error) {
+    } catch (error : any) {
       // エラーがあれば、エラーをセットして処理を中断
       setErrorHandler("main", error.message);
     } finally {
@@ -957,9 +970,9 @@ export const useAuthHelper = (
 
 `useAuthHelper`は、バリデーションの実態や認証処理の実態を知ることなく、認証に必要な「フロー」を実行することができます。
 
-これが何が嬉しいかは後々わかるので、ますはこの `useAuthHelper`を使用して、`useSignup`を完成させましょう。
+これが何が嬉しいかは後々わかるので、まずはこの `useAuthHelper`を使用して、`useSignup`を完成させましょう。
 
-[Diff - ]()
+[Diff - useSignup 処理実装]()
 
 ```TS
 // src/hooks/Authentication/useSignup/index.ts
@@ -1084,7 +1097,7 @@ export const useSignup = () => {
 
 では、この`useSignup`を使用して、実際に`<Signup>`コンポーネントで処理を書いてみましょう。
 
-[Diff - ]()
+[Diff - signup コンポーネントに hooks を実装]()
 
 ```TSX
 // src/pages/Signup/index.tsx
@@ -1211,7 +1224,9 @@ export const Signup = () => {
 
 usRef を用いるだけで、これらの課題を解決することができます。
 
-ちなみに、うまく処理が実行できていれば、何も入力しない状態のフォームは赤色にエラー文が表示されます。
+`/signup`にアクセスして処理を確認してみましょう。
+
+うまく処理が実行できていれば、何も入力しない状態のフォームは赤色にエラー文が表示されます。
 
 ![signup validation process](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/signup_validation_process.gif?raw=true)
 
@@ -1233,7 +1248,7 @@ usRef を用いるだけで、これらの課題を解決することができ�
 
 `useLogin`の作成
 
-[Diff - ]()
+[Diff - useLogin フックを追加]()
 
 ```TSX
 // src/hooks/Authentication/useLogin/index.tsを作成
@@ -1304,15 +1319,9 @@ export const useLogin = () => {
 
 ```
 
-注意点として、`Signup`との変更点として、リダイレクト処理に変更があります。
-
-これは、Apollo Client の使用上、query をリクエストしてデータを取得するときに呼び出した関数に対してレスポンスが返ってくるわけではなく、`Hooks`関数の方から取得する`data`で取得したデータを参照できます。
-
-なので、`login`関数内ではリダイレクト処理を含まずに、`useEffect`による`data`のステート変更を検出する形で、リダイレクトを行うかどうかを評価しています。
-
 ではこの`Hooks`を`<Login>`コンポーネントから呼び出します。
 
-[Diff - ]()
+[Diff - Login コンポーネントに hook を実装]()
 
 ```TSX
 // src/pages/Login/index.tsx
@@ -1440,14 +1449,13 @@ export const Login = () => {
 
 ではまずは例のごとく、`useSignout`を作成します。
 
-[Diff - ]()
+[Diff - useSignout フックを追加]()
 
 ```TS
 // src/hooks/Authentication/useSignout/index.tsを作成
 
 import { useNavigate } from "react-router-dom";
 import { signout as fireSignout } from "../../../utils/Firebase/signout";
-import { useAuthHelper } from "../useAuthHelper";
 
 export const useSignout = () => {
   const navigate = useNavigate();
@@ -1465,7 +1473,7 @@ export const useSignout = () => {
 
 `useSignout`を呼び出したいところですが、まだ`<Signout>`コンポーネントを作成していないので、作りましょう。
 
-[Diff - ]()
+[Diff - Signout コンポーネントを追加]()
 
 ```TS
 // src/pages/Signout/style.tsを作成
@@ -1503,7 +1511,7 @@ export const Signout = () => {
 
 ルーディングに`<Signout >`を追加します。
 
-[Diff - ]()
+[Diff - ルーティングに/signout を追加]()
 
 ```TSX
 // src/Route.tsx
@@ -1546,9 +1554,9 @@ export const RootRouter = () => {
       element: <SimpleLayout />,
       children: [
         { path: "login", element: <Login /> },
+        { path: "signup", element: <Signup /> },
 
         // 追加！！
-        { path: "signup", element: <Signup /> },
         { path: "signout", element: <Signout /> },
         { path: "forget", element: <ForgetPassForm /> },
         { path: "404", element: <div>Not Found</div> },
@@ -1563,7 +1571,7 @@ export const RootRouter = () => {
 
 最後に、`<Signout>`に`useSignout`を追加します。
 
-[Diff - ]()
+[Diff - Signout コンポーネントに Hooks を追加]()
 
 ```TSX
 // src/pages/Signout/index.tsx
@@ -1598,7 +1606,7 @@ export const Signout = () => {
 
 パスワード忘れコンポーネントは作成ずみのなので、`Hooks`だけ作成していきましょう。
 
-[Diff - ]()
+[Diff - useForgetPass フックを作成]()
 
 ```TS
 // src/hooks/Authentication/useForgetPass/index.tsを作成
@@ -1651,7 +1659,7 @@ export const useForgetPass = () => {
 
 `Hooks`をコンポーネントから呼び出しましょう
 
-[Diff - ]()
+[Diff - ForgetPassForm コンポーネントに Hooks を実装]()
 
 ```TSX
 // src/pages/ForgetPassForm/index.tsx
@@ -1749,14 +1757,14 @@ firebase はこんな機能も、関数一個で簡単に使用することが�
 
 今回、まだ`<Provider>`を置くディレクトリを決めていなかったので、`providers`と言うディレクトリを作成していきます。
 
-[Diff - ]()
+[Diff - AuthStateListener コンポーネントでプロバイダーを追加]()
 
 ```TSX
 // src/providers/AuthStateListener/index.tsxを作成
 
 import { useEffect } from "react";
 import { PropsWithChildren } from "react";
-import { fireAuth } from "../utils/Firebase/config";
+import { fireAuth } from "../../utils/Firebase/config";
 
 export const AuthStateListener = ({ children }: PropsWithChildren<{}>) => {
   useEffect(() => {
@@ -1783,7 +1791,7 @@ export const AuthStateListener = ({ children }: PropsWithChildren<{}>) => {
 
 あとは、この`AuthStateListener`を`src/index.tsx`で読み込ませていきます。
 
-[Diff - ]()
+[Diff - root コンポーネントに AuthStateListener プロバイダーを追加]()
 
 ```TSX
 // src/index.tsx
@@ -1860,7 +1868,7 @@ ReactDOM.render(
 
 Recoil の`Atom`周りは、`stores`と言うディレクトリを作成し、全ての「Atom」をここで管理します。
 
-[Diff - ]()
+[Diff - User Atom を追加]()
 
 ```TS
 // src/stores/User/index.tsxを作成
@@ -1904,7 +1912,7 @@ export const GlobalUser = atom<GlobalUserType>({
 
 `uid`は`AuthStateListener`と`GlobalAccount`でそれぞれ操作したいので、新しく「Atom」として管理します。
 
-[Diff - ]()
+[Diff - AuthCredential Atom を追加]()
 
 ```TS
 // src/stores/AuthCredential/index.tsを作成
@@ -1919,9 +1927,9 @@ export const AuthCredential = atom<AuthCredentialType>({
 });
 ```
 
-合わせて、`GlobalAccount`内で、`AuthCredential`が`undefined`であることが、「ローディング中故に`undefined`なのか」「ロードされてなお`undefined`なのか」を識別するために、`AuthCredentialLoaded`と言う「Atom」も作成します。
+合わせて、認証及び、アカウントの取得のローディング完了しているかの`Loaded Atom`を作成します。
 
-[Diff - ]()
+[Diff - Loaded Atom を追加]()
 
 ```TS
 // src/stores/AuthCredentialLoaded/index.tsを作成
@@ -1936,20 +1944,35 @@ export const AuthCredentialLoaded = atom<AuthCredentialLoadedType>({
 });
 ```
 
+```TS
+// src/stores/AccountLoaded/index.tsを作成
+
+import { atom } from "recoil";
+
+export type AccountLoadedType = boolean;
+
+export const AccountLoaded = atom<AccountLoadedType>({
+  key: "AccountLoaded",
+  default: false,
+});
+
+```
+
 上記の「Atom」を監視して、`Credential`の変更があればユーザー情報の変更を行う`GlobalAccount`と言う Provider を作成します。
 
-[Diff - ]()
+[Diff - GlobalAccout プロバイダーを追加する]()
 
 ```TSX
 // src/providers/GlobalAccount/index.tsxを作成
 
 import { useEffect, PropsWithChildren } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { GlobalUser } from "../../stores/User";
 import { useUserByIdLazyQuery } from "../../utils/graphql/generated";
 import { signout } from "../../utils/Firebase/signout";
 import { AuthCredential } from "../../stores/AuthCredential";
 import { AuthCredentialLoaded } from "../../stores/AuthCredentialLoaded";
+import { AccountLoaded } from "../../stores/AccountLoaded";
 
 export const GlobalAccout = ({ children }: PropsWithChildren<{}>) => {
   // ユーザー情報取得用のQuery関数
@@ -1963,6 +1986,9 @@ export const GlobalAccout = ({ children }: PropsWithChildren<{}>) => {
   const credential = useRecoilValue(AuthCredential);
   const authLoaded = useRecoilValue(AuthCredentialLoaded);
 
+  // Accountのローディング状態を管理
+  const setAccountLoaded = useSetRecoilState(AccountLoaded);
+
   useEffect(() => {
     // Authenticationのローディング終わっており
     if (authLoaded) {
@@ -1971,6 +1997,7 @@ export const GlobalAccout = ({ children }: PropsWithChildren<{}>) => {
         // Apollo Clientがローディング中で、ユーザー情報を未取得であれば
         if (!apolloLoding && !globalUser?.id) {
           // ユーザー情報の取得開始
+          setAccountLoaded(false);
           userQuery({ variables: { id: credential } });
         }
       } else {
@@ -1993,6 +2020,8 @@ export const GlobalAccout = ({ children }: PropsWithChildren<{}>) => {
           setGlobalUser(undefined);
         }
       }
+      // Accountのローディングを完了
+      setAccountLoaded(true);
     }
   }, [authLoaded, apolloData]);
 
@@ -2003,7 +2032,6 @@ export const GlobalAccout = ({ children }: PropsWithChildren<{}>) => {
     if (apolloError?.message) {
       console.error(apolloError?.message);
       setGlobalUser(undefined);
-      signout();
     }
   }, [apolloError]);
 
@@ -2015,6 +2043,8 @@ export const GlobalAccout = ({ children }: PropsWithChildren<{}>) => {
 `GlobalAccout`を`src/index.tsx`に読み込ませます。
 
 読み込ませる位置は、`AuthStateListener`よりも下の階層です。
+
+[Diff - root コンポーネントに GlobalAccout プロパイダーを追加]()
 
 ```TSX
 // src/index.tsx
@@ -2085,7 +2115,7 @@ ReactDOM.render(
 
 続いて、`AuthStateListener`で`credential`に id を格納するための処理を追加します。
 
-[Diff - ]()
+[Diff - AuthStateListener で credential を取得]()
 
 ```TSX
 // src/providers/AuthStateListener/index.tsx
@@ -2102,7 +2132,7 @@ export const AuthStateListener = ({ children }: PropsWithChildren<{}>) => {
 
   useEffect(() => {
     const unsubscriber = fireAuth.onAuthStateChanged(async (credential) => {
-      // uidが存在→つまり認証が済んでいるユーザーであれなuidを格納する
+      // uidが存在→つまり認証が済んでいるユーザーであればuidを格納する
       setCredential(credential?.uid || undefined);
 
       // onAuthStateChangedが呼ばれたのでtrueをセット
@@ -2131,7 +2161,7 @@ Recoil により、ユーザー情報を管理できるようになったこと�
 
 なので、ここのロジックを変更します。
 
-[Diff - ]()
+[Diff - ログイン状態でヘッダーのデザインを変更する]()
 
 ```TSX
 // src/templates/DashboardHeader/index.tsx
@@ -2208,7 +2238,7 @@ export const DashboardHeader = () => {
 
 一つ目のバグは、`useSignup`の中で`mutation`したデータを`GlobalUser`に確実に格納することで解決します。
 
-[Diff - ]()
+[Diff - 新規アカウント登録のバグを修正]()
 
 ```TSX
 // src/hooks/Authentication/useSignup/index.ts
@@ -2309,7 +2339,9 @@ export const useSignup = () => {
 
 ```
 
-また、`signout`のバグは、GlobalAccount にデータをセットできるラミングを修正することで修正できます。
+また、`signout`のバグは、GlobalAccount にデータをセットできるタイミングを修正します。
+
+[Diff - サインアウトのバグを解消]()
 
 ```TSX
 // src/providers/GlobalAccount/index.tsx
@@ -2334,17 +2366,11 @@ export const GlobalAccout = ({ children }: PropsWithChildren<{}>) => {
   const credential = useRecoilValue(AuthCredential);
   const authLoaded = useRecoilValue(AuthCredentialLoaded);
 
-  const query = (id: string) => {
-    if (!apolloLoding) {
-      userQuery({ variables: { id } });
-    }
-  };
-
   useEffect(() => {
     if (authLoaded) {
       if (credential) {
-        if (!globalUser?.id) {
-          query(credential);
+        if (!apolloLoding && !globalUser?.id ) {
+          userQuery({ variables: { id: credential } });
         }
       } else {
         if (globalUser?.id) {
@@ -2451,7 +2477,7 @@ JWT にしたから安心だ、ということはなく、JWT が漏れればも
 
 この時、有効期限を 1 時間にすれば、JWT の再生成頻度は下がり、ユーザーの UX は向上しますが、流出した時のリスクが高くなります。（１時間を長いととるか短いと取るかによりますが）
 
-反対に、5 分などにすると、JWT は頻繁に再生成する必要がありますが、流出したときのリスクは上記より小さくなります。（それでも、5 分なればデータを抜け取れそうですが）
+反対に、5 分などにすると、JWT は頻繁に再生成する必要がありますが、流出したときのリスクは上記より小さくなります。（それでも、5 分となればデータを抜け取れそうですが）
 
 このようなトレードオフの元、JWT の有効期限を厳密に操作することで、セキュリティの高低をつけることができます。
 
@@ -2465,7 +2491,7 @@ Hasura の JWT のアーキテクチャを端的に表すとこのような画�
 
 ![hasura jwt architecture](https://hasura.io/docs/latest/_images/jwt-auth1.png)
 
-画像右側に認証サーバー、今回の場合ですと Firebase Authentication から JWT を生成してもらい、その JWT を GraphQL のリクエストの Header に乗せて、Hasura にリクエストを飛ばすことで Hasura が勝手に JWT を認証してくれ、有効な JWT か無効な JWT かを識別します。
+画像右側に認証サーバー、今回の場合であれば Firebase Authentication から JWT を生成してもらい、その JWT を GraphQL のリクエストの Header に乗せて、Hasura にリクエストを飛ばすことで Hasura が勝手に JWT を認証してくれ、有効な JWT か無効な JWT かを識別します。
 
 なので私達が行うこととしては、、Hasura で JWT 用の設定を行うこと、Hasura の JWT 識別ルールに則った JWT データを Firebase Authentication で生成できるようにすること GraphQl のリクエストに JWT を乗せること、の３つです。
 
@@ -2474,6 +2500,14 @@ Hasura 特有の JWT ルールさえ理解できてしまえば、難しいこ�
 一個づつ設定していきましょう。
 
 Hasura の JWT は、ハマリポイントが多くあるので、そちらも確認しながら設定を行っていきます。
+
+> Hasura のドキュメントが古くなっていたため、今までの方法では JWT の設定ができなくなっていました。
+> 以下の新しい方法で設定を行ってください
+> すでに Heroku の方に設定を行なっている場合は、Herokuno 設定は削除しても問題ありません。
+
+<details>
+
+<summary>古いバージョンのHasuraのJWT設定</summary>
 
 Hasura で JWT の設定するために、Heroku のコンソール画面から設定を行っていきます。
 
@@ -2504,6 +2538,39 @@ Heroku で同じプロジェクト ID のコンソール画面をから、`Setti
 `YOUR_HASURA_GRAPHQL_ADMIN_SECRET`をあなたの Hasura シークレットキーに置き換えてください。
 
 ![heroku jwt settings](https://github.com/Hiro-mackay/react-bootcamp/blob/bootcamp-4/document/assets/heroku_jwt_settings.png?raw=true)
+
+</details>
+
+Hsaura の[コンソール画面](#https://cloud.hasura.io/projects)にアクセスします。
+
+今回のプロジェクトの`⚙マーク`から設定を開きます。
+
+![hasura dashboard console]()
+
+`Env Var`というタブを選択します。
+
+![hasura env var]()
+
+`New Env Var`から JWT の設定を反映させます。
+
+![hasura new env var]()
+
+- HASURA_GRAPHQL_JWT_SECRET  
+  {
+  "type":"RS256",
+  "jwk_url": "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com",
+  "audience": "firebase-project-id",
+  "issuer": "https://securetoken.google.com/firebase-project-id"
+  }
+
+`firebase-project-id`をあなたの[ Firebase のプロジェクト ID ](https://firebase.google.com/docs/projects/learn-more?hl=ja#find_the_project_id)に変更してください。
+
+- HASURA_GRAPHQL_UNAUTHORIZED_ROLE  
+  anonymous
+
+最終的にこのような設定になっていれば問題ありません。
+
+![hasura jwt success]()
 
 以上で Hasura 側での JWT の設定が完了しました。
 
@@ -2900,6 +2967,8 @@ i  Writing project information to .firebaserc...
 
 今回、`functions`に作成していくコードは「アカウントが作成されたら、トークンに Hasura 用のカスタムクレームを追加する」というコードです。
 
+[Diff - firebase functions を設定してコードを記述する]()
+
 ```TS
 // functions/src/index.ts
 import * as functions from "firebase-functions";
@@ -2992,9 +3061,9 @@ exports = {
 
 この`processSignUp`関数は完全に非同期で処理が実行され、クライアント側からはこの処理が終了したかどうかを知る術がありません。
 
-そのため、クライアントには関数が実行される前の認証情報、つまり「Hsaura のカスタムクレームがつかされていない状態のトークン」が返されます。
+そのため、クライアントには関数が実行される前の認証情報、つまり「Hsaura のカスタムクレームが付与されていない状態のトークン」が返されます。
 
-Firebase の使用により、トークンが変更されても、そのトークンが有効になるのは、次にユーザー認証が実行された時になります。
+Firebase の仕様によりトークンが変更されても、そのトークンが有効になるのは次にユーザー認証が実行された時になります。
 
 そのため、クライアント側ではこの関数が実行し終わったどうかを随時確認して、終了していたら再度認証を行いカスタムクレームが追加された状態のトークンを取得する必要があります。
 
@@ -3009,6 +3078,8 @@ Firebase の使用により、トークンが変更されても、そのトー�
 `firestore`は、オブジェクト型のデータ構造を持っており、柔軟にデータ構造を変えてデータを保存できます。
 
 今回のアプリケーションでは、さらりとしか使わないので、詳細は割愛します。
+
+[Diff - firebase functions に firebase store の処理を追加]()
 
 ```TS
 // functions/src/index.ts
@@ -3110,6 +3181,8 @@ service cloud.firestore {
 
 そこで、`functions`の`tsconfig.json`を変更します。
 
+[Diff - firebase の tsconfig.js の設定を修正]()
+
 ```json
 // functions/tsconfig.json
 
@@ -3182,6 +3255,8 @@ cd functions && yarn deploy && cd ../
 
 `signup`の処理が終わった直後に、トークンの生成が終了すまで待機するコードを新しく作ります。
 
+[Diff - カスタムクレームの確認用処理を追加]()
+
 ```TS
 // src/hooks/Authentication/useSignup/checkAuthToken.tsを作成
 
@@ -3224,6 +3299,8 @@ export const checkAuthToken = (userId: string): Promise<string> => {
 
 と、ここで`Firebase/config`には、`firestore`を用意してないので、作成しましょう。
 
+[Diff - firebase storage のパッケージを追加]()
+
 ```TS
 // src/utils/Firebase/config.ts
 
@@ -3255,6 +3332,8 @@ export default firebase;
 続いて、「トークンに Hasura カスタムクレームが追加されたら、GraphQL でユーザー情報を insert」の処理を記述します。
 
 ここでは、先ほど作った関数`checkAuthToken`を`sognup`内で`await`するだけで実現できます。
+
+[Diff - サインアップでトークンの取得処理を追加]()
 
 ```TS
 // src/hooks/Authentication/useSignup/index.ts
@@ -3365,6 +3444,8 @@ Apollo Provider のコードを編集したいのですが、`index.tsx`内で`P
 
 そこで、`index.tsx`から Apollo Client の`Provider`を抜き出し、コードを分割します。
 
+[Diff - Apollo Client の provider を分離]()
+
 ```TSX
 // src/providers/ApolloClient/index.tsxを作成
 
@@ -3402,6 +3483,8 @@ export const ApolloProvider = ({ children }: PropsWithChildren<{}>) => {
 ```
 
 移転した Apollo Client を`src/index.tsx`から呼び出します。
+
+[Diff - Apollo Provider を root コンポーネントから呼び出す]()
 
 ```TSX
 // src/index.tsx
@@ -3452,7 +3535,9 @@ ReactDOM.render(
 
 このシークレットキーを、JWT トークンで置き換えることで、シークレットキーを使用することなく、Hasura からデータを取得できるようになります。
 
-`<ApolloProvider>`のコードを変更して、`header`にトークンを格納する処理を追加します。
+`<ApolloProvider>`のコードを変更して、`headers`にトークンを格納する処理を追加します。
+
+[Diff - Apollo Client の headers にトークンを追加]()
 
 ```TSX
 // src/providers/ApolloClient/index.tsx
@@ -3476,13 +3561,10 @@ const httpLink = createHttpLink({
 const authLink = setContext(async () => {
   const token = await fireAuth.currentUser?.getIdToken(true);
 
-  return {
-    headers: {
-      // Bearerトークンでトークンを送信する
-      // headerのプロパティは`Authorization`
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-  };
+  // Bearerトークンでトークンを送信する
+  // headersのプロパティは`Authorization`
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  return { headers };
 });
 
 const apolloClient = new ApolloClient({
@@ -3501,7 +3583,7 @@ export const ApolloProvider = ({ children }: PropsWithChildren<{}>) => {
 
 `setContext`に、`headers`に、`Authorization`に、` Bearer トークン`に、`jwt`に、とたくさんの横文字が出てきました。
 
-それぞれの技術仕様を説明しようとすると、それこそまた 1 ページドキュメントが出来上がるので、それぞれ何をするモノかを軽くご説明します。
+それぞれの技術仕様を説明しようとすると、また 1 ページドキュメントが出来上がるので、それぞれ何をするモノかを軽くご説明します。
 
 - `setContext` : ApolloLink を生成。server にリクエストを送信する前に、リクエストを改造できるやつ（ざっくり)
 - `headers` : HTTP リクエストのヘッダー。ヘッダーは、リクエストに情報を付与できるデータ
@@ -3530,13 +3612,33 @@ Hasura は、リクエストの中に含まれている`Bearerトークン`を�
 
 - #### クレームを追加するためにアカウントを作成し直す
 
+ここでは、Hasura のトークンを設定する前にアカウントを作成していた場合、そのアカウントにはクレームの設定が行われていません。
+
+`Firebase Functions`でクレームを追加するようの関数を作成しても良いですが、今回は付与するべきアカウントが少ないので、アカウントの作り直しで対応します。
+
+もし、Hasura のトークンの設定より前にアカウントを登録されていない場合は、この項目は[飛ばして構いません](#hasura-のハマリポイント)
+
+`Firebase Authentication`で登録済みのアカウントを削除する方法は非常に簡単です。
+
+firebase のコンソールから、`Authentication`を選択し、登録済みのアカウントの右端「︙」から「アカウントを削除」からアカウントを削除できる。
+
+![firebase delete account]()
+
+トークンが付与されていない可能性があるアカウントを全て削除します。
+
+もし、気になる方は`Hasura`側の`users`テーブルに保存されているユーザーも削除します。
+
+新しく`/signup`からアカウントを作成すると、トークンが付与されたアカウントが作成できます。
+
+本番環境で運用する場合は、`Functions`で作成済みのアカウントに対してクレームを付与する関数を作成し、外部的にクレームを作成できるようにするのがいいでしょう。
+
 - ### Hasura のハマリポイント
 
-ここまででも、Apollo Client と Hasura の認証・認可の方法を見てきました。
+ここまでで、Apollo Client と Hasura の認証・認可の方法を見てきました。
 
 コードを見るだけでも、だいぶ複雑です。
 
-しかし、それ以上に、Hasura で暗黙的に決定されている項目設定が多いため、こここまで学んだ方法を別のコードに展開したときに沼にハマる可能性が高いです。
+しかし、それ以上に、Hasura で暗黙的に決定されている項目設定が多いため、ここまで学んだ方法を別のコードに展開したときに沼にハマる可能性が高いです。
 
 そこで、Hasura の認証・認可を実装する際にハマりやすいポイントと、解決方法を以下にご紹介します。
 
@@ -3664,6 +3766,20 @@ const customClaims = {
 
 その他、Hasura で JWT 認証を行う際の構成やユースケースは[公式のドキュメント](https://hasura.io/docs/latest/graphql/core/auth/authentication/jwt.html)にまとまっています。
 
+- #### Hasura の公式ドキュメントが古い場合がある
+
+残念ながら、Hasura の公式ドキュメントですら情報が古い場合があります。
+
+さらに Hsaura は日本語の情報も少ないです。
+
+Hasura の Github や海外の記事など、英語の情報源に臆することなく情報を取得していく必要があります。
+
+幸いなことに、Goole 翻訳などを使うことで簡単に英語の記事も日本語と読むことができます。
+
+日本語記事では、どうしても情報の新鮮度や正しさにズレがある場合があります。
+
+なるべく公式のドキュメントを網羅的にアクセスして、必要な情報を取得するスキルが必要です。
+
 ## Firebase Storage に動画をアップロード
 
 データベースへのデータのアクセスができるようになったので、次は、動画をストレージにアップロードする処理を実装していきます。
@@ -3692,9 +3808,9 @@ const customClaims = {
 これを実現するためには、二つの実装が必要です。
 
 1. ログインしているユーザーにのみ、アップロード画面へのリンクを表示する。
-2. 未ログインでアップロード画面を表示したら、ログインを促す
+2. 未ログインでアップロード画面を表示したらログインを促す
 
-- #### ログインしているユーザーにのみ、アップロード画面へのリンクを表示する。
+- #### ログインしているユーザーにのみ、アップロード画面へのリンクを表示する
 
 アップロード画面へのリンクは、画面のヘッダーのアイコンに埋め込みます。
 
@@ -3762,7 +3878,7 @@ export const DashboardHeader = () => {
 
 これで、どこからでもすぐにアップロード画面に行くことができます。
 
-- #### 未ログインでアップロード画面を表示したら、ログインを促す
+- #### 未ログインでアップロード画面を表示したらログインを促す
 
 続いて、未ログインのユーザーがアップロード画面にアクセスしたら、ログイン画面にリダイレクトする処理を書きます。
 
@@ -3776,6 +3892,10 @@ export const DashboardHeader = () => {
 2. アカウントが読み込まれていれば、そのまま表示
 3. アカウントが読み込まれていなければ、`/login`にリダイレクトする
 
+実際にコードに落とし込んでいきます。
+
+[Diff - 未ログインでアップロード画面を表示したらログインを促す]()
+
 ```TSX
 // src/pages/Upload/index.tsx
 
@@ -3785,6 +3905,7 @@ import {
   DialogContent,
   Grid,
   Divider,
+  // 追加
   CircularProgress,
 } from "@material-ui/core";
 import { UploadForm } from "./UploadForm";
@@ -3857,15 +3978,17 @@ export const Upload = () => {
 
 しかし、ファイル群のアップロードを実行するのは、「動画をアップロード」ボタンがある`<UploadForm>`コンポーネントです。
 
-つまり、`<VideoSelect>`にステートをなんらかの形で`<UploadForm>`に渡してあげる必要があります。
+つまり、`<VideoSelect>`のステートをなんらかの形で`<UploadForm>`に渡してあげる必要があります。
 
-方法としては、コンポーネント間のステートを簡単に管理できる`Recoil`を用いることもできますが、`Recoil`ではアプリケーションのフローバルな値を管理する形にしたいです。
+方法としては、コンポーネント間のステートを簡単に管理できる`Recoil`を用いることもできますが、`Recoil`ではアプリケーションのグローバルな値を管理する形にしたいです。
 
 なので、ここでは、あくまでローカルステートの管理範囲として`useState`を用いて動画とサムネイルの二つのステートを管理します。
 
 まずは、それぞれのステート管理を`<Upload>`コンポネートに移行して、親コンポーネントでのステート管理にします。
 
 そして、`<VideoSelect>`と`<UploadForm>`のコンポーネントにファイルステートを渡します。
+
+[Diff - アップロードコンポーネントでステートをファイルステートを管理]()
 
 ```TSX
 // src/pages/Upload/index.tsx
@@ -3946,6 +4069,8 @@ export const Upload = () => {
 
 `<VideoSelect>`コンポーネントを修正して、親コンポーネントから渡される`props`を使用して動画とサムネイルのファイルを管理できるようにします。
 
+[Diff - <VideoSelect>の処理を親コンポーネント用に修正]()
+
 ```TSX
 // src/pages/Upload/VideoSelector/index.tsx
 
@@ -3975,7 +4100,6 @@ export type VideoSelectProps = {
 export const VideoSelect = ({
   videoFile,
   setVideoFile,
-  thumbFile,
   setThumbFile,
 }: VideoSelectProps) => {
   const styles = useStyles();
@@ -4025,6 +4149,9 @@ export const VideoSelect = ({
       });
   };
 
+
+  // `file`を親コンポーネントから渡される`videoFile`に変更
+  // `setFile`を親コンポーネントから渡される`setVideoFile`に変更
   const selectedFile = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.currentTarget.files?.length) {
       setVideoFile(event.currentTarget.files[0]);
@@ -4138,11 +4265,11 @@ export default makeStyles({
 
 この親コンポーネントに渡されるファイルを使って、`<UploadForm>`コンポーネントで実際にファイルのアップロード処理を行なっていきます。
 
-- ### 選択したファイルを`Firebase Storage`にアップロードする
+- ### 選択したファイルを Firebase Storage にアップロードする
 
 それでは実際にファイルを`Firebase Storage`にアップロードする処理を実装していきます。
 
-動画のアップロードは、`Hooks`として処理をまとめあげます。
+動画のアップロードは、`Hooks`としてまとめあげます。
 
 `useVideoUpload`という名前の`Hooks`を作成していきます。
 
@@ -4151,6 +4278,8 @@ export default makeStyles({
 アップロードに必要な処理は全てのこの`useVideoUpload`にまとめて記述していく形になります。
 
 まずは、動画とサムネイルを`Firebase Storage`にアップロードする処理を記述していきます。
+
+[Diff - useVideoUpload で Firebase storage へのアップロードを追加]()
 
 ```TS
 // src/hooks/VideoUpload/index.ts を作成
@@ -4165,6 +4294,7 @@ type UploadProps = {
   };
   title: string;
   description?: string;
+  ownerId: string;
 };
 
 export const useVideoUpload = () => {
@@ -4193,7 +4323,7 @@ export const useVideoUpload = () => {
       // 動画のアップロード処理
       // 動画は全て`videos`と言う階層に保存される
       const videoUploadTask = await uploadStorage(
-        "videoID",
+        file.video.name,
         file.video,
         "videos"
       );
@@ -4201,7 +4331,7 @@ export const useVideoUpload = () => {
       // 画像サムネイルのアップロード処理
       // 画像サムネイルは全て`thumbnails`に保存される
       const thumbnailUploadTask = await uploadStorage(
-        "thumbId",
+        file.thumbnail.name,
         file.thumbnail,
         "thumbnails"
       );
@@ -4273,6 +4403,8 @@ yarn add uuid @types/uuid
 ```
 
 `uuid`パッケージをインストールしたら、先程の`useVideoUpload`でそれぞれのアップロードで uuid を生成して渡します。
+
+[Diff - ファイルの名前をユニークな ID にする]()
 
 ```TS
 // src/hooks/VideoUpload/index.ts
@@ -4407,6 +4539,8 @@ mutation InsertVideo(
 
 エラーが出ていなければ、このクエリーをアプリケーションに移し替えます。
 
+[Diff - 動画保存の GtaphQL クエリーを追加]()
+
 ```graphql
 # graphql/mutation/InsertVideo.graphqlを作成
 
@@ -4453,6 +4587,8 @@ mutation InsertVideo(
 
 `codegen.js`で、新しく作られる`.graphql`ファイルも自動で全て参照する設定に書き換えます。
 
+[Diff - codegen スクリプトでのクエリー参照を全てのクエリーファイルにする]()
+
 ```js
 // script/codegen.js
 
@@ -4496,6 +4632,8 @@ npm run codegen
 ```
 
 `InsertVideo`の`Hooks`が生成されたので、`useVideoUpload`でそうがのメタデータを保存する処理を実装します。
+
+[Diff - useVideoUpload に GraphQL 処理を追加]()
 
 ```TS
 // src/hooks/VideoUpload/index.ts
@@ -4607,6 +4745,8 @@ export const useVideoUpload = () => {
 
 この`Hooks`を`<UploadForm>`コンポーネントで呼び出すことで、動画のアップロードの処理を完成させていきます。
 
+[Diff - アップロード処理を<UploadForm>コンポーネントに実装]()
+
 ```TSX
 // src/pages/Upload/UploadForm/index.tsx
 
@@ -4616,14 +4756,18 @@ import { useNavigate } from "react-router";
 import { useRecoilValue } from "recoil";
 import { useVideoUpload } from "../../../hooks/VideoUpload";
 import { GlobalUser } from "../../../stores/User";
-
 import useStyles from "./style";
 
+
+// 追加
+// UploadFormコンポーネントのプロップスとして、引数を型定義する
 export type UploadFormProps = {
   videoFile: File | undefined;
   thumbFile: File | undefined;
 };
 
+// 追加
+// 親コンポーネントから、UploadFormに渡される引数
 export const UploadForm = ({ videoFile, thumbFile }: UploadFormProps) => {
   const styles = useStyles();
 
@@ -4667,7 +4811,7 @@ export const UploadForm = ({ videoFile, thumbFile }: UploadFormProps) => {
       title: titleRef.current.value,
       description: descRef.current?.value,
       ownerId: user.id,
-    }).then(() => {
+    }).then((data) => {
       // 動画のアップロードが成功すれば、`home`URLにリダイレクト
       if (data?.id) {
         navigate("/");
@@ -4688,6 +4832,8 @@ export const UploadForm = ({ videoFile, thumbFile }: UploadFormProps) => {
           size="small"
           fullWidth
           variant="outlined"
+
+          // 追加
           inputRef={titleRef}
         />
       </label>
@@ -4700,6 +4846,8 @@ export const UploadForm = ({ videoFile, thumbFile }: UploadFormProps) => {
           variant="outlined"
           multiline
           rows={4}
+
+          // 追加
           inputRef={descRef}
         />
       </label>
@@ -4712,13 +4860,29 @@ export const UploadForm = ({ videoFile, thumbFile }: UploadFormProps) => {
         </label>
       )}
 
+
+      {
+        // エラーがあれば表示
+        errorMessage?.message && (
+          <label className={styles.label}>
+            <Typography color="error">{errorMessage.message}</Typography>
+          </label>
+        )
+      }
+
       <div className={styles.butotn}>
         <Button
           variant="contained"
           color="primary"
+          // 追加
+          // ローディング中のボタンを無効化
           disabled={loading}
+
+          // 追加
+          // アップロードを実行
           onClick={submit}
         >
+          {/* アップロード中の表示を切り替える */}
           {loading ? "アップロード中" : "動画をアップロード"}
         </Button>
       </div>
@@ -4741,7 +4905,7 @@ export const UploadForm = ({ videoFile, thumbFile }: UploadFormProps) => {
 
 いよいよ実装も、終盤になってまいりました。
 
-残っている実装は、先ほどアップードした動画を実際に画面上で再生できるようにすることです。
+残っている実装は、先ほどアップロードした動画を実際に画面上で再生できるようにすることです。
 
 と言いつも、難しいことはありません。
 
@@ -4760,6 +4924,8 @@ GraphQL によるデータの取得と、`Firebase Storage`からファイル�
 ![Hasura video query]()
 
 `Execute Query(実行ボタン)`を押して、クエリーが問題なく実行されていれば、アプリケーションに移し替えます。
+
+[Diff - Videos クエリーを追加]()
 
 ```graphql
 # graphql/query/Videos.graphqlを作成
@@ -4799,6 +4965,8 @@ yarn codegen
 
 `VideoCard`、`HeaderTitle`、`SubHeaderContent`のコンポーネントに、それぞれ親コンポーネントから`props`を受け取るように変更します。
 
+[Diff - HeaderTitle で props を表示できるようにする]()
+
 ```TSX
 // src/components/VideoCard/HeaderTitle/index.tsx
 
@@ -4827,6 +4995,8 @@ export const HeaderTitle = ({ title }: HeaderTitleProps) => {
 };
 
 ```
+
+[Diff - SubHeaderContent で props を表示できるようにする]()
 
 ```TSX
 // src/components/VideoCard/SubHeaderContent/index.tsx
@@ -4872,6 +5042,8 @@ export const SubHeaderContent = ({
   );
 };
 ```
+
+[Diff - VideoCard で props を表示できるようにする]()
 
 ```TSX
 // src/components/VideoCard/index.tsx
@@ -4948,6 +5120,8 @@ export const VideoCard = ({
 
 では、実際に親コンポーネントでデータを取得し、`<VideoCard>`に流す処理を記述していきます。
 
+[Diff - 動画リストを読み込む]()
+
 ```TSX
 // src/pages/Home/index.tsx
 
@@ -4958,6 +5132,7 @@ import { VideoCard } from "../../components/VideoCard";
 // 追加
 import { storage } from "../../utils/Firebase/config";
 import { useVideosQuery } from "../../utils/graphql/generated";
+import { Link } from "react-router-dom";
 
 export const Home = () => {
 
@@ -5050,6 +5225,7 @@ query Videos {
     video_url
     views
     duration
+    # 編集、追加
     owner {
       id
       email
@@ -5074,9 +5250,11 @@ yarn codegen
 
 ```
 
-これで、`videos`クエリーと同じ re クエストでユーザー情報を獲得できます。
+これで、`videos`クエリーと同じリクエストでユーザー情報を獲得できます。
 
 `Home`コンポーネントに戻って、ユーザーの名前を表示しましょう
+
+[Diff - ビデオカードに投稿者の名前を表示]()
 
 ```TSX
 // src/pages/Home/index.tsx
@@ -5149,6 +5327,8 @@ export const Home = () => {
 
 アプリケーションに反映させて、`codegen`スクリプトを実行しましょう。
 
+[Diff - VideoByPk クエリーを追加]()
+
 ```graphql
 # graphql/query/VideoByPk.graphqlを作成
 
@@ -5188,6 +5368,8 @@ yarn codegen
 作成された`Hooks`で、動画プレイヤーを完成させます。
 
 まずは、コンポーネントでデータを表示できるように修正を加えます。
+
+[Diff - VideoPlayerCard で props を表示する]()
 
 ```TSX
 // src/pages/Watch/VideoPlayerCard/index.tsx
@@ -5229,12 +5411,8 @@ export const VideoPlayerCard = ({
   const [src, setSrc] = useState<string>();
 
   useEffect(() => {
-    // URLが無かったら
-    if (!src) {
-
-      // Firebas Storageから動画のダウンロードリンクを取得する
-      fetcher().then(setSrc);
-    }
+    // Firebas Storageから動画のダウンロードリンクを取得する
+    fetcher().then(setSrc);
   });
 
   return (
@@ -5287,6 +5465,8 @@ export const VideoPlayerCard = ({
 
 早速、表示動画以外の全ての動画を取得するクエリーを作成します。
 
+[Diff - RecommendVideos クエリーを追加]()
+
 ```graphql
 # graphql/query/RecommendVideos.graphqlを作成
 
@@ -5324,6 +5504,8 @@ yarn codegen
 ```
 
 `VideoHorizontalCard`コンポーネントを修正して、データを表示できるようにします。
+
+[Diff - VideoHorizontalCard で props を表示する]()
 
 ```TSX
 // src/components/VideoHorizontalCard/index.tsx
@@ -5404,6 +5586,8 @@ export const VideoHorizontalCard = ({
 
 あとは、親コンポーネントから必要なデータを取得して、props に流し込みます。
 
+[Diff - 動画再生コンポーネントを完成]()
+
 ```TSX
 // src/pages/Watch/index.tsx
 
@@ -5422,8 +5606,13 @@ import { Link } from "react-router-dom";
 export const Watch = () => {
   const styles = useStyles();
 
+  // 追加
+  // URLから再生する動画のIDを取得する
   const { videoId } = useParams();
 
+
+  // 追加
+  // 再生する動画を取得する
   const { data: currentVideo } = useVideoByPkQuery({
     variables: {
       id: videoId,
@@ -5442,6 +5631,10 @@ export const Watch = () => {
     <Container className={styles.root}>
       <Grid container spacing={2}>
         <Grid item xs={8}>
+        {/*
+          追加
+          再生する動画の情報を渡す
+        */}
           <VideoPlayerCard
             title={currentVideo?.videos_by_pk?.title}
             description={currentVideo?.videos_by_pk?.description}
@@ -5502,6 +5695,36 @@ export const Watch = () => {
 
 以上で、アップロードした動画のデータを取得して再生することができるようになりました。
 
+- ### Firebase Storage のルールを書き換えてサムネイルを取得する
+
+サーバーへの動画のアップロードが完了したことで、動画を視聴できるようになりました。
+
+しかし、今のままでは、ログイン済みのアカウントでしか Storage にあるファイルを取得できません。
+
+理由は、`Firebase Storage`のパーミッションでルールで、ログイン済みのアカウントでしか、Sotage のファイルにアクセスできないようになっているためです。
+
+そこで、`Firebase Storage`のルールを書き変えて、読み取りは誰でもできるようにルールを変更します。
+
+```js
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /thumbnails/{allPaths=**} {
+      allow write: if request.auth != null;
+      allow read: if true;
+    }
+    match /videos/{allPaths=**} {
+      allow write: if request.auth != null;
+      allow read: if true;
+    }
+  }
+}
+```
+
+![firebase storage rules]()
+
+`/signout`でログアウトした状態で動画を見ても、しっかりファイルが取得されているのがわかります。
+
 - ## Apollo Clinet のキャッシュを対策する
 
 ここまでで、動画のアップロード、動画のメタデータの取得、動画の再生の一連の処理を実装が完了しました。
@@ -5544,11 +5767,13 @@ Apollo Client では、キャッシュにデータが保存されている保存
 
 一つの考え方としては、そのデータがどれだけ最新情報を必要とするかを要点としておくのがいいかもしれません。
 
-[Apollo Client に用意されているキャッシュの更新方法については、ここで詳しく開設されています。]()
+[Apollo Client に用意されているキャッシュの更新方法については、ここで詳しく開設されています。](https://yigarashi.hatenablog.com/entry/apollo-client-cache-mutation)
 
 今回は、動画をアップロードした後に、どのクエリーのキャッシュを更新したいかが明確なため、`mutaion`でデータを追加後に、キャッシュを更新したいクエリーを明示的に指定します。
 
 Apollo Client の`refetchQueries`という機能を使います。
+
+[Diff - アップロード時に Apollo Client のキャッシュをリフレッシュする]()
 
 ```TSX
 // src/hooks/VideoUpload/index.ts
@@ -5560,6 +5785,8 @@ import {
   useInsertVideoMutation,
   VideosDocument,
 } from "../../utils/graphql/generated";
+import { useRecoilValue } from "recoil";
+import { GlobalUser } from "../../stores/User";
 
 type UploadProps = {
   file: {
@@ -5582,17 +5809,22 @@ export const useVideoUpload = () => {
     refetchQueries: [{ query: VideosDocument }],
   });
 
-  const uploadStorage = (id: string, file: File, path: string) => {
+  const user = useRecoilValue(GlobalUser);
 
+  const uploadStorage = (id: string, file: File, path: string) => {
     const exe = file.name.split(".").pop();
     return storage.ref(`${path}/${id}.${exe}`).put(file);
   };
 
   const upload = async ({ file, title, description, ownerId }: UploadProps) => {
+    if (!user?.id) {
+      return;
+    }
     setLoading(true);
     const videoName = uuidv4();
     const thumbName = uuidv4();
     const videoId = uuidv4();
+
     try {
       const videoUploadTask = await uploadStorage(
         videoName,
@@ -5605,15 +5837,6 @@ export const useVideoUpload = () => {
         "thumbnails"
       );
 
-      console.log({
-        id: videoId,
-        title,
-        description,
-        video_url: videoUploadTask.ref.fullPath,
-        thumbnail_url: thumbnailUploadTask.ref.fullPath,
-        owner_id: ownerId,
-      });
-
       const res = await mutation({
         variables: {
           id: videoId,
@@ -5624,7 +5847,6 @@ export const useVideoUpload = () => {
           owner_id: ownerId,
         },
       });
-
       return res.data?.insert_videos_one;
     } catch (error) {
       console.error(error);
@@ -5647,6 +5869,7 @@ export const useVideoUpload = () => {
     error,
   };
 };
+
 
 ```
 

@@ -102,6 +102,7 @@ export const useSignup = () => {
 
   useEffect(() => {
     if (apolloError?.message) {
+      console.log("error");
       console.log(apolloError);
       setErrorHandler("main", apolloError.message);
     }
