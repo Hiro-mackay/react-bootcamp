@@ -411,7 +411,7 @@ export const UserAtom = atom<UserType>({
 > そうなると、どんなデータでも Atom に格納することができるようになるので、バグの温床になります。  
 > Recoil は Typescript での開発に非常に相性がいいライブラリーです。
 
-では実施にこの「Atom」をしてみます。
+では実施にこの「Atom」を使用してみます。
 
 ```TSX
 // これはサンプルコードです。
@@ -768,9 +768,11 @@ import { FireSignupType } from "../../../utils/Firebase/signup";
 import { signup as fireSignup } from "../../../utils/Firebase/signup";
 import { useInsertUserMutation } from "../../../utils/graphql/generated";
 
+// インターセクション型による型定義
 export type SignupPropsType = {
   name: string;
 } & FireSignupType;
+
 
 export const useSignup = () => {
   // ユーザーが入力した値を読み取るための`ref`
@@ -1029,6 +1031,7 @@ import { signup as fireSignup } from "../../../utils/Firebase/signup";
 import { useInsertUserMutation } from "../../../utils/graphql/generated";
 import { SetErrorFn, useAuthHelper } from "../useAuthHelper";
 
+// インターセクション型による型定義
 export type SignupPropsType = {
   name: string;
 } & FireSignupType;
@@ -2297,6 +2300,7 @@ import { signup as fireSignup } from "../../../utils/Firebase/signup";
 import { useInsertUserMutation } from "../../../utils/graphql/generated";
 import { SetErrorFn, useAuthHelper } from "../useAuthHelper";
 
+// インターセクション型による型定義
 export type SignupPropsType = {
   name: string;
 } & FireSignupType;
@@ -3394,6 +3398,7 @@ import { useInsertUserMutation } from "../../../utils/graphql/generated";
 import { SetErrorFn, useAuthHelper } from "../useAuthHelper";
 import { checkAuthToken } from "./checkAuthToken";
 
+// インターセクション型による型定義
 export type SignupPropsType = {
   name: string;
 } & FireSignupType;
@@ -5101,6 +5106,7 @@ import { useEffect, useState } from "react";
 
 // 追加
 // 子コンポーネントの型定義を使用して、冗長な書き方を防ぐことができる
+// インターセクション型による型定義
 export type VideoCardProps = {
   fetcher: () => Promise<string | undefined>;
 } & HeaderTitleProps &
@@ -5566,6 +5572,7 @@ import useStyles from "./styles";
 
 
 // 親コンポーネントから渡されるpropsの型
+// インターセクション型による型定義
 export type VideoHorizontalCardProps = {
   fetcher: () => Promise<string | undefined>;
 } & HeaderTitleProps &
