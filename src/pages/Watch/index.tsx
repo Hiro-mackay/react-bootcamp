@@ -71,8 +71,8 @@ export const Watch = () => {
           追加
           リコメンドの動画を一覧表示
         */}
-        {recommendVides?.videos.map((video) => (
-          <Grid item xs={4}>
+        <Grid item xs={4}>
+          {recommendVides?.videos.map((video) => (
             <div className={styles.cardPadding}>
               {/*
                 動画プレイヤーを表示するためのリンク
@@ -95,8 +95,8 @@ export const Watch = () => {
                 />
               </Link>
             </div>
-          </Grid>
-        ))}
+          ))}
+        </Grid>
       </Grid>
     </Container>
   );
