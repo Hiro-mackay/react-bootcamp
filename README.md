@@ -3304,7 +3304,7 @@ cd functions && yarn deploy && cd ../
 
 `signup`の処理が終わった直後に、トークンの生成が終了すまで待機するコードを新しく作ります。
 
-[Diff - カスタムクレームの確認用処理を追加](https://github.com/Hiro-mackay/react-bootcamp/commit/01e8230ea60ae2e8622ff48424577c3cdddfcf55)
+[Diff - カスタムクレームの確認用処理を追加](https://github.com/Hiro-mackay/react-bootcamp/commit/7f7e5b3820bc772ce1d38d77d69676011aa2546a)
 
 ```TS
 // src/hooks/Authentication/useSignup/checkAuthToken.tsを作成
