@@ -6,7 +6,6 @@ export const useSignout = () => {
 
   const signout = async () => {
     await fireSignout();
-
     navigate("/");
   };
 

@@ -13,14 +13,20 @@ import { Link } from "react-router-dom";
 export const Watch = () => {
   const styles = useStyles();
 
+  // 追加
+  // URLから再生する動画のIDを取得する
   const { videoId } = useParams();
 
+  // 追加
+  // 再生する動画を取得する
   const { data: currentVideo } = useVideoByPkQuery({
     variables: {
       id: videoId,
     },
   });
 
+  // 追加
+  // リコメンドの動画を取得する
   const { data: recommendVides } = useRecommendVideosQuery({
     variables: {
       currentVideoId: videoId,
@@ -42,6 +48,9 @@ export const Watch = () => {
           例えば、下記は全体を"12"とした場合の、比率が"9:3"となるようにカラムの幅を指定している。
         */}
         <Grid item xs={8}>
+          {/*
+          再生する動画の情報を渡す
+        */}
           <VideoPlayerCard
             title={currentVideo?.videos_by_pk?.title}
             description={currentVideo?.videos_by_pk?.description}
@@ -58,14 +67,23 @@ export const Watch = () => {
             }}
           />
         </Grid>
-
-        {recommendVides?.videos.map((video) => (
-          <Grid item xs={4}>
+        {/*
+          追加
+          リコメンドの動画を一覧表示
+        */}
+        <Grid item xs={4}>
+          {recommendVides?.videos.map((video) => (
             <div className={styles.cardPadding}>
+              {/*
+                動画プレイヤーを表示するためのリンク
+              */}
               <Link
                 to={`/watch/${video.id}`}
                 style={{ textDecoration: "none" }}
               >
+                {/*
+                  カードの表示に必要なデータをpropsに渡す
+                */}
                 <VideoHorizontalCard
                   title={video.title}
                   views={video.views}
@@ -77,8 +95,8 @@ export const Watch = () => {
                 />
               </Link>
             </div>
-          </Grid>
-        ))}
+          ))}
+        </Grid>
       </Grid>
     </Container>
   );

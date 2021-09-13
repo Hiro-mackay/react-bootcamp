@@ -774,7 +774,7 @@ export type InsertUserMutationVariables = Exact<{
 }>;
 
 
-export type InsertUserMutation = { __typename?: 'mutation_root', insert_users_one?: Maybe<{ __typename?: 'users', id: string, name: string, profile_photo_url: string, email: string, created_at: any, updated_at: any }> };
+export type InsertUserMutation = { __typename?: 'mutation_root', insert_users_one?: Maybe<{ __typename?: 'users', id: string, name: string, email: string, profile_photo_url: string, created_at: any, updated_at: any }> };
 
 export type InsertVideoMutationVariables = Exact<{
   id: Scalars['String'];
@@ -805,7 +805,7 @@ export type VideoByPkQuery = { __typename?: 'query_root', videos_by_pk?: Maybe<{
 export type VideosQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type VideosQuery = { __typename?: 'query_root', videos: Array<{ __typename?: 'videos', id: string, title: string, description: string, thumbnail_url: string, video_url: string, views: number, duration: number, created_at?: Maybe<any>, owner?: Maybe<{ __typename?: 'users', id: string, email: string, name: string, profile_photo_url: string, updated_at: any, created_at: any }> }> };
+export type VideosQuery = { __typename?: 'query_root', videos: Array<{ __typename?: 'videos', id: string, title: string, description: string, thumbnail_url: string, video_url: string, duration: number, views: number, updated_at?: Maybe<any>, created_at?: Maybe<any>, owner?: Maybe<{ __typename?: 'users', id: string, email: string, name: string, profile_photo_url: string, updated_at: any, created_at: any }> }> };
 
 export type UserByIdQueryVariables = Exact<{
   id: Scalars['String'];
@@ -822,8 +822,8 @@ export const InsertUserDocument = gql`
   ) {
     id
     name
-    profile_photo_url
     email
+    profile_photo_url
     created_at
     updated_at
   }
@@ -1016,8 +1016,6 @@ export const VideosDocument = gql`
     description
     thumbnail_url
     video_url
-    views
-    duration
     owner {
       id
       email
@@ -1026,6 +1024,9 @@ export const VideosDocument = gql`
       updated_at
       created_at
     }
+    duration
+    views
+    updated_at
     created_at
   }
 }

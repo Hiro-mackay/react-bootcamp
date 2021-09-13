@@ -9,8 +9,6 @@ export const Sidebar = () => {
   const styles = useStyles();
 
   return (
-    // ListのcomponentにLinkを指定
-    // Linkのtoと同じように、Listにtoを指定する
     <List className={styles.root} component="nav">
       <ListItem button component={Link} to="/">
         <ListItemIcon>
@@ -18,7 +16,6 @@ export const Sidebar = () => {
         </ListItemIcon>
         <ListItemText primary="ホーム" />
       </ListItem>
-
       <ListItem button>
         <ListItemIcon>
           <WhatshotIcon />

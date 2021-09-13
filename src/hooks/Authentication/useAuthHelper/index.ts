@@ -48,7 +48,7 @@ export const useAuthHelper = (
 
     try {
       // 認証ロジックを実行
-      // 成功すれば、リダイレクト処理
+      // 成功すれば、リダイレクト処理（この処理はここでは書いてありません。）
       await executeProcess();
     } catch (error: any) {
       // エラーがあれば、エラーをセットして処理を中断

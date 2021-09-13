@@ -24,8 +24,6 @@ export const checkAuthToken = (userId: string): Promise<string> => {
           ) {
             // 追加されていれば、リッスンをしセットし、
             // トークンを返します。
-
-            console.log(idToken.claims);
             unsubscribe();
             resolve(idToken?.token);
           }

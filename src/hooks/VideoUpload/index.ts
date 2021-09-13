@@ -5,6 +5,8 @@ import {
   useInsertVideoMutation,
   VideosDocument,
 } from "../../utils/graphql/generated";
+import { useRecoilValue } from "recoil";
+import { GlobalUser } from "../../stores/User";
 
 type UploadProps = {
   file: {
@@ -20,10 +22,15 @@ export const useVideoUpload = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error>();
 
-  // 動画のメタデータを保存するGraphQL Mutation
+  // 動画のメタデータを保存するGraphQLMutation
+  // 動画をApolloでアップロードする`mutation`に対して、キャッシュ更新を指定
+  // 今回は、`Videos`というクエリーを指定しています。
   const [mutation, { error: apolloError }] = useInsertVideoMutation({
     refetchQueries: [{ query: VideosDocument }],
   });
+
+  // `video`の`ownerId`のために、userのidを取得する
+  const user = useRecoilValue(GlobalUser);
 
   // Firebase Storageにファイルをアップロードする処理
   const uploadStorage = (id: string, file: File, path: string) => {
@@ -39,9 +46,15 @@ export const useVideoUpload = () => {
   };
 
   const upload = async ({ file, title, description, ownerId }: UploadProps) => {
+    // ユーザーが読み込まれていない、未ログインであれば処理を中断する
+    if (!user?.id) {
+      return;
+    }
+
     // 処理が始まったら、ローディング中にする
     setLoading(true);
 
+    // 動画とサムネイルのそれぞれのuuidを生成する
     const videoName = uuidv4();
     const thumbName = uuidv4();
     const videoId = uuidv4();
@@ -64,7 +77,7 @@ export const useVideoUpload = () => {
         "thumbnails"
       );
 
-
+      // 動画のメタデータを保存する
       const res = await mutation({
         variables: {
           id: videoId,
@@ -76,6 +89,7 @@ export const useVideoUpload = () => {
         },
       });
 
+      // 全ての処理が終わったら、動画のメタデータを返す
       return res.data?.insert_videos_one;
     } catch (error) {
       // アップロードの途中でエラーが発生したら、処理を中断して、ここに記述される処理が行われる
@@ -88,6 +102,7 @@ export const useVideoUpload = () => {
     }
   };
 
+  // Apollo Clientのエラーをキャッチする
   useEffect(() => {
     if (apolloError) {
       console.error(apolloError);

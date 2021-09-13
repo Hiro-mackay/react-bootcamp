@@ -15,6 +15,9 @@ const httpLink = createHttpLink({
 
 const authLink = setContext(async () => {
   const token = await fireAuth.currentUser?.getIdToken(true);
+
+  // Bearerトークンでトークンを送信する
+  // headersのプロパティは`Authorization`
   const headers = token ? { Authorization: `Bearer ${token}` } : {};
   return { headers };
 });

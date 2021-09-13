@@ -35,8 +35,6 @@ export const RootRouter = () => {
       children: [
         { path: "login", element: <Login /> },
         { path: "signup", element: <Signup /> },
-
-        // 追加！！
         { path: "signout", element: <Signout /> },
         { path: "forget", element: <ForgetPassForm /> },
         { path: "404", element: <div>Not Found</div> },

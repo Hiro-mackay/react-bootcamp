@@ -5,16 +5,15 @@ import useStyles from "./style";
 export const Login = () => {
   const styles = useStyles();
 
+  // ログインのHooks
   const { ref, error, loading, login } = useLogin();
 
   return (
     <Card className={styles.root} variant="outlined">
-      {/* ロゴコンポーネント */}
       <div className={`${styles.logo} ${styles.margin}`}>
         <Logo />
       </div>
 
-      {/* タイトルコンポーネント */}
       <Typography className={styles.margin} component="h1" variant="h5">
         ログイン
       </Typography>
@@ -26,7 +25,6 @@ export const Login = () => {
         </Typography>
       )}
 
-      {/* メールアドレスフィールド */}
       <label className={`${styles.label} ${styles.margin}`}>
         <Typography>メールアドレス</Typography>
         <TextField
@@ -44,7 +42,6 @@ export const Login = () => {
         />
       </label>
 
-      {/* パスワードフィールド */}
       <label className={`${styles.label} ${styles.margin}`}>
         <Typography>パスワード</Typography>
         <TextField
@@ -62,7 +59,6 @@ export const Login = () => {
         />
       </label>
 
-      {/* Submitボタン */}
       <div className={styles.margin}>
         <Button
           variant="contained"

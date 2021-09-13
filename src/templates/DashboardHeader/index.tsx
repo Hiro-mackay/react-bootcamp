@@ -5,11 +5,12 @@ import { Logo } from "../../components/Logo";
 import { SearchBar } from "./SearchBar";
 import useStyles from "./style";
 import { Link } from "react-router-dom";
+
+// 追加
 import { useRecoilValue } from "recoil";
 import { GlobalUser } from "../../stores/User";
 
 export const DashboardHeader = () => {
-  // 一度、useStylesを実行して、CSSを生成します。
   const styles = useStyles();
 
   // ユーザー情報Atom
@@ -48,7 +49,7 @@ export const DashboardHeader = () => {
           2つの<IconButton>を<div>で囲み、<div>にflexを付与
         */}
         <div className={styles.flex}>
-          {/* 
+          {/*
             ユーザーがログインしていれば、ユーザー用のデザインを表示
             未ログインであれば「ログインボタン」を表示
           */}

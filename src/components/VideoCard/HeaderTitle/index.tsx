@@ -10,7 +10,10 @@ export const HeaderTitle = ({ title }: HeaderTitleProps) => {
 
   return (
     <Typography className={styles.root} variant="subtitle1" component="h3">
-      {title}
+      {
+        // タイトルを表示
+        title
+      }
     </Typography>
   );
 };

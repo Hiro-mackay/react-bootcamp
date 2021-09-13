@@ -6,6 +6,7 @@ export type SubHeaderContentProps = {
   created: Date;
 };
 
+// 親コンポーネントから、投稿者情報、再生回数、アップロード日時を受け取ります。
 export const SubHeaderContent = ({
   owner,
   views,
@@ -13,10 +14,26 @@ export const SubHeaderContent = ({
 }: SubHeaderContentProps) => {
   return (
     <>
-      <Typography variant="body2">{owner}</Typography>
       <Typography variant="body2">
-        {views} views {new Date(created).toLocaleDateString()}
+        {
+          // 追加
+          // 投稿者情報
+          owner
+        }
       </Typography>
+      <Typography variant="body2">
+        {
+          // 追加
+          // 再生回数
+          views
+        }
+        views
+        {
+          // 追加
+          // 投稿時間を表示
+          new Date(created).toLocaleDateString()
+        }
+      </Typography>{" "}
     </>
   );
 };

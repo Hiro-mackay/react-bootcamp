@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import useStyles from "./style";
 
+// 親コンポーネントから渡されるpropsの型
 export type VideoPlayerCardProps = {
   title: string | undefined;
   description: string | undefined;
@@ -28,9 +29,12 @@ export const VideoPlayerCard = ({
   fetcher,
 }: VideoPlayerCardProps) => {
   const styles = useStyles();
+
+  // 動画のダウンロードリンクURLを格納するためのステート
   const [src, setSrc] = useState<string>();
 
   useEffect(() => {
+    // Firebas Storageから動画のダウンロードリンクを取得する
     fetcher().then(setSrc);
   });
 

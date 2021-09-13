@@ -17,14 +17,13 @@ export const Signup = () => {
       <div className={`${styles.logo} ${styles.margin}`}>
         <Logo />
       </div>
-
       {/* タイトルコンポーネント */}
       <Typography className={styles.margin} component="h1" variant="h5">
         新規アカウント登録
       </Typography>
 
-      {/* 
-        エラーメッセージを表示 
+      {/*
+        エラーメッセージを表示
         ErrorをMapで管理しているので、簡単にエラーがあるかどうかを確認できる
         */}
       {error.has("main") && (
@@ -86,7 +85,6 @@ export const Signup = () => {
         />
       </label>
 
-      {/* Submitボタン */}
       <div className={styles.margin}>
         <Button
           variant="contained"
@@ -101,7 +99,7 @@ export const Signup = () => {
         </Button>
       </div>
 
-      {/* 
+      {/*
         ついでに、ログイン画面にリダイレクトできるようにリンクを入れましょう。
       */}
       <div>

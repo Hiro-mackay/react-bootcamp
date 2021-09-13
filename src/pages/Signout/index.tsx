@@ -5,9 +5,9 @@ import useStyles from "./style";
 
 export const Signout = () => {
   const styles = useStyles();
-
   const { signout } = useSignout();
 
+  // ページを表示したタイミングで、signout処理を実行するための処理
   useEffect(() => {
     signout();
   });

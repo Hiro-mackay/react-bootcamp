@@ -7,6 +7,7 @@ import {
 } from "../VideoCard/SubHeaderContent";
 import useStyles from "./styles";
 
+// 親コンポーネントから渡されるpropsの型
 export type VideoHorizontalCardProps = {
   fetcher: () => Promise<string | undefined>;
 } & HeaderTitleProps &
@@ -21,9 +22,12 @@ export const VideoHorizontalCard = ({
 }: VideoHorizontalCardProps) => {
   const styles = useStyles();
 
+  // サムネイルのダウンロードリンクのステート
   const [src, setSrc] = useState<string>();
 
+  // 追加
   useEffect(() => {
+    // サムネイルのダウンロードリンクを取得する関数
     fetcher().then(setSrc);
   });
 
@@ -34,7 +38,7 @@ export const VideoHorizontalCard = ({
     // 複数のスタイルを適用したい場合、このような形で記述します。
     // `${}`という記法を用いることで、変数の値を文字として展開できます。
     // 例：ten = 10 → `${ten}` == "10"
-    // 詳しくはhttps://jsprimおer.net/basic/data-type/#template-literal
+    // 詳しくはhttps://jsprimer.net/basic/data-type/#template-literal
     <Card
       className={`${styles.root} ${styles.transparent}`}
       elevation={0}
@@ -46,10 +50,13 @@ export const VideoHorizontalCard = ({
         サムネイルを16:9で表示するために、`CardMedia`を<div>で囲み、widthプロパティを固定しています。
       */}
       <div className={styles.thumbnail}>
+        {/*
+          取得したサムネイルのダウンロードリンクを参照する
+        */}
         <CardMedia className={styles.media} image={src} title="Thumbnail" />
       </div>
 
-      {/* 
+      {/*
         `Home`で作成した<HeaderTitle>と<SubHeaderContent>を流用する
       */}
       <CardHeader

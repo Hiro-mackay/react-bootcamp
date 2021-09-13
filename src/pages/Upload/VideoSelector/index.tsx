@@ -7,15 +7,16 @@ import {
   Dispatch,
   SetStateAction,
 } from "react";
-
 import useStyles from "./style";
 
+// VideoSelectコンポーネントのプロップスとして、引数を型定義する
 export type VideoSelectProps = {
   videoFile: File | undefined;
   setVideoFile: Dispatch<SetStateAction<File | undefined>>;
   setThumbFile: Dispatch<SetStateAction<File | undefined>>;
 };
 
+// 親コンポーネントから、VideoSelectに渡される引数
 export const VideoSelect = ({
   videoFile,
   setVideoFile,
@@ -30,7 +31,7 @@ export const VideoSelect = ({
   // サムネイルの画像URLを格納する配列state
   const [thumbnailURLs, setThumbnailURLs] = useState<string[]>([]);
 
-  // 現在選択中のサムネイルの
+  // 現在選択中のサムネイルの参照URLを格納する
   const [selectThumbURL, setSelectThumbURL] = useState<string>();
 
   // サムネイルを生成する関数
@@ -75,7 +76,7 @@ export const VideoSelect = ({
 
   // サムネイルを選択して、
   // 1. 参照URLを`selectThumbURL`に格納
-  // 2. 参照URLから画像ファイルを生成し、`setThumbFile`で画像ファイルを親コンポーネントに渡す
+  // 2. 参照URLから画像ファイルを生成し、`setThumbFile`でファイルを親コンポーネントに渡す
   const selectedThumb = (url: string) => {
     //  参照URLを`selectThumbURL`に格納
     setSelectThumbURL(url);
@@ -132,7 +133,7 @@ export const VideoSelect = ({
     // fileはstateで宣言された変数でなければ、変更の検知はされない。
   }, [videoFile]);
 
-  // サムネイルが生成されたら、最初のサムネイルを必ず選択にする
+  // サムネイルが生成_`されたら、最初のサムネイルを必ず選択にする
   // これで、サムネイルが選択されずに動画をアップロードすることを防ぐ
   useEffect(() => {
     if (thumbnailURLs.length && thumbnailURLs[0] !== selectThumbURL) {
@@ -159,10 +160,15 @@ export const VideoSelect = ({
               return (
                 <Grid item xs={4}>
                   <CardMedia
+                    // 追加
+                    // サムネイルのスタリングを`useStyles`に移行
+                    // サムネイル用のスタリングと選択中のサムネイルのスタリングを追加
                     className={`${styles.thumbnail} ${
                       url === selectThumbURL ? styles.selectedThumb : ""
                     }`}
                     image={url}
+                    // 追加
+                    // サムネイル画像を押したら、その画像をサムネイルとして選択する
                     onClick={() => {
                       selectedThumb(url);
                     }}
@@ -178,7 +184,8 @@ export const VideoSelect = ({
           inputRefに、 <input type="file" hidden />の参照を渡しています。
           useRefで作成した関数を、"ref"にわたすことで、そのHTML要素に直接アクセスできるようになります。
           Reactで、HTML要素を操作したい時に頻出する書き方です。
-
+        */}
+      {/* 
           <input/>の入力値が変更されたら、onChangeが実行されます。
           selectedFileには、onChangeからChangeEvent<HTMLInputElement>という型の引数が渡されます。
         */}

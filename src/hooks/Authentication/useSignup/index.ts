@@ -23,7 +23,7 @@ export const useSignup = () => {
   // リダイレクト用の関数
   const navigate = useNavigate();
 
-  // graphql mutationで作成するデータを格納
+  // mutationで作成するデータを格納
   const setGlobalUser = useSetRecoilState(GlobalUser);
 
   // userを追加するためのGraohQL Mutation Hooks
@@ -72,8 +72,6 @@ export const useSignup = () => {
     // アカウントにトークンが設定されるまで待機
     await checkAuthToken(user.uid);
 
-    console.log("user query");
-
     // Hasuraにuserを作成する
     const apolloResponse = await insertMutation({
       variables: {
@@ -100,10 +98,10 @@ export const useSignup = () => {
     formValidation
   );
 
+  // GraphQLのエラーがあったら、ここでキャッチして、エラー処理を行う
+  // 今回は、エラーメッセージを表示するだけ。
   useEffect(() => {
     if (apolloError?.message) {
-      console.log("error");
-      console.log(apolloError);
       setErrorHandler("main", apolloError.message);
     }
   }, [apolloError]);

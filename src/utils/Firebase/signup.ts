@@ -1,7 +1,7 @@
 import { fireAuth } from "./config";
 
 // サインアップに必要な引数の型を定義しています。
-// signup()関数では、引数にFireSignupTypeの型、つまり文字型の`email`と`password`が必要になります。
+// signup()関数では、引数にFireSignupTypeの型、つまり文字型の`email`と`passward`が必要になります。
 export type FireSignupType = {
   email: string;
   password: string;

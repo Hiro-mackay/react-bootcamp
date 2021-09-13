@@ -4,9 +4,9 @@ import { useNavigate } from "react-router";
 import { useRecoilValue } from "recoil";
 import { useVideoUpload } from "../../../hooks/VideoUpload";
 import { GlobalUser } from "../../../stores/User";
-
 import useStyles from "./style";
 
+// UploadFormコンポーネントのプロップスとして、引数を型定義する
 export type UploadFormProps = {
   videoFile: File | undefined;
   thumbFile: File | undefined;
@@ -15,6 +15,7 @@ export type UploadFormProps = {
 export const UploadForm = ({ videoFile, thumbFile }: UploadFormProps) => {
   const styles = useStyles();
 
+  // リダイレクト用関数
   const navigate = useNavigate();
 
   // videoをアップロードする際の、ownerIdのためのuserId
@@ -91,13 +92,14 @@ export const UploadForm = ({ videoFile, thumbFile }: UploadFormProps) => {
         />
       </label>
 
-      {errorMessage?.message && (
-        <label className={styles.label}>
-          <Typography align="center" color="error">
-            {errorMessage?.message}
-          </Typography>
-        </label>
-      )}
+      {
+        // エラーがあれば表示
+        errorMessage?.message && (
+          <label className={styles.label}>
+            <Typography color="error">{errorMessage.message}</Typography>
+          </label>
+        )
+      }
 
       <div className={styles.butotn}>
         <Button
