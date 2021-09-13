@@ -3326,7 +3326,7 @@ export const checkAuthToken = (userId: string): Promise<string> => {
         async (doc) => {
           if (!doc.exists) return;
           // トークンを取得
-          const idToken = await fireAuth.currentUser?.getIdTokenResult();
+          const idToken = await fireAuth.currentUser?.getIdTokenResult(true);
 
           // トークンがあり、Hasuraカスタムクレームが追加されているか
           if (
