@@ -5,8 +5,6 @@ query Videos {
     description
     thumbnail_url
     video_url
-    views
-    duration
     owner {
       id
       email
@@ -15,6 +13,9 @@ query Videos {
       updated_at
       created_at
     }
+    duration
+    views
+    updated_at
     created_at
   }
 }
